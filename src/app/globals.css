@@ -1,26 +1,129 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Crucial Tailwind CSS v4 Class-based Dark Mode Variant Mapping */
+@custom-variant dark (&:where(.dark, .dark *));
+@variant dark (&:where(.dark, .dark *));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg-primary: #f1f5f9;
+    --bg-surface: #ffffff;
+    --bg-surface-hover: #e2e8f0;
+    --border-color: #cbd5e1;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    
+    --teal-primary: #0f766e;
+    --teal-light: #06b6d4;
+    --teal-electric: #0284c7;
+    --teal-glow: rgba(6, 182, 212, 0.15);
+    
+    --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+    --header-bg: rgba(241, 245, 249, 0.85);
+  }
+
+  html.dark, .dark {
+    --bg-primary: #090d16;
+    --bg-surface: #111726;
+    --bg-surface-hover: #1a2336;
+    --border-color: #1d263b;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    
+    --teal-primary: #0f766e;
+    --teal-light: #06b6d4;
+    --teal-electric: #38bdf8;
+    --teal-glow: rgba(56, 189, 248, 0.2);
+    
+    --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    --header-bg: rgba(9, 13, 22, 0.85);
+
+    color-scheme: dark;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Hide Default Mouse Cursor for Custom GSAP Cursor on Fine-Pointer Devices */
+@media (pointer: fine) {
+  body, a, button, input, select, textarea, [role="button"], label, .cursor-pointer {
+    cursor: none !important;
+  }
+}
+
+/* Universal Dark Mode High Contrast Rules */
+.dark body {
+  background-color: #090d16 !important;
+  color: #f8fafc !important;
+}
+
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+  color: #f8fafc;
+}
+
+.dark p, .dark span, .dark li, .dark label, .dark div {
+  color-scheme: dark;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--teal-light);
+}
+
+/* Subtle Grid Background Pattern */
+.bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(100, 116, 139, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(100, 116, 139, 0.07) 1px, transparent 1px);
+}
+
+.dark .bg-grid-pattern, html.dark .bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(29, 38, 59, 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(29, 38, 59, 0.4) 1px, transparent 1px);
+}
+
+/* Glow Utilities */
+.glow-teal {
+  box-shadow: 0 0 40px -10px var(--teal-glow);
+}
+
+.text-gradient-teal {
+  background: linear-gradient(135deg, #06b6d4 0%, #38bdf8 50%, #0f766e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Ripple Overlay for GSAP Theme Toggle */
+#theme-ripple-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  transform: scale(0);
+  background: var(--teal-light);
+  opacity: 0;
 }

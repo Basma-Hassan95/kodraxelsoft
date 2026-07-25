@@ -14,10 +14,10 @@
     --text-secondary: #475569;
     --text-muted: #64748b;
     
-    --teal-primary: #0f766e;
-    --teal-light: #06b6d4;
-    --teal-electric: #0284c7;
-    --teal-glow: rgba(6, 182, 212, 0.15);
+    --teal-primary: #004d4d;
+    --teal-light: #006666;
+    --teal-electric: #008080;
+    --teal-glow: rgba(0, 77, 77, 0.25);
     
     --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
     --header-bg: rgba(241, 245, 249, 0.85);
@@ -32,10 +32,10 @@
     --text-secondary: #cbd5e1;
     --text-muted: #94a3b8;
     
-    --teal-primary: #0f766e;
-    --teal-light: #06b6d4;
-    --teal-electric: #38bdf8;
-    --teal-glow: rgba(56, 189, 248, 0.2);
+    --teal-primary: #004d4d;
+    --teal-light: #008080;
+    --teal-electric: #20b2aa;
+    --teal-glow: rgba(0, 128, 128, 0.3);
     
     --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
     --header-bg: rgba(9, 13, 22, 0.85);
@@ -108,9 +108,10 @@ body {
 }
 
 .text-gradient-teal {
-  background: linear-gradient(135deg, #06b6d4 0%, #38bdf8 50%, #0f766e 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #004d4d;
+}
+html.dark .text-gradient-teal, .dark .text-gradient-teal {
+  color: #20b2aa;
 }
 
 /* Ripple Overlay for GSAP Theme Toggle */

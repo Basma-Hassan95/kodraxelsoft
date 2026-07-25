@@ -31,9 +31,9 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantStyles = {
     primary:
-      "bg-teal-600 hover:bg-teal-500 text-white shadow-md hover:shadow-cyan-500/25 dark:bg-cyan-600 dark:hover:bg-cyan-500",
+      "bg-[#004d4d] hover:bg-[#003333] text-white shadow-md border border-[#006666]/40 dark:bg-[#004d4d] dark:hover:bg-[#006666]",
     "teal-gradient":
-      "bg-gradient-to-r from-teal-600 via-cyan-500 to-sky-500 hover:from-teal-500 hover:via-cyan-400 hover:to-sky-400 text-white shadow-lg shadow-cyan-500/20 hover:shadow-cyan-400/35 border border-cyan-400/30",
+      "bg-[#004d4d] hover:bg-[#003333] dark:bg-[#004d4d] dark:hover:bg-[#006666] text-white font-semibold shadow-md border border-[#006666]/40",
     secondary:
       "bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-slate-700 shadow-sm",
     outline:

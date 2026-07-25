@@ -60,7 +60,7 @@ export default function AboutPage() {
                   alt={founder.name}
                   className="w-full h-full object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#090d16] via-transparent to-transparent opacity-50" />
+                <div className="absolute inset-0 bg-[#090d16]/30" />
                 <div className="absolute bottom-4 left-4 right-4 p-3 rounded-xl bg-slate-950/80 backdrop-blur-md border border-cyan-500/30 flex justify-between items-center text-white">
                   <span className="text-xs font-bold">{founder.role}</span>
                 </div>

@@ -147,7 +147,7 @@ export const EstimatorModal: React.FC<EstimatorModalProps> = ({ isOpen, onClose 
         </div>
 
         {/* Estimation Output Card */}
-        <div className="p-4 rounded-xl border border-cyan-500/30 bg-gradient-to-r from-cyan-500/10 via-teal-500/10 to-sky-500/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-4 rounded-xl border border-cyan-500/30 bg-slate-100 dark:bg-[#090d16] flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">
               Estimated Total Investment

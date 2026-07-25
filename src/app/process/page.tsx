@@ -25,7 +25,7 @@ export default function ProcessPage() {
       {/* 6-Stage Timeline List */}
       <div className="space-y-12 relative">
         {/* Connecting Vertical Axis Line for Desktop */}
-        <div className="hidden lg:block absolute top-10 bottom-10 left-1/2 -translate-x-1/2 w-0.5 bg-gradient-to-b from-cyan-500 via-teal-500 to-sky-500 opacity-30" />
+        <div className="hidden lg:block absolute top-10 bottom-10 left-1/2 -translate-x-1/2 w-0.5 bg-cyan-500/40" />
 
         {processSteps.map((step, idx) => {
           const isEven = idx % 2 === 0;
@@ -92,7 +92,7 @@ export default function ProcessPage() {
       {/* SLA Guarantees Banner */}
       <section className="pt-12">
         <GSAPReveal direction="up">
-          <div className="p-8 md:p-12 rounded-3xl border border-cyan-500/40 bg-gradient-to-r from-teal-950/50 via-[#111726] to-cyan-950/50 text-center space-y-6">
+          <div className="p-8 md:p-12 rounded-3xl border border-cyan-500/40 bg-[#0c1424] dark:bg-[#111726] text-center space-y-6">
             <h2 className="text-3xl font-extrabold text-white">Our Enterprise SLA Guarantee</h2>
             <p className="text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
               Every project comes signed with our 100/100 Lighthouse performance guarantee, 30-day post-launch code warranty, and direct founder support.

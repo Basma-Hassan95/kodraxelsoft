@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
-import { EstimatorModal } from "@/components/ui/EstimatorModal";
+import { SocialCampaignsShowcase } from "@/components/ui/SocialCampaignsShowcase";
 import { foundersData } from "@/data/founders";
 import { servicesData } from "@/data/services";
 import { projectsData } from "@/data/projects";
@@ -22,12 +22,10 @@ import {
   CheckCircle2,
   Users,
   ExternalLink,
-  Star,
-  Calculator
+  Star
 } from "lucide-react";
 
 export default function HomePage() {
-  const [estimatorOpen, setEstimatorOpen] = useState(false);
   const featuredProjects = projectsData.filter((p) => p.featured);
 
   return (
@@ -80,10 +78,10 @@ export default function HomePage() {
               <Button
                 variant="outline"
                 size="lg"
-                icon={<Calculator className="w-5 h-5" />}
-                onClick={() => setEstimatorOpen(true)}
+                icon={<Code2 className="w-5 h-5" />}
+                onClick={() => (window.location.href = "/services")}
               >
-                Calculate Estimate
+                Explore Capabilities
               </Button>
             </div>
           </GSAPReveal>
@@ -185,7 +183,7 @@ export default function HomePage() {
                       alt={founder.name}
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#090d16] via-transparent to-transparent opacity-60" />
+                    <div className="absolute inset-0 bg-[#090d16]/30" />
                     <span className="absolute bottom-3 left-3 px-2.5 py-1 rounded-md bg-cyan-500/80 backdrop-blur-md text-[11px] font-bold text-white uppercase tracking-wider">
                       {founder.role.split("&")[0]}
                     </span>
@@ -327,10 +325,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. DYNAMIC LEAD GENERATION BANNER */}
+      {/* 6. SOCIAL MEDIA CAMPAIGNS SHOWCASE */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <SocialCampaignsShowcase />
+      </section>
+
+      {/* 7. DYNAMIC LEAD GENERATION BANNER */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <GSAPReveal direction="up">
-          <div className="relative rounded-3xl border border-cyan-500/40 bg-gradient-to-r from-teal-950 via-[#090d16] to-cyan-950 p-10 md:p-16 overflow-hidden shadow-2xl text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="relative rounded-3xl border border-cyan-500/40 bg-[#0c1424] dark:bg-[#111726] p-10 md:p-16 overflow-hidden shadow-2xl text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="pointer-events-none absolute -bottom-20 -right-20 w-80 h-80 bg-cyan-500/20 rounded-full blur-3xl" />
             
             <div className="max-w-2xl space-y-4 relative z-10">
@@ -360,7 +363,6 @@ export default function HomePage() {
         </GSAPReveal>
       </section>
 
-      <EstimatorModal isOpen={estimatorOpen} onClose={() => setEstimatorOpen(false)} />
     </div>
   );
 }

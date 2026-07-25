@@ -6,6 +6,7 @@ import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
+import { SocialCampaignsShowcase } from "@/components/ui/SocialCampaignsShowcase";
 import { blogPosts, BlogPost } from "@/data/blog";
 import { Search, Clock, ArrowRight, BookOpen, Sparkles } from "lucide-react";
 
@@ -25,7 +26,7 @@ export default function BlogPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 py-12">
       
       {/* Header */}
       <GSAPReveal direction="down">
@@ -124,6 +125,11 @@ export default function BlogPage() {
             </GlowCard>
           </GSAPReveal>
         ))}
+      </div>
+
+      {/* Social Media Ads & Campaign Highlights Section */}
+      <div className="pt-8 border-t border-slate-300 dark:border-slate-800/80">
+        <SocialCampaignsShowcase />
       </div>
 
       {/* Article Detail Modal */}

@@ -40,7 +40,7 @@ export const GlowCard: React.FC<GlowCardProps> = ({ children, className = "", on
         }}
       />
       {/* Top accent line */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-500/0 to-transparent group-hover:via-cyan-400/80 transition-all duration-500" />
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-cyan-500/0 group-hover:bg-cyan-400/80 transition-colors duration-300" />
       
       <div className="relative z-10">{children}</div>
     </div>

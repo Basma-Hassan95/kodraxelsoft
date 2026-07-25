@@ -29,7 +29,7 @@ export const Footer: React.FC = () => {
           {/* Col 1: Brand & Status */}
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center text-white shadow-md">
+              <div className="w-8 h-8 rounded-xl bg-[#004d4d] flex items-center justify-center text-white shadow-md border border-[#006666]/50">
                 <Layers className="w-4 h-4 text-white" />
               </div>
               <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">

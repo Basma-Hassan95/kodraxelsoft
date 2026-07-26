@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Layers, ArrowRight, CheckCircle2, ShieldCheck, Mail, MapPin } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Logo } from "@/components/ui/Logo";
 import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/ui/SocialIcons";
 
 export const Footer: React.FC = () => {
@@ -28,13 +29,8 @@ export const Footer: React.FC = () => {
           
           {/* Col 1: Brand & Status */}
           <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#004d4d] flex items-center justify-center text-white shadow-md border border-[#006666]/50">
-                <Layers className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                KODRAXELSOFT
-              </span>
+            <Link href="/" className="inline-block">
+              <Logo size="md" />
             </Link>
             <p className="text-sm text-slate-600 dark:text-slate-400 max-w-sm leading-relaxed">
               Ultra-premium corporate software engineering studio crafting next-gen Web Apps, AI Systems, and Cloud Architectures for enterprise leaders.
@@ -57,10 +53,10 @@ export const Footer: React.FC = () => {
                 <Link href="/" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">Home</Link>
               </li>
               <li>
-                <Link href="/services" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">Services & Pricing</Link>
+                <Link href="/services" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">Services & Capabilities</Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">About 4 Founders</Link>
+                <Link href="/about" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">About Studio</Link>
               </li>
               <li>
                 <Link href="/portfolio" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">Case Studies</Link>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Logo } from "@/components/ui/Logo";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Button } from "@/components/ui/Button";
 import { Menu, X, ArrowRight, Layers } from "lucide-react";
@@ -47,14 +48,7 @@ export const Navbar: React.FC = () => {
         
         {/* Logo Section */}
         <Link href="/" className="flex items-center gap-2.5 group focus:outline-none">
-          <div className="relative w-9 h-9 rounded-xl bg-[#004d4d] flex items-center justify-center text-white shadow-md border border-[#006666]/50 group-hover:scale-105 transition-transform duration-300">
-            <Layers className="w-5 h-5 text-white" />
-            <div className="absolute inset-0 rounded-xl bg-[#008080] opacity-0 group-hover:opacity-20 transition-opacity" />
-          </div>
-          <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
-            KODRAXELSOFT
-            <span className="w-2 h-2 rounded-full bg-[#008080] animate-pulse" />
-          </span>
+          <Logo size="md" />
         </Link>
 
         {/* Desktop Navigation Links */}

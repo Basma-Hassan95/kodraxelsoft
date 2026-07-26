@@ -20,8 +20,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Kodraxelsoft | Ultra-Premium Software Engineering & AI Studio",
-  description: "Elite 4-person software architecture laboratory specializing in Next.js web applications, custom AI model integration, and high-scale cloud infrastructure.",
+  description: "Elite software architecture laboratory specializing in Next.js web applications, custom AI model integration, and high-scale cloud infrastructure.",
   keywords: ["Next.js", "TypeScript", "GSAP", "AI Engineering", "Software Studio", "React Architect"],
+  icons: {
+    icon: "/logo.jpg",
+    shortcut: "/logo.jpg",
+    apple: "/logo.jpg"
+  },
   openGraph: {
     title: "Kodraxelsoft | Software Engineering & AI Studio",
     description: "Architecting sub-50ms web platforms and autonomous AI systems for market leaders.",

@@ -23,9 +23,9 @@ export const metadata: Metadata = {
   description: "Elite software architecture laboratory specializing in Next.js web applications, custom AI model integration, and high-scale cloud infrastructure.",
   keywords: ["Next.js", "TypeScript", "GSAP", "AI Engineering", "Software Studio", "React Architect"],
   icons: {
-    icon: "/logo.jpg",
-    shortcut: "/logo.jpg",
-    apple: "/logo.jpg"
+    icon: "/ks-emblem.jpg",
+    shortcut: "/ks-emblem.jpg",
+    apple: "/ks-emblem.jpg"
   },
   openGraph: {
     title: "Kodraxelsoft | Software Engineering & AI Studio",

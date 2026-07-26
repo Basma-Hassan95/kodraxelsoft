@@ -47,7 +47,7 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         
         {/* Logo Section */}
-        <Link href="/" className="flex items-center gap-2.5 group focus:outline-none">
+        <Link href="/" className="flex items-center shrink-0 group focus:outline-none">
           <Logo size="md" />
         </Link>
 

@@ -22,7 +22,7 @@ export const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
   suffix = "",
   prefix = "",
   decimals = 0,
-  duration = 2,
+  duration = 1.2,
   className = ""
 }) => {
   const countRef = useRef<HTMLSpanElement>(null);
@@ -39,7 +39,7 @@ export const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
         ease: "power2.out",
         scrollTrigger: {
           trigger: el,
-          start: "top 90%",
+          start: "top 92%",
           toggleActions: "play none none none"
         },
         onUpdate: () => {

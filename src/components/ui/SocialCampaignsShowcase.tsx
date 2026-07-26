@@ -46,7 +46,7 @@ export const campaignsData: CampaignAd[] = [
     tagColor: "bg-blue-600/20 text-blue-500 border-blue-500/30",
     badge: "LinkedIn Sponsored Executive Brief",
     title: "Sub-50ms Next.js 16 Edge Architectures for Enterprise Leaders",
-    copy: "Eliminate render bottlenecks with React Server Components & Turbopack. Partner directly with our 4 founding principal architects.",
+    copy: "Eliminate render bottlenecks with React Server Components & Turbopack. Partner directly with our senior principal architects.",
     stats: [
       { label: "Impressions", value: "340K" },
       { label: "CTR Avg", value: "5.2%" },

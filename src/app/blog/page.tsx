@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { SocialCampaignsShowcase } from "@/components/ui/SocialCampaignsShowcase";
 import { blogPosts, BlogPost } from "@/data/blog";
-import { Search, Clock, ArrowRight, BookOpen, Sparkles } from "lucide-react";
+import { Search, Clock, ArrowRight } from "lucide-react";
 
 export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -29,14 +29,12 @@ export default function BlogPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 py-12">
       
       {/* Header */}
-      <GSAPReveal direction="down">
-        <SectionHeader
-          badgeText="Engineering Insights"
-          title="Architectural Deep Dives &"
-          gradientTitle="Technical Blueprints"
-          subtitle="Articles, research notes, and benchmark studies written directly by our 4 founding engineers."
-        />
-      </GSAPReveal>
+      <SectionHeader
+        badgeText="Engineering Insights"
+        title="Architectural Deep Dives &"
+        gradientTitle="Technical Blueprints"
+        subtitle="Articles, research notes, and benchmark studies written directly by our principal software architects."
+      />
 
       {/* Search & Category Filter Bar */}
       <GSAPReveal direction="up">
@@ -49,7 +47,7 @@ export default function BlogPage() {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   selectedCategory === cat
-                    ? "bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30"
+                    ? "bg-[#004d4d] text-white border border-[#006666]/30"
                     : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                 }`}
               >
@@ -72,60 +70,58 @@ export default function BlogPage() {
         </div>
       </GSAPReveal>
 
-      {/* Articles Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {filteredPosts.map((post, idx) => (
-          <GSAPReveal key={post.id} direction="up" delay={idx * 0.1}>
-            <GlowCard className="h-full flex flex-col justify-between p-6">
-              <div>
-                <div className="relative w-full h-56 rounded-xl overflow-hidden mb-5 border border-slate-200 dark:border-slate-800">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-slate-950/80 backdrop-blur-md text-[10px] font-bold text-cyan-400 border border-cyan-500/30">
-                    {post.category}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-2">
-                  <span>{post.publishedDate}</span>
-                  <span>•</span>
-                  <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-cyan-500" /> {post.readTime}</span>
-                </div>
-
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 leading-snug">{post.title}</h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-                  {post.excerpt}
-                </p>
+      {/* Staggered Articles Grid */}
+      <GSAPReveal stagger={0.1} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {filteredPosts.map((post) => (
+          <GlowCard key={post.id} className="h-full flex flex-col justify-between p-6">
+            <div>
+              <div className="relative w-full h-56 rounded-xl overflow-hidden mb-5 border border-slate-200 dark:border-slate-800">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-slate-950/80 backdrop-blur-md text-[10px] font-bold text-cyan-400 border border-cyan-500/30">
+                  {post.category}
+                </span>
               </div>
 
-              {/* Author & CTA Bar */}
-              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={post.author.avatar} alt={post.author.name} className="w-7 h-7 rounded-full object-cover" />
-                  <div className="text-[11px]">
-                    <div className="font-bold text-slate-900 dark:text-slate-100">{post.author.name}</div>
-                    <div className="text-[9px] text-cyan-600 dark:text-cyan-400">{post.author.role}</div>
-                  </div>
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setActiveArticle(post)}
-                  icon={<ArrowRight className="w-3.5 h-3.5" />}
-                >
-                  Read Article
-                </Button>
+              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-2">
+                <span>{post.publishedDate}</span>
+                <span>•</span>
+                <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-[#004d4d] dark:text-cyan-400" /> {post.readTime}</span>
               </div>
-            </GlowCard>
-          </GSAPReveal>
+
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 leading-snug">{post.title}</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+                {post.excerpt}
+              </p>
+            </div>
+
+            {/* Author & CTA Bar */}
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={post.author.avatar} alt={post.author.name} className="w-7 h-7 rounded-full object-cover" />
+                <div className="text-[11px]">
+                  <div className="font-bold text-slate-900 dark:text-slate-100">{post.author.name}</div>
+                  <div className="text-[9px] text-[#004d4d] dark:text-cyan-400">{post.author.role}</div>
+                </div>
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setActiveArticle(post)}
+                icon={<ArrowRight className="w-3.5 h-3.5" />}
+              >
+                Read Article
+              </Button>
+            </div>
+          </GlowCard>
         ))}
-      </div>
+      </GSAPReveal>
 
       {/* Social Media Ads & Campaign Highlights Section */}
       <div className="pt-8 border-t border-slate-300 dark:border-slate-800/80">

@@ -6,7 +6,7 @@ import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
 import { servicesData } from "@/data/services";
-import { Code2, Cpu, Layers, Zap, CheckCircle2, ArrowRight, ShieldCheck, Clock, Award } from "lucide-react";
+import { Code2, ArrowRight, ShieldCheck, CheckCircle2 } from "lucide-react";
 
 export default function ServicesPage() {
   const techStackList = [
@@ -20,14 +20,12 @@ export default function ServicesPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 py-12">
       
       {/* Header */}
-      <GSAPReveal direction="down">
-        <SectionHeader
-          badgeText="Capabilities & Architecture"
-          title="Enterprise Engineering Services"
-          gradientTitle="Tailored for Scale"
-          subtitle="Direct technical execution with zero layers of management. Partner directly with our 4 principal engineers to architect high-performance platforms."
-        />
-      </GSAPReveal>
+      <SectionHeader
+        badgeText="Capabilities & Architecture"
+        title="Enterprise Engineering Services"
+        gradientTitle="Tailored for Scale"
+        subtitle="Direct technical execution with zero layers of management. Partner directly with our 4 principal engineers to architect high-performance platforms."
+      />
 
       {/* Service Pillars Detailed Grid */}
       <div className="space-y-16">
@@ -37,7 +35,7 @@ export default function ServicesPage() {
               
               {/* Left Column: Description & Features */}
               <div className="lg:col-span-7 space-y-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 text-xs font-semibold uppercase tracking-wider">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 text-xs font-semibold uppercase tracking-wider">
                   <Code2 className="w-3.5 h-3.5" />
                   <span>Pillar 0{idx + 1}</span>
                 </div>
@@ -47,7 +45,7 @@ export default function ServicesPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   {service.features.map((feat, fIdx) => (
                     <div key={fIdx} className="flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300">
-                      <CheckCircle2 className="w-4 h-4 text-cyan-500 shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-[#004d4d] dark:text-cyan-400 shrink-0" />
                       <span>{feat}</span>
                     </div>
                   ))}
@@ -55,7 +53,7 @@ export default function ServicesPage() {
 
                 <div className="pt-4 flex flex-wrap gap-2">
                   {service.technologies.map((tech, tIdx) => (
-                    <span key={tIdx} className="px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-cyan-600 dark:text-cyan-400 border border-slate-200 dark:border-slate-700">
+                    <span key={tIdx} className="px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-[#004d4d] dark:text-cyan-400 border border-slate-200 dark:border-slate-700">
                       {tech}
                     </span>
                   ))}
@@ -67,10 +65,10 @@ export default function ServicesPage() {
                 <div>
                   <div className="flex items-center justify-between gap-2 pb-4 border-b border-slate-200 dark:border-slate-800">
                     <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                      <ShieldCheck className="w-4 h-4 text-cyan-500" />
+                      <ShieldCheck className="w-4 h-4 text-[#004d4d] dark:text-cyan-400" />
                       <span>SLA Guarantee</span>
                     </div>
-                    <span className="px-2.5 py-1 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 text-xs font-semibold">
+                    <span className="px-2.5 py-1 rounded-md bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 text-xs font-semibold">
                       {service.estimatedWeeks} Sprint
                     </span>
                   </div>
@@ -81,7 +79,7 @@ export default function ServicesPage() {
                   <ul className="space-y-2.5 text-xs text-slate-600 dark:text-slate-400">
                     {service.deliverables.map((del, dIdx) => (
                       <li key={dIdx} className="flex items-center gap-2.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400 shrink-0" />
                         <span>{del}</span>
                       </li>
                     ))}
@@ -113,25 +111,23 @@ export default function ServicesPage() {
           subtitle="We select tools with proven long-term support, performance speed, and rich developer ecosystems."
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <GSAPReveal stagger={0.08} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {techStackList.map((stack, idx) => (
-            <GSAPReveal key={idx} direction="up" delay={idx * 0.1}>
-              <GlowCard className="h-full">
-                <h3 className="text-base font-bold text-slate-900 dark:text-white mb-4 pb-2 border-b border-slate-200 dark:border-slate-800">
-                  {stack.category}
-                </h3>
-                <ul className="space-y-2">
-                  {stack.techs.map((t, tIdx) => (
-                    <li key={tIdx} className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400">
-                      <ShieldCheck className="w-3.5 h-3.5 text-cyan-500" />
-                      <span>{t}</span>
-                    </li>
-                  ))}
-                </ul>
-              </GlowCard>
-            </GSAPReveal>
+            <GlowCard key={idx} className="h-full">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-4 pb-2 border-b border-slate-200 dark:border-slate-800">
+                {stack.category}
+              </h3>
+              <ul className="space-y-2">
+                {stack.techs.map((t, tIdx) => (
+                  <li key={tIdx} className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+            </GlowCard>
           ))}
-        </div>
+        </GSAPReveal>
       </section>
 
     </div>

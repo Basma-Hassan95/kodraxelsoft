@@ -11,14 +11,10 @@ import {
   Mail,
   Phone,
   MapPin,
-  Clock,
   CheckCircle2,
   Send,
-  Sparkles,
   ChevronDown,
-  ShieldCheck,
-  Building2,
-  DollarSign
+  ShieldCheck
 } from "lucide-react";
 
 function ContactFormContent() {
@@ -69,7 +65,7 @@ function ContactFormContent() {
           </div>
           <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white">Project Brief Received!</h3>
           <p className="text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
-            Thank you, <strong className="text-slate-900 dark:text-white">{clientName}</strong>. Our founders have received your details for <strong className="text-cyan-500">{projectType}</strong>. Sophia Sterling will contact you at <strong className="text-slate-900 dark:text-white">{clientEmail}</strong> shortly.
+            Thank you, <strong className="text-slate-900 dark:text-white">{clientName}</strong>. Our engineering team has received your details for <strong className="text-[#004d4d] dark:text-cyan-400">{projectType}</strong>. We will contact you at <strong className="text-slate-900 dark:text-white">{clientEmail}</strong> within 24 hours.
           </p>
           <Button variant="teal-gradient" size="md" onClick={() => setFormSubmitted(false)}>
             Submit Another Project Inquiry
@@ -80,7 +76,7 @@ function ContactFormContent() {
           
           {/* 1. Project Type Chips */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 mb-3">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#004d4d] dark:text-cyan-400 mb-3">
               1. Select Primary Architecture Type
             </label>
             <div className="grid grid-cols-2 gap-2.5">
@@ -91,7 +87,7 @@ function ContactFormContent() {
                   onClick={() => setProjectType(type.id)}
                   className={`p-3 rounded-xl border text-xs font-semibold text-center transition-all ${
                     projectType === type.id
-                      ? "border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
+                      ? "border-[#004d4d] bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400"
                       : "border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-400"
                   }`}
                 >
@@ -103,7 +99,7 @@ function ContactFormContent() {
 
           {/* 2. Budget Range Selector */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 mb-3">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#004d4d] dark:text-cyan-400 mb-3">
               2. Estimated Budget Investment
             </label>
             <div className="grid grid-cols-2 gap-2.5">
@@ -114,7 +110,7 @@ function ContactFormContent() {
                   onClick={() => setSelectedBudget(budget)}
                   className={`p-3 rounded-xl border text-xs font-semibold text-center transition-all ${
                     selectedBudget === budget
-                      ? "border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
+                      ? "border-[#004d4d] bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400"
                       : "border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-400"
                   }`}
                 >
@@ -179,12 +175,12 @@ function ContactFormContent() {
             icon={<Send className="w-5 h-5" />}
             className="w-full justify-center"
           >
-            Submit Project Brief to Founders
+            Submit Project Brief
           </Button>
 
           <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
-            <ShieldCheck className="w-3.5 h-3.5 text-cyan-500" />
-            <span>Strict NDA Protection & 24-Hour Founder Response SLA</span>
+            <ShieldCheck className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
+            <span>Strict NDA Protection & 24-Hour Technical Response SLA</span>
           </div>
         </form>
       )}
@@ -198,7 +194,7 @@ export default function ContactPage() {
   const faqs = [
     {
       q: "Who handles our project technical execution?",
-      a: "You work 1-on-1 exclusively with our 4 founding architects (Alexandre, Elena, Marcus, and Sophia). We do not use account managers or offshore sub-contractors."
+      a: "You work 1-on-1 exclusively with our senior principal architects. We do not use account managers or offshore sub-contractors."
     },
     {
       q: "What is your standard project delivery timeline?",
@@ -210,7 +206,7 @@ export default function ContactPage() {
     },
     {
       q: "How do we get started after submitting this lead form?",
-      a: "Within 24 hours, Founder Sophia Sterling will schedule a 30-minute technical discovery call with our engineering leads to review your requirements."
+      a: "Within 24 hours, our technical discovery team will schedule a 30-minute technical discovery call with our engineering leads to review your requirements."
     }
   ];
 
@@ -218,13 +214,11 @@ export default function ContactPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 py-12">
       
       {/* Header */}
-      <GSAPReveal direction="down">
-        <SectionHeader
-          badgeText="Start a Conversation"
-          title="Direct Architectural Lead Form"
-          subtitle="Ready to build? Fill out the project questionnaire below to connect directly with our founding partners within 24 hours."
-        />
-      </GSAPReveal>
+      <SectionHeader
+        badgeText="Start a Conversation"
+        title="Direct Architectural Lead Form"
+        subtitle="Ready to build? Fill out the project questionnaire below to connect directly with our principal architects within 24 hours."
+      />
 
       {/* Main Grid: Form + Contact Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
@@ -242,29 +236,29 @@ export default function ContactPage() {
             <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Direct Contact Channels</h3>
             <div className="space-y-4 text-xs">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 flex items-center justify-center shrink-0">
                   <Mail className="w-4 h-4" />
                 </div>
                 <div>
                   <div className="text-slate-500 dark:text-slate-400">General & Client Inquiries</div>
-                  <a href="mailto:hello@kodraxelsoft.com" className="font-bold text-slate-900 dark:text-slate-100 hover:text-cyan-500 dark:hover:text-cyan-400">
+                  <a href="mailto:hello@kodraxelsoft.com" className="font-bold text-slate-900 dark:text-slate-100 hover:text-[#004d4d] dark:hover:text-cyan-400">
                     hello@kodraxelsoft.com
                   </a>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 flex items-center justify-center shrink-0">
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-500 dark:text-slate-400">Founder Direct Desk</div>
+                  <div className="text-slate-500 dark:text-slate-400">Architect Direct Desk</div>
                   <div className="font-bold text-slate-900 dark:text-slate-100">+1 (415) 890-4221</div>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 flex items-center justify-center shrink-0">
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div>
@@ -286,7 +280,7 @@ export default function ContactPage() {
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-cyan-950/40 flex items-center justify-center">
-                <div className="px-3 py-1.5 rounded-full bg-slate-950/90 backdrop-blur-md border border-cyan-500/50 text-[11px] font-bold text-cyan-400 flex items-center gap-1.5">
+                <div className="px-3 py-1.5 rounded-full bg-slate-950/90 backdrop-blur-md border border-[#006666]/50 text-[11px] font-bold text-cyan-400 flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-cyan-400 animate-bounce" />
                   <span>KODRAXELSOFT</span>
                 </div>
@@ -297,44 +291,43 @@ export default function ContactPage() {
 
       </div>
 
-      {/* FAQ Accordion Section - Fixed High Contrast in Light & Dark Mode */}
+      {/* FAQ Accordion Section */}
       <section className="pt-12">
         <SectionHeader
           badgeText="FAQ"
           title="Frequently Asked"
           gradientTitle="Questions"
-          subtitle="Everything you need to know about partnering with our 4-person software studio."
+          subtitle="Everything you need to know about partnering with our elite software studio."
         />
 
-        <div className="max-w-3xl mx-auto space-y-4">
+        <GSAPReveal stagger={0.08} className="max-w-3xl mx-auto space-y-4">
           {faqs.map((faq, idx) => {
             const isOpen = openFaq === idx;
             return (
-              <GSAPReveal key={idx} direction="up" delay={idx * 0.05}>
-                <div
-                  className={`rounded-2xl border transition-all duration-300 overflow-hidden shadow-sm ${
-                    isOpen
-                      ? "border-cyan-500/60 bg-white dark:bg-[#111726] ring-1 ring-cyan-500/30"
-                      : "border-slate-300 dark:border-slate-800/80 bg-white dark:bg-[#111726] hover:border-slate-400 dark:hover:border-slate-700"
-                  }`}
+              <div
+                key={idx}
+                className={`rounded-2xl border transition-all duration-300 overflow-hidden shadow-sm ${
+                  isOpen
+                    ? "border-[#004d4d] bg-white dark:bg-[#111726] ring-1 ring-[#004d4d]/30"
+                    : "border-slate-300 dark:border-slate-800/80 bg-white dark:bg-[#111726] hover:border-slate-400 dark:hover:border-slate-700"
+                }`}
+              >
+                <button
+                  onClick={() => setOpenFaq(isOpen ? null : idx)}
+                  className="w-full p-5 text-left flex items-center justify-between font-bold text-sm text-slate-900 dark:text-white hover:text-[#004d4d] dark:hover:text-cyan-400 focus:outline-none transition-colors"
                 >
-                  <button
-                    onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full p-5 text-left flex items-center justify-between font-bold text-sm text-slate-900 dark:text-white hover:text-cyan-600 dark:hover:text-cyan-400 focus:outline-none transition-colors"
-                  >
-                    <span className="text-slate-900 dark:text-slate-50 font-bold">{faq.q}</span>
-                    <ChevronDown className={`w-4 h-4 shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180 text-cyan-500" : "text-slate-500 dark:text-slate-400"}`} />
-                  </button>
-                  {isOpen && (
-                    <div className="px-5 pb-5 text-xs font-medium text-slate-700 dark:text-slate-300 leading-relaxed border-t border-slate-200 dark:border-slate-800/80 pt-3 bg-slate-50/50 dark:bg-[#090d16]/40">
-                      {faq.a}
-                    </div>
-                  )}
-                </div>
-              </GSAPReveal>
+                  <span className="text-slate-900 dark:text-slate-50 font-bold">{faq.q}</span>
+                  <ChevronDown className={`w-4 h-4 shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180 text-[#004d4d] dark:text-cyan-400" : "text-slate-500 dark:text-slate-400"}`} />
+                </button>
+                {isOpen && (
+                  <div className="px-5 pb-5 text-xs font-medium text-slate-700 dark:text-slate-300 leading-relaxed border-t border-slate-200 dark:border-slate-800/80 pt-3 bg-slate-50/50 dark:bg-[#090d16]/40">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
             );
           })}
-        </div>
+        </GSAPReveal>
       </section>
 
     </div>

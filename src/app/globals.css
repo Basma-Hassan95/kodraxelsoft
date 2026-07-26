@@ -52,12 +52,7 @@ body {
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* Hide Default Mouse Cursor for Custom GSAP Cursor on Fine-Pointer Devices */
-@media (pointer: fine) {
-  body, a, button, input, select, textarea, [role="button"], label, .cursor-pointer {
-    cursor: none !important;
-  }
-}
+
 
 /* Universal Dark Mode High Contrast Rules */
 .dark body {

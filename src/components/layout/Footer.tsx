@@ -37,7 +37,7 @@ export const Footer: React.FC = () => {
               </span>
             </Link>
             <p className="text-sm text-slate-600 dark:text-slate-400 max-w-sm leading-relaxed">
-              Ultra-premium corporate software engineering studio. Founded by 4 principal architects crafting next-gen Web Apps, AI Systems, and Cloud Architectures.
+              Ultra-premium corporate software engineering studio crafting next-gen Web Apps, AI Systems, and Cloud Architectures for enterprise leaders.
             </p>
             
             {/* Live Operational System Badge */}

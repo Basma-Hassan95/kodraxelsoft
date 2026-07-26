@@ -4,8 +4,9 @@ import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CustomCursor } from "@/components/ui/CustomCursor";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+import { GSAPRouteRefresh } from "@/components/ui/GSAPRouteRefresh";
+import { SmoothScroll } from "@/components/ui/SmoothScroll";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -58,11 +59,13 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 selection:bg-cyan-500 selection:text-white">
         <ThemeProvider>
-          <CustomCursor />
-          <Navbar />
-          <main className="flex-grow pt-24">{children}</main>
-          <Footer />
-          <WhatsAppButton />
+          <SmoothScroll>
+            <GSAPRouteRefresh />
+            <Navbar />
+            <main className="flex-grow pt-24">{children}</main>
+            <Footer />
+            <WhatsAppButton />
+          </SmoothScroll>
         </ThemeProvider>
       </body>
     </html>

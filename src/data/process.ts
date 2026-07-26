@@ -5,7 +5,7 @@ export interface ProcessStep {
   description: string;
   keyDeliverables: string[];
   duration: string;
-  founderOwner: string;
+  leadArchitect: string;
   iconName: string;
 }
 
@@ -22,14 +22,14 @@ export const processSteps: ProcessStep[] = [
       "Fixed-Price Scope Agreement"
     ],
     duration: "Week 1",
-    founderOwner: "Alexandre Vance (CEO & Architect)",
+    leadArchitect: "Principal Architect (Core & Cloud)",
     iconName: "Search"
   },
   {
     stepNumber: "02",
     title: "UX Design & Interactive Prototype",
     subtitle: "High-fidelity wireframes & fluid micro-interaction systems.",
-    description: "Elena leads the creation of visual design systems, dark/light palette tokens, responsive grid layouts, and interactive GSAP prototypes that align with your brand's enterprise authority.",
+    description: "Our design team leads the creation of visual design systems, dark/light palette tokens, responsive grid layouts, and interactive GSAP prototypes that align with your brand's enterprise authority.",
     keyDeliverables: [
       "Figma Design System & Token Set",
       "High-Fidelity Interactive Prototype",
@@ -37,14 +37,14 @@ export const processSteps: ProcessStep[] = [
       "Accessibility & Contrast Audit"
     ],
     duration: "Week 2",
-    founderOwner: "Elena Rostova (Creative Lead)",
+    leadArchitect: "Creative Lead (UI & Motion)",
     iconName: "Figma"
   },
   {
     stepNumber: "03",
     title: "Agile Sprint Execution & AI Modeling",
     subtitle: "Clean, strictly-typed TypeScript & AI pipeline integration.",
-    description: "Our 4 founders write production-grade Next.js, Python, PyTorch, and Rust components in parallel 1-week sprints with continuous staging deployments and zero technical debt.",
+    description: "Our principal engineers write production-grade Next.js, Python, PyTorch, and Rust components in parallel 1-week sprints with continuous staging deployments and zero technical debt.",
     keyDeliverables: [
       "Daily CI/CD Staging Builds",
       "Automated Unit & E2E Test Suite",
@@ -52,7 +52,7 @@ export const processSteps: ProcessStep[] = [
       "Custom AI / Database Endpoints"
     ],
     duration: "Weeks 3 - 4",
-    founderOwner: "Dr. Marcus Chen (AI Lead)",
+    leadArchitect: "AI & Neural Pipeline Lead",
     iconName: "Code2"
   },
   {
@@ -67,7 +67,7 @@ export const processSteps: ProcessStep[] = [
       "Database Query Optimization"
     ],
     duration: "Week 5",
-    founderOwner: "Alexandre Vance (CEO)",
+    leadArchitect: "Security & DevOps Lead",
     iconName: "ShieldCheck"
   },
   {
@@ -82,22 +82,22 @@ export const processSteps: ProcessStep[] = [
       "Production Handover Package"
     ],
     duration: "Launch Day",
-    founderOwner: "Sophia Sterling (Product Director)",
+    leadArchitect: "Cloud Delivery Director",
     iconName: "Rocket"
   },
   {
     stepNumber: "06",
     title: "Continuous Optimization & SLA Warranty",
     subtitle: "30-day dedicated warranty & ongoing scaling partnership.",
-    description: "Post-launch, our founders stay directly embedded to monitor live traffic metrics, patch minor updates, and help you scale seamlessly to your next growth milestone.",
+    description: "Post-launch, our senior engineers stay directly embedded to monitor live traffic metrics, patch minor updates, and help you scale seamlessly to your next growth milestone.",
     keyDeliverables: [
       "30-Day Full Code Warranty",
       "Weekly Performance Reviews",
-      "Founder Direct Support Channel",
+      "Direct Senior Engineering Support",
       "Growth & Scale Recommendation Brief"
     ],
     duration: "Ongoing",
-    founderOwner: "Sophia Sterling (Product Director)",
+    leadArchitect: "Technical Operations Lead",
     iconName: "CheckCircle2"
   }
 ];

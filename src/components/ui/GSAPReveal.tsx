@@ -21,7 +21,7 @@ export const GSAPReveal: React.FC<GSAPRevealProps> = ({
   children,
   direction = "up",
   delay = 0,
-  duration = 0.8,
+  duration = 0.5,
   className = "",
   stagger = 0
 }) => {
@@ -33,19 +33,21 @@ export const GSAPReveal: React.FC<GSAPRevealProps> = ({
 
     let x = 0;
     let y = 0;
-    if (direction === "up") y = 40;
-    if (direction === "down") y = -40;
-    if (direction === "left") x = 40;
-    if (direction === "right") x = -40;
+    if (direction === "up") y = 24;
+    if (direction === "down") y = -24;
+    if (direction === "left") x = 24;
+    if (direction === "right") x = -24;
 
     const ctx = gsap.context(() => {
+      const targets = stagger > 0 && el.children.length > 0 ? Array.from(el.children) : el;
+
       gsap.fromTo(
-        el.children.length > 1 && stagger > 0 ? el.children : el,
+        targets,
         {
           opacity: 0,
           x,
           y,
-          scale: direction === "none" ? 0.95 : 1
+          scale: direction === "none" ? 0.96 : 1
         },
         {
           opacity: 1,
@@ -55,7 +57,7 @@ export const GSAPReveal: React.FC<GSAPRevealProps> = ({
           duration,
           delay,
           stagger: stagger > 0 ? stagger : undefined,
-          ease: "power3.out",
+          ease: "power2.out",
           scrollTrigger: {
             trigger: el,
             start: "top 88%",

@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { GSAPRouteRefresh } from "@/components/ui/GSAPRouteRefresh";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
+import { IntroVideoSplash } from "@/components/ui/IntroVideoSplash";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,6 +65,9 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 selection:bg-cyan-500 selection:text-white">
         <ThemeProvider>
+          {/* Fullscreen AI Video Intro Splash on Website First Visit */}
+          <IntroVideoSplash />
+
           <SmoothScroll>
             <GSAPRouteRefresh />
             <Navbar />

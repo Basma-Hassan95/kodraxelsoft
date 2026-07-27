@@ -14,7 +14,10 @@ import {
   CheckCircle2,
   Send,
   ChevronDown,
-  ShieldCheck
+  ShieldCheck,
+  Sparkles,
+  Volume2,
+  VolumeX
 } from "lucide-react";
 
 function ContactFormContent() {
@@ -190,6 +193,7 @@ function ContactFormContent() {
 
 export default function ContactPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [isContactMuted, setIsContactMuted] = useState(true);
 
   const faqs = [
     {
@@ -230,8 +234,41 @@ export default function ContactPage() {
           </Suspense>
         </GSAPReveal>
 
-        {/* Contact Info Col */}
+        {/* Contact Info & Video 2 Col */}
         <GSAPReveal direction="right" className="lg:col-span-5 space-y-6">
+          
+          {/* 3D Glassmorphic Studio Trust Video Card (Video 2) */}
+          <GlowCard className="p-5">
+            <div className="flex items-center justify-between pb-2 mb-3 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#004d4d] dark:text-cyan-400 uppercase tracking-wider">
+                <Sparkles className="w-4 h-4 text-cyan-400 animate-pulse" />
+                <span>Kodraxelsoft Studio Identity</span>
+              </div>
+              <button
+                onClick={() => setIsContactMuted(!isContactMuted)}
+                className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-cyan-400 transition-colors"
+                aria-label="Toggle Sound"
+              >
+                {isContactMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-cyan-400" />}
+              </button>
+            </div>
+
+            <div className="relative w-full h-48 sm:h-52 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-black shadow-inner">
+              <video
+                src="/video2.mp4"
+                autoPlay
+                loop
+                muted={isContactMuted}
+                playsInline
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 pt-3 leading-relaxed">
+              Engineered by principal software architects. 100% fixed-scope deliverable guarantee backed by NDA protection.
+            </p>
+          </GlowCard>
+
           <GlowCard className="p-6">
             <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Direct Contact Channels</h3>
             <div className="space-y-4 text-xs">

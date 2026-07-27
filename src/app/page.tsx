@@ -33,11 +33,12 @@ export default function HomePage() {
     <div className="space-y-24 md:space-y-36 pb-20 overflow-x-hidden">
       
       {/* 1. HERO SECTION WITH REAL 3D WEBGL INTERACTIVE CANVAS */}
-      <section className="relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden bg-grid-pattern min-h-[85vh] flex items-center justify-center">
-        {/* 3D Three.js WebGL Geometry & Floating Particle Field */}
+      <section className="relative min-h-[90vh] flex items-center justify-center pt-24 pb-12 overflow-hidden">
+        
+        {/* Three.js Dynamic WebGL Wireframe Canvas */}
         <Hero3DCanvas />
 
-        {/* Ambient Glow Spheres */}
+        {/* Ambient Glow Orbs */}
         <div className="pointer-events-none absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#004d4d]/20 rounded-full blur-[140px]" />
         <div className="pointer-events-none absolute top-10 right-10 w-72 h-72 bg-teal-500/10 rounded-full blur-3xl" />
 
@@ -69,6 +70,7 @@ export default function HomePage() {
             </p>
           </GSAPReveal>
 
+          {/* Hero Action Buttons */}
           <GSAPReveal direction="up" delay={0.3}>
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button
@@ -108,7 +110,7 @@ export default function HomePage() {
                   <div className="text-slate-400">&#125;</div>
                 </div>
                 <div className="space-y-2">
-                  <div className="text-cyan-400 font-bold">// 2. 3D WebGL & GSAP Engine</div>
+                  <div className="text-cyan-400 font-bold">// 2. 3D WebGL Engine</div>
                   <div className="text-slate-400">gsap.to(&quot;.hero-3d-node&quot;, &#123;</div>
                   <div className="pl-4 text-sky-400">rotationY: 360, duration: 1.2,</div>
                   <div className="pl-4 text-amber-300">ease: &quot;power3.out&quot;</div>
@@ -140,14 +142,25 @@ export default function HomePage() {
                 Threat Detection SLA
               </div>
             </div>
+
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
-                <AnimatedCounter target={100} suffix="% Senior" />
+              <div className="text-3xl sm:text-4xl font-extrabold text-[#004d4d] dark:text-cyan-400">
+                &lt;<AnimatedCounter target={10} suffix="ms" />
               </div>
               <div className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold mt-1">
-                Principal Architects
+                Neural Inference Latency
               </div>
             </div>
+
+            <div className="text-center">
+              <div className="text-3xl sm:text-4xl font-extrabold text-[#004d4d] dark:text-cyan-400">
+                $<AnimatedCounter target={1.4} decimals={1} suffix="B+" />
+              </div>
+              <div className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold mt-1">
+                Daily Transaction Volume
+              </div>
+            </div>
+
             <div className="text-center">
               <div className="text-3xl sm:text-4xl font-extrabold text-[#004d4d] dark:text-cyan-400">
                 <AnimatedCounter target={100} suffix="/100" />
@@ -156,20 +169,12 @@ export default function HomePage() {
                 Lighthouse Performance
               </div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
-                <AnimatedCounter target={50} prefix="<" suffix="ms" />
-              </div>
-              <div className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold mt-1">
-                Global Edge Latency
-              </div>
-            </div>
           </div>
         </GSAPReveal>
       </section>
 
-      {/* 3. SERVICES / CAPABILITIES STACKED 3D CAROUSEL */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 isolate">
+      {/* 3. CAPABILITIES / SERVICES (Framer Motion Stacked 3D Carousel) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           badgeText="Capabilities"
           title="Architectural Expertise Built for"

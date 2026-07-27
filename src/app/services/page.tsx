@@ -1,14 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
 import { servicesData } from "@/data/services";
-import { Code2, ArrowRight, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { Code2, ArrowRight, ShieldCheck, CheckCircle2, Sparkles, Volume2, VolumeX } from "lucide-react";
 
 export default function ServicesPage() {
+  const [isMuted, setIsMuted] = useState(true);
+
   const techStackList = [
     { category: "Frontend & Motion", techs: ["Next.js 16", "React 19", "TypeScript", "GSAP 3", "Tailwind CSS v4", "Three.js"] },
     { category: "AI & Machine Learning", techs: ["PyTorch", "Python", "LangChain", "Pinecone Vector DB", "FastAPI", "CUDA"] },
@@ -26,6 +28,46 @@ export default function ServicesPage() {
         gradientTitle="Tailored for Scale"
         subtitle="Direct technical execution with zero layers of management. Partner directly with our principal architects to architect high-performance platforms."
       />
+
+      {/* 3D Glassmorphic AI Capabilities Video Showcase Banner (Video 1) */}
+      <GSAPReveal direction="up">
+        <div className="rounded-3xl border border-cyan-500/30 bg-slate-900/90 dark:bg-[#111726]/90 p-6 sm:p-8 backdrop-blur-2xl shadow-2xl overflow-hidden relative group grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div className="lg:col-span-6 space-y-4 relative z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+              <span>AI Capability Motion Reveal</span>
+            </div>
+
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
+              Autonomous AI Neural Graphics & Cloud Motion
+            </h3>
+
+            <p className="text-sm text-slate-300 leading-relaxed">
+              Experience our live AI capability engine rendering next-generation brand graphics, vector AI models, and real-time WebGL streaming.
+            </p>
+          </div>
+
+          <div className="lg:col-span-6 relative w-full h-56 sm:h-64 rounded-2xl overflow-hidden border border-slate-800 bg-black shadow-2xl">
+            <video
+              src="/video1.mp4"
+              autoPlay
+              loop
+              muted={isMuted}
+              playsInline
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <button
+              onClick={() => setIsMuted(!isMuted)}
+              className="absolute top-3 right-3 p-2 rounded-xl bg-slate-950/80 backdrop-blur-md text-slate-300 hover:text-cyan-400 border border-slate-800 transition-colors"
+              aria-label="Toggle Sound"
+            >
+              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-cyan-400" />}
+            </button>
+          </div>
+
+        </div>
+      </GSAPReveal>
 
       {/* Service Pillars Detailed Grid */}
       <div className="space-y-16 py-4">

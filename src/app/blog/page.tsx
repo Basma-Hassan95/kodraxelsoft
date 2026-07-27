@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { GSAPReveal } from "@/components/ui/GSAPReveal";
-import { GlowCard } from "@/components/ui/GlowCard";
+import { ParallaxBlogCard } from "@/components/ui/ParallaxBlogCard";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { SocialCampaignsShowcase } from "@/components/ui/SocialCampaignsShowcase";
@@ -70,56 +70,67 @@ export default function BlogPage() {
         </div>
       </GSAPReveal>
 
-      {/* Staggered Articles Grid */}
-      <GSAPReveal stagger={0.1} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* Staggered Articles Grid with 3D Depth Parallax Pop-Out Cards */}
+      <GSAPReveal stagger={0.1} className="grid grid-cols-1 md:grid-cols-2 gap-8 py-4">
         {filteredPosts.map((post) => (
-          <GlowCard key={post.id} className="h-full flex flex-col justify-between p-6">
-            <div>
-              <div className="relative w-full h-56 rounded-xl overflow-hidden mb-5 border border-slate-200 dark:border-slate-800">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-slate-950/80 backdrop-blur-md text-[10px] font-bold text-cyan-400 border border-cyan-500/30">
-                  {post.category}
-                </span>
-              </div>
+          <ParallaxBlogCard key={post.id} className="h-full">
+            <div className="relative rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#111726] p-6 h-full flex flex-col justify-between overflow-visible shadow-xl transition-all duration-300">
+              
+              {/* Layer 2: Corporate Accent Border Frame */}
+              <div className="parallax-frame absolute inset-0 rounded-2xl pointer-events-none transition-all duration-300" />
 
-              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-2">
-                <span>{post.publishedDate}</span>
-                <span>•</span>
-                <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-[#004d4d] dark:text-cyan-400" /> {post.readTime}</span>
-              </div>
+              <div>
+                {/* Layer 1: Background Cover Image */}
+                <div className="parallax-bg relative w-full h-56 rounded-xl overflow-hidden mb-5 border border-slate-200 dark:border-slate-800">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-slate-950/80 backdrop-blur-md text-[10px] font-bold text-cyan-400 border border-cyan-500/30">
+                    {post.category}
+                  </span>
+                </div>
 
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 leading-snug">{post.title}</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-                {post.excerpt}
-              </p>
-            </div>
+                {/* Layer 3: Foreground Content */}
+                <div className="parallax-content space-y-3">
+                  <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                    <span>{post.publishedDate}</span>
+                    <span>•</span>
+                    <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-[#004d4d] dark:text-cyan-400" /> {post.readTime}</span>
+                  </div>
 
-            {/* Author & CTA Bar */}
-            <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={post.author.avatar} alt={post.author.name} className="w-7 h-7 rounded-full object-cover" />
-                <div className="text-[11px]">
-                  <div className="font-bold text-slate-900 dark:text-slate-100">{post.author.name}</div>
-                  <div className="text-[9px] text-[#004d4d] dark:text-cyan-400">{post.author.role}</div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-snug">{post.title}</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {post.excerpt}
+                  </p>
                 </div>
               </div>
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setActiveArticle(post)}
-                icon={<ArrowRight className="w-3.5 h-3.5" />}
-              >
-                Read Article
-              </Button>
+              {/* Layer 3: Author & CTA Bar */}
+              <div className="parallax-content pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between mt-6">
+                <div className="flex items-center gap-2.5">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={post.author.avatar} alt={post.author.name} className="w-7 h-7 rounded-full object-cover" />
+                  <div className="text-[11px]">
+                    <div className="font-bold text-slate-900 dark:text-slate-100">{post.author.name}</div>
+                    <div className="text-[9px] text-[#004d4d] dark:text-cyan-400">{post.author.role}</div>
+                  </div>
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setActiveArticle(post)}
+                  icon={<ArrowRight className="w-3.5 h-3.5" />}
+                >
+                  Read Article
+                </Button>
+              </div>
+
             </div>
-          </GlowCard>
+          </ParallaxBlogCard>
         ))}
       </GSAPReveal>
 

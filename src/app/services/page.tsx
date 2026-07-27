@@ -24,14 +24,14 @@ export default function ServicesPage() {
         badgeText="Capabilities & Architecture"
         title="Enterprise Engineering Services"
         gradientTitle="Tailored for Scale"
-        subtitle="Direct technical execution with zero layers of management. Partner directly with our 4 principal engineers to architect high-performance platforms."
+        subtitle="Direct technical execution with zero layers of management. Partner directly with our principal architects to architect high-performance platforms."
       />
 
       {/* Service Pillars Detailed Grid */}
-      <div className="space-y-16">
+      <div className="space-y-16 py-4">
         {servicesData.map((service, idx) => (
           <GSAPReveal key={service.id} direction="up" delay={idx * 0.1}>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 p-8 sm:p-10 rounded-3xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#111726] shadow-xl relative overflow-hidden">
+            <div className="service-card-3d grid grid-cols-1 lg:grid-cols-12 gap-8 p-8 sm:p-10 rounded-3xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#111726] shadow-xl relative overflow-visible">
               
               {/* Left Column: Description & Features */}
               <div className="lg:col-span-7 space-y-6">

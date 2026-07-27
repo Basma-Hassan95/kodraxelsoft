@@ -52,8 +52,6 @@ body {
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-
-
 /* Universal Dark Mode High Contrast Rules */
 .dark body {
   background-color: #090d16 !important;
@@ -107,6 +105,114 @@ body {
 }
 html.dark .text-gradient-teal, .dark .text-gradient-teal {
   color: #20b2aa;
+}
+
+/* Service Card Pure CSS 3D Tilt Hover Effect (Desktop Only) */
+@media (hover: hover) and (pointer: fine) {
+  .service-card-3d {
+    transform: perspective(2000px) translate3d(0px, -66px, 198px) rotateX(-55deg) scale3d(0.86, 0.75, 1) translateY(50px);
+    border-radius: 5px;
+    will-change: transform;
+    transition: transform 0.4s ease-in-out;
+    transform-style: preserve-3d;
+  }
+
+  .service-card-3d:hover {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+/* Blog Card 3D Depth Parallax Pop-Out Effect */
+.parallax-blog-card {
+  transform-style: preserve-3d !important;
+  will-change: transform;
+  transition: box-shadow 0.3s ease;
+}
+
+/* Layer 1: Cover Image (Moves Least - TranslateZ 15px) */
+.parallax-blog-card .parallax-bg {
+  transform: translateZ(15px);
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease-out;
+}
+
+/* Layer 2: Corporate Accent Border Frame (Moves Mid Depth - TranslateZ 35px) */
+.parallax-blog-card .parallax-frame {
+  transform: translateZ(35px);
+  border: 2px solid rgba(0, 77, 77, 0.3);
+  box-shadow: 0 0 15px rgba(0, 77, 77, 0.15);
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease-out, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dark .parallax-blog-card .parallax-frame {
+  border-color: rgba(32, 178, 170, 0.4);
+  box-shadow: 0 0 20px rgba(32, 178, 170, 0.25);
+}
+
+/* Layer 3: Foreground Content & Text (Moves Most - TranslateZ 60px) */
+.parallax-blog-card .parallax-content {
+  transform: translateZ(60px);
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease-out;
+}
+
+/* Hover depth pop cues */
+.parallax-blog-card.is-hovered .parallax-frame,
+.parallax-blog-card:hover .parallax-frame {
+  border-color: #004d4d;
+  box-shadow: 0 20px 40px rgba(0, 77, 77, 0.4);
+}
+
+.dark .parallax-blog-card.is-hovered .parallax-frame,
+.dark .parallax-blog-card:hover .parallax-frame {
+  border-color: #20b2aa;
+  box-shadow: 0 20px 40px rgba(32, 178, 170, 0.5);
+}
+
+.parallax-blog-card.is-hovered .parallax-content,
+.parallax-blog-card:hover .parallax-content {
+  transform: translateZ(70px);
+}
+
+/* 3D Slicebox Slider CSS Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.duration-650 {
+  transition-duration: 650ms;
+}
+
+/* Swiper Coverflow Custom Brand Pagination Dots */
+.swiper-pagination-bullet {
+  background: #cbd5e1 !important;
+  opacity: 0.7 !important;
+  transition: all 0.3s ease !important;
+}
+
+.dark .swiper-pagination-bullet {
+  background: #334155 !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: #004d4d !important;
+  width: 24px !important;
+  border-radius: 6px !important;
+  opacity: 1 !important;
+}
+
+.dark .swiper-pagination-bullet-active {
+  background: #20b2aa !important;
 }
 
 /* Ripple Overlay for GSAP Theme Toggle */

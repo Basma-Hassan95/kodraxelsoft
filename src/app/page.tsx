@@ -8,6 +8,8 @@ import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { Hero3DCanvas } from "@/components/ui/Hero3DCanvas";
+import { CaseStudies3DSlider } from "@/components/ui/CaseStudies3DSlider";
+import { CapabilitiesStackedCarousel } from "@/components/ui/CapabilitiesStackedCarousel";
 import { SocialCampaignsShowcase } from "@/components/ui/SocialCampaignsShowcase";
 import { servicesData } from "@/data/services";
 import { projectsData } from "@/data/projects";
@@ -166,8 +168,8 @@ export default function HomePage() {
         </GSAPReveal>
       </section>
 
-      {/* 3. SERVICES OVERVIEW GRID */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* 3. SERVICES / CAPABILITIES STACKED 3D CAROUSEL */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 isolate">
         <SectionHeader
           badgeText="Capabilities"
           title="Architectural Expertise Built for"
@@ -175,43 +177,10 @@ export default function HomePage() {
           subtitle="From zero-downtime microservices to custom LLM agent deployments, we craft software systems engineered for scale."
         />
 
-        <GSAPReveal stagger={0.08} className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {servicesData.map((service) => (
-            <GlowCard key={service.id} className="p-8 h-full flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-[#004d4d]/10 border border-[#006666]/30 flex items-center justify-center text-[#004d4d] dark:text-cyan-400 mb-6">
-                  <Code2 className="w-6 h-6" />
-                </div>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{service.title}</h3>
-                <p className="text-sm font-medium text-[#004d4d] dark:text-cyan-400 mb-4">{service.subtitle}</p>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-                  {service.description}
-                </p>
-                <ul className="space-y-2.5 mb-8">
-                  {service.features.map((feat, fIdx) => (
-                    <li key={fIdx} className="flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300">
-                      <CheckCircle2 className="w-4 h-4 text-[#004d4d] dark:text-cyan-400 shrink-0" />
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                <div className="text-xs font-semibold text-slate-500">
-                  Est. Timeline: <span className="text-slate-900 dark:text-white font-bold">{service.estimatedWeeks}</span>
-                </div>
-                <Link href="/services">
-                  <Button variant="outline" size="sm" icon={<ArrowRight className="w-3.5 h-3.5" />}>
-                    Service Details
-                  </Button>
-                </Link>
-              </div>
-            </GlowCard>
-          ))}
-        </GSAPReveal>
+        <CapabilitiesStackedCarousel />
       </section>
 
-      {/* 4. FEATURED PORTFOLIO SHOWCASE */}
+      {/* 4. FEATURED PORTFOLIO SHOWCASE (3D Slicebox Slider) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           badgeText="Case Studies"
@@ -220,67 +189,9 @@ export default function HomePage() {
           subtitle="Explore selected engineering case studies highlighting performance gains, ROI metrics, and architectural innovation."
         />
 
-        <div className="space-y-12">
-          {featuredProjects.map((project, idx) => (
-            <GSAPReveal key={project.id} direction="up" delay={idx * 0.1}>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-6 sm:p-8 rounded-3xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#111726] shadow-xl overflow-hidden group">
-                
-                {/* Image Col */}
-                <div className="lg:col-span-7 relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 h-72 sm:h-96">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-xs font-semibold text-cyan-400 border border-cyan-500/30">
-                    {project.category}
-                  </div>
-                </div>
-
-                {/* Content Col */}
-                <div className="lg:col-span-5 space-y-5">
-                  <div className="text-xs font-semibold text-[#004d4d] dark:text-cyan-400 uppercase tracking-wider">
-                    {project.client}
-                  </div>
-                  <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
-                    {project.title}
-                  </h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                    {project.description}
-                  </p>
-
-                  {/* Impact Grid */}
-                  <div className="grid grid-cols-3 gap-3 p-4 rounded-xl bg-slate-100 dark:bg-[#090d16] border border-slate-200 dark:border-slate-800">
-                    {project.impactMetrics.map((metric, mIdx) => (
-                      <div key={mIdx} className="text-center">
-                        <div className="text-base font-extrabold text-[#004d4d] dark:text-cyan-400">{metric.value}</div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{metric.label}</div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    {project.technologies.slice(0, 4).map((tech, tIdx) => (
-                      <span key={tIdx} className="px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 text-[11px] font-medium text-slate-700 dark:text-slate-300">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="pt-2">
-                    <Link href="/portfolio">
-                      <Button variant="teal-gradient" size="md" icon={<ArrowRight className="w-4 h-4" />}>
-                        View Case Study
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-
-              </div>
-            </GSAPReveal>
-          ))}
-        </div>
+        <GSAPReveal direction="up">
+          <CaseStudies3DSlider projects={featuredProjects} />
+        </GSAPReveal>
       </section>
 
       {/* 5. SOCIAL MEDIA CAMPAIGNS SHOWCASE */}

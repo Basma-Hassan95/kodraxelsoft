@@ -253,14 +253,14 @@ export default function ContactPage() {
               </button>
             </div>
 
-            <div className="relative w-full h-48 sm:h-52 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-black shadow-inner">
+            <div className="relative w-full aspect-video sm:h-52 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950 shadow-inner flex items-center justify-center">
               <video
                 src="/video2.mp4"
                 autoPlay
                 loop
                 muted={isContactMuted}
                 playsInline
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-contain sm:object-cover group-hover:scale-105 transition-transform duration-500 transform-gpu"
               />
             </div>
             

@@ -36,7 +36,7 @@ export const IntroVideoSplash: React.FC = () => {
       }`}
     >
       {/* Background Video */}
-      <div className="absolute inset-0 z-0 overflow-hidden bg-black">
+      <div className="absolute inset-0 z-0 overflow-hidden bg-slate-950 flex items-center justify-center">
         <video
           ref={videoRef}
           src="/video1.mp4"
@@ -44,7 +44,7 @@ export const IntroVideoSplash: React.FC = () => {
           playsInline
           muted={isMuted}
           onEnded={handleClose}
-          className="w-full h-full object-cover sm:object-contain"
+          className="w-full h-full max-h-screen object-contain transform-gpu transition-all duration-300"
         />
         {/* Subtle Dark Vignette Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/60 pointer-events-none" />

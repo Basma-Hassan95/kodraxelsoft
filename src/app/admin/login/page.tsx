@@ -4,12 +4,10 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
-import { useTheme } from "@/context/ThemeContext";
-import { Lock, Mail, User, ShieldCheck, ArrowRight, UserPlus, LogIn, CheckCircle2, Sun, Moon } from "lucide-react";
+import { Lock, Mail, User, ShieldCheck, ArrowRight, UserPlus, LogIn, CheckCircle2 } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const { theme, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<"signup" | "login">("signup");
 
   // Sign Up Form State
@@ -100,27 +98,6 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-[#070a12] text-slate-900 dark:text-white flex flex-col items-center justify-center p-4 relative overflow-hidden select-none transition-colors duration-300">
       
-      {/* Top Right Theme Toggle Button */}
-      <div className="absolute top-6 right-6 z-20">
-        <button
-          onClick={toggleTheme}
-          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors shadow-md flex items-center gap-2 text-xs font-semibold"
-          aria-label="Toggle Theme"
-        >
-          {theme === "dark" ? (
-            <>
-              <Sun className="w-4 h-4 text-amber-400" />
-              <span>Light Mode</span>
-            </>
-          ) : (
-            <>
-              <Moon className="w-4 h-4 text-slate-700" />
-              <span>Dark Mode</span>
-            </>
-          )}
-        </button>
-      </div>
-
       {/* Ambient Background Glow */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-[#004d4d]/20 rounded-full blur-[140px]" />
 

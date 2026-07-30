@@ -7,12 +7,6 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
 import { Sparkles, ArrowRight } from "lucide-react";
 
-export const LinkedInBrandIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.74a1.6 1.6 0 1 0 1.6 1.6 1.6 1.6 0 0 0-1.6-1.6z" />
-  </svg>
-);
-
 export const InstagramBrandIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
@@ -27,7 +21,7 @@ export const MetaBrandIcon = ({ className = "w-4 h-4" }: { className?: string })
 
 export interface CampaignAd {
   id: string;
-  channel: "LinkedIn" | "Instagram" | "Meta / Facebook";
+  channel: "Instagram" | "Meta / Facebook";
   icon: React.FC<{ className?: string }>;
   tagColor: string;
   badge: string;
@@ -39,22 +33,6 @@ export interface CampaignAd {
 }
 
 export const campaignsData: CampaignAd[] = [
-  {
-    id: "campaign-1",
-    channel: "LinkedIn",
-    icon: LinkedInBrandIcon,
-    tagColor: "bg-blue-600/20 text-blue-500 border-blue-500/30",
-    badge: "LinkedIn Sponsored Executive Brief",
-    title: "Sub-50ms Next.js 16 Edge Architectures for Enterprise Leaders",
-    copy: "Eliminate render bottlenecks with React Server Components & Turbopack. Partner directly with our senior principal architects.",
-    stats: [
-      { label: "Impressions", value: "340K" },
-      { label: "CTR Avg", value: "5.2%" },
-      { label: "Client Match", value: "99.4%" }
-    ],
-    ctaText: "View Campaign Brief",
-    linkUrl: "/services"
-  },
   {
     id: "campaign-2",
     channel: "Instagram",
@@ -96,10 +74,10 @@ export const SocialCampaignsShowcase: React.FC = () => {
         badgeText="Marketing & Media Highlights"
         title="Active Social Media"
         gradientTitle="Campaigns & Ad Showcases"
-        subtitle="Live marketing ad highlights running across Meta, Instagram, and LinkedIn demonstrating Kodraxelsoft's architectural capabilities."
+        subtitle="Live marketing ad highlights running across Meta and Instagram demonstrating Kodraxelsoft's architectural capabilities."
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
         {campaignsData.map((ad, idx) => {
           const Icon = ad.icon;
           return (

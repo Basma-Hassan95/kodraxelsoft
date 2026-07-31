@@ -7,8 +7,15 @@ import { TestimonialItem } from "@/context/AdminDataContext";
 import { Star, Plus, Trash2, Edit3, User, Quote } from "lucide-react";
 
 export default function AdminTestimonialsPage() {
-  const { testimonials, addTestimonial, updateTestimonial, deleteTestimonial } = useAdminData();
+  const {
+    testimonials,
+    addTestimonial,
+    updateTestimonial,
+    deleteTestimonial,
+    moderateTestimonial,
+  } = useAdminData();
   const [editingItem, setEditingItem] = useState<TestimonialItem | null>(null);
+  const [moderating, setModerating] = useState<string | null>(null);
 
   const [clientName, setClientName] = useState("");
   const [role, setRole] = useState("");
@@ -68,9 +75,73 @@ export default function AdminTestimonialsPage() {
           Client Testimonials & Social Proof
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Add, edit, or remove executive client reviews, star ratings (1-5), and client avatars dynamically.
+          Manage reviews. Website submissions stay pending until you Approve — then they show on the homepage.
         </p>
       </div>
+
+      {testimonials.some((t) => t.isApproved === false) && (
+        <GlowCard className="p-4 border border-amber-500/30 bg-amber-500/5">
+          <div className="text-xs font-bold text-amber-600 dark:text-amber-400 mb-2">
+            Pending website reviews (
+            {testimonials.filter((t) => t.isApproved === false).length})
+          </div>
+          <div className="space-y-3">
+            {testimonials
+              .filter((t) => t.isApproved === false)
+              .map((item) => (
+                <div
+                  key={item.id}
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800"
+                >
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold text-slate-900 dark:text-white">
+                      {item.clientName}{" "}
+                      <span className="font-normal text-slate-500">
+                        · {item.company || "Website"}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 line-clamp-2 mt-0.5">
+                      {item.review}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      disabled={moderating === item.id}
+                      onClick={async () => {
+                        setModerating(item.id);
+                        try {
+                          await moderateTestimonial(item.id, true);
+                        } finally {
+                          setModerating(null);
+                        }
+                      }}
+                      className="px-3 py-1.5 rounded-lg text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30"
+                    >
+                      Approve → Home
+                    </button>
+                    <button
+                      type="button"
+                      disabled={moderating === item.id}
+                      onClick={async () => {
+                        setModerating(item.id);
+                        try {
+                          await moderateTestimonial(item.id, false);
+                          await deleteTestimonial(item.id);
+                        } finally {
+                          setModerating(null);
+                        }
+                      }}
+                      className="px-3 py-1.5 rounded-lg text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/30"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </GlowCard>
+      )}
 
       {/* Editor Form */}
       <GlowCard className="p-6 space-y-4">
@@ -152,7 +223,9 @@ export default function AdminTestimonialsPage() {
 
       {/* Testimonials List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {testimonials.map((item) => (
+        {testimonials
+          .filter((t) => t.isApproved !== false)
+          .map((item) => (
           <GlowCard key={item.id} className="p-6 space-y-4 flex flex-col justify-between">
             <div className="space-y-3">
               <div className="flex items-center justify-between">

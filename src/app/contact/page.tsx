@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { GSAPReveal } from "@/components/ui/GSAPReveal";
@@ -19,6 +19,7 @@ import {
   Volume2,
   VolumeX
 } from "lucide-react";
+import { DEFAULT_SITE_SETTINGS } from "@/lib/siteSettings";
 
 function ContactFormContent() {
   const searchParams = useSearchParams();
@@ -32,6 +33,8 @@ function ContactFormContent() {
   const [clientCompany, setClientCompany] = useState("");
   const [projectDetails, setProjectDetails] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const budgetOptions = [
     "$15,000 - $30,000",
@@ -47,15 +50,41 @@ function ContactFormContent() {
     { id: "mobile", name: "Cross-Platform Mobile" }
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (clientName && clientEmail) {
+    if (!(clientName && clientEmail)) return;
+
+    const typeLabel =
+      projectTypesList.find((t) => t.id === projectType)?.name || projectType;
+
+    setSubmitting(true);
+    setSubmitError("");
+
+    try {
+      const { submitPublicOrder } = await import("@/lib/publicContent");
+      await submitPublicOrder({
+        client_name: clientName.trim(),
+        client_email: clientEmail.trim(),
+        client_company: clientCompany.trim() || undefined,
+        project_type: typeLabel,
+        budget: selectedBudget,
+        details: projectDetails.trim() || undefined,
+      });
+
       setFormSubmitted(true);
       confetti({
         particleCount: 120,
         spread: 80,
-        origin: { y: 0.5 }
+        origin: { y: 0.5 },
       });
+    } catch (err) {
+      setSubmitError(
+        err instanceof Error
+          ? err.message
+          : "Could not save your inquiry. Please ensure the CMS API is running and try again."
+      );
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -172,13 +201,26 @@ function ContactFormContent() {
             />
           </div>
 
+          {submitError && (
+            <div className="px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-semibold">
+              {submitError}
+              <div className="mt-1 font-normal text-rose-400/90">
+                Tip: Backend API must be running at{" "}
+                <code className="font-mono">http://localhost:5000</code> (
+                <code className="font-mono">cd backend && npm run dev</code>).
+              </div>
+            </div>
+          )}
+
           <Button
+            type="submit"
             variant="teal-gradient"
             size="lg"
+            disabled={submitting}
             icon={<Send className="w-5 h-5" />}
             className="w-full justify-center"
           >
-            Submit Project Brief
+            {submitting ? "Sending to CMS..." : "Submit Project Brief"}
           </Button>
 
           <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
@@ -194,6 +236,23 @@ function ContactFormContent() {
 export default function ContactPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [isContactMuted, setIsContactMuted] = useState(true);
+  const [settings, setSettings] = useState(DEFAULT_SITE_SETTINGS);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { getSiteSettings } = await import("@/lib/siteSettings");
+        const live = await getSiteSettings();
+        if (!cancelled) setSettings(live);
+      } catch {
+        /* keep defaults */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const faqs = [
     {
@@ -278,8 +337,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <div className="text-slate-500 dark:text-slate-400">General & Client Inquiries</div>
-                  <a href="mailto:hello@kodraxelsoft.com" className="font-bold text-slate-900 dark:text-slate-100 hover:text-[#004d4d] dark:hover:text-cyan-400">
-                    hello@kodraxelsoft.com
+                  <a href={`mailto:${settings.contactEmail}`} className="font-bold text-slate-900 dark:text-slate-100 hover:text-[#004d4d] dark:hover:text-cyan-400">
+                    {settings.contactEmail}
                   </a>
                 </div>
               </div>
@@ -290,7 +349,9 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <div className="text-slate-500 dark:text-slate-400">Architect Direct Desk</div>
-                  <div className="font-bold text-slate-900 dark:text-slate-100">+1 (415) 890-4221</div>
+                  <a href={`tel:${settings.contactPhone.replace(/\s/g, "")}`} className="font-bold text-slate-900 dark:text-slate-100 hover:text-[#004d4d] dark:hover:text-cyan-400">
+                    {settings.contactPhone}
+                  </a>
                 </div>
               </div>
 
@@ -300,7 +361,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <div className="text-slate-500 dark:text-slate-400">Headquarters</div>
-                  <div className="font-bold text-slate-900 dark:text-slate-100">Market Street, Suite 1400, San Francisco, CA</div>
+                  <div className="font-bold text-slate-900 dark:text-slate-100">{settings.address}</div>
                 </div>
               </div>
             </div>
@@ -308,18 +369,18 @@ export default function ContactPage() {
 
           {/* Location Map Teaser Card */}
           <GlowCard className="p-6">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">San Francisco HQ Map</h3>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">{settings.companyName} HQ Map</h3>
             <div className="relative w-full h-44 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://images.unsplash.com/photo-1506146332389-18140dc7b2fb?auto=format&fit=crop&q=80&w=800"
-                alt="San Francisco Map"
+                alt={`${settings.companyName} Map`}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-cyan-950/40 flex items-center justify-center">
                 <div className="px-3 py-1.5 rounded-full bg-slate-950/90 backdrop-blur-md border border-[#006666]/50 text-[11px] font-bold text-cyan-400 flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-cyan-400 animate-bounce" />
-                  <span>KODRAXELSOFT</span>
+                  <span>{settings.companyName.toUpperCase()}</span>
                 </div>
               </div>
             </div>

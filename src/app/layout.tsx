@@ -8,6 +8,8 @@ import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { GSAPRouteRefresh } from "@/components/ui/GSAPRouteRefresh";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
 import { IntroVideoSplash } from "@/components/ui/IntroVideoSplash";
+import { VisitTracker } from "@/components/ui/VisitTracker";
+import { getSiteSettings } from "@/lib/siteSettings";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,27 +21,44 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Kodraxelsoft | Ultra-Premium Software Engineering & AI Studio",
-  description: "Elite software architecture laboratory specializing in Next.js web applications, custom AI model integration, and high-scale cloud infrastructure.",
-  keywords: ["Next.js", "TypeScript", "GSAP", "AI Engineering", "Software Studio", "React Architect"],
-  icons: {
-    icon: "/ks-emblem.jpg",
-    shortcut: "/ks-emblem.jpg",
-    apple: "/ks-emblem.jpg"
-  },
-  openGraph: {
-    title: "Kodraxelsoft | Software Engineering & AI Studio",
-    description: "Architecting sub-50ms web platforms and autonomous AI systems for market leaders.",
-    type: "website"
-  }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const keywords = settings.keywords
+    .split(",")
+    .map((k) => k.trim())
+    .filter(Boolean);
 
-export default function RootLayout({
+  return {
+    title: settings.metaTitle,
+    description: settings.metaDescription,
+    keywords: keywords.length ? keywords : undefined,
+    icons: {
+      icon: "/ks-emblem.jpg",
+      shortcut: "/ks-emblem.jpg",
+      apple: "/ks-emblem.jpg",
+    },
+    openGraph: {
+      title: settings.metaTitle,
+      description: settings.metaDescription,
+      type: "website",
+      images: settings.ogImageUrl ? [{ url: settings.ogImageUrl }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: settings.metaTitle,
+      description: settings.metaDescription,
+      images: settings.ogImageUrl ? [settings.ogImageUrl] : undefined,
+    },
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSiteSettings();
+
   return (
     <html
       lang="en"
@@ -65,15 +84,18 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 selection:bg-cyan-500 selection:text-white">
         <ThemeProvider>
-          {/* Fullscreen AI Video Intro Splash on Website First Visit */}
           <IntroVideoSplash />
+          <VisitTracker />
 
           <SmoothScroll>
             <GSAPRouteRefresh />
             <Navbar />
             <main className="flex-grow pt-24">{children}</main>
-            <Footer />
-            <WhatsAppButton />
+            <Footer settings={settings} />
+            <WhatsAppButton
+              phone={settings.contactPhone}
+              companyName={settings.companyName}
+            />
           </SmoothScroll>
         </ThemeProvider>
       </body>

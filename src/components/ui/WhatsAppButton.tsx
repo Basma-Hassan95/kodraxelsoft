@@ -1,33 +1,37 @@
 "use client";
 
 import React from "react";
+import { DEFAULT_SITE_SETTINGS, toWhatsAppNumber } from "@/lib/siteSettings";
 
-export const WhatsAppButton: React.FC = () => {
-  const phoneNumber = "14158904221"; // Official desk contact
+type WhatsAppButtonProps = {
+  phone?: string;
+  companyName?: string;
+};
+
+export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
+  phone = DEFAULT_SITE_SETTINGS.contactPhone,
+  companyName = DEFAULT_SITE_SETTINGS.companyName,
+}) => {
+  const phoneNumber = toWhatsAppNumber(phone) || toWhatsAppNumber(DEFAULT_SITE_SETTINGS.contactPhone);
   const message = encodeURIComponent(
-    "Hi Kodraxelsoft, I would like to inquire about your elite web and AI services."
+    `Hi ${companyName}, I would like to inquire about your elite web and AI services.`
   );
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex items-center group">
-      {/* Tooltip Label */}
       <span className="mr-3 px-3 py-1.5 rounded-xl bg-slate-900/90 dark:bg-white/90 text-white dark:text-slate-900 text-xs font-bold shadow-xl border border-cyan-500/30 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 pointer-events-none whitespace-nowrap hidden sm:inline-block">
-        Chat with Founders 👋
+        Chat with Founders
       </span>
 
-      {/* Pulsing Outer Glow Ring */}
       <a
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Chat with Kodraxelsoft on WhatsApp"
+        aria-label={`Chat with ${companyName} on WhatsApp`}
         className="relative flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white shadow-2xl shadow-emerald-500/40 hover:scale-110 active:scale-95 transition-all duration-300 focus:outline-none"
       >
-        {/* Pulsing Backdrop Ring */}
         <span className="absolute -inset-1.5 rounded-full bg-emerald-500/40 blur-sm animate-ping pointer-events-none opacity-75" />
-
-        {/* WhatsApp SVG Icon */}
         <svg
           className="w-7 h-7 fill-current relative z-10 drop-shadow-md"
           viewBox="0 0 24 24"

@@ -6,9 +6,11 @@ import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
 import { servicesData } from "@/data/services";
+import { usePublicServices } from "@/hooks/usePublicCms";
 import { Code2, ArrowRight, ShieldCheck, CheckCircle2, Sparkles, Volume2, VolumeX } from "lucide-react";
 
 export default function ServicesPage() {
+  const servicesData = usePublicServices();
   const [isMuted, setIsMuted] = useState(true);
 
   const techStackList = [

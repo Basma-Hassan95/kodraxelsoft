@@ -1,14 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { useAdminData } from "@/context/AdminDataContext";
-import { Settings, Save, CheckCircle2, Globe, Search, Share2 } from "lucide-react";
+import { Save, CheckCircle2, Globe, Search, Share2 } from "lucide-react";
 
 export default function AdminSettingsPage() {
   const { settings, updateSettings } = useAdminData();
   const [formData, setFormData] = useState(settings);
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    setFormData(settings);
+  }, [settings]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +30,7 @@ export default function AdminSettingsPage() {
           Global Site Configuration & SEO Manager
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Dynamically manage Google SEO Metadata, Search Snippets, Social Share Cards, and Studio Contact channels without modifying code.
+          Dynamically manage Google SEO Metadata, Search Snippets, Social Share Cards, and Studio Contact channels. Changes apply live to Footer, Contact page, WhatsApp button, and site SEO.
         </p>
       </div>
 
@@ -34,7 +38,7 @@ export default function AdminSettingsPage() {
         {saved && (
           <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/30">
             <CheckCircle2 className="w-4 h-4" />
-            <span>Site settings & SEO Metadata updated live across all pages!</span>
+            <span>Site settings updated — SEO, Footer, Contact & WhatsApp now use these values.</span>
           </div>
         )}
 
@@ -108,6 +112,19 @@ export default function AdminSettingsPage() {
               <Globe className="w-4 h-4" />
               <span>2. Studio Contact Channels & Location</span>
             </h3>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Company / Brand Name
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.companyName}
+                onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                className="w-full px-3 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 font-semibold"
+              />
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>

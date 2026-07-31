@@ -4,12 +4,10 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
-import { useTheme } from "@/context/ThemeContext";
-import { Lock, Mail, User, ShieldCheck, ArrowRight, UserPlus, LogIn, CheckCircle2, Sun, Moon } from "lucide-react";
+import { Lock, Mail, User, ShieldCheck, ArrowRight, UserPlus, LogIn, CheckCircle2 } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const { theme, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<"signup" | "login">("signup");
 
   // Sign Up Form State
@@ -33,8 +31,8 @@ export default function AdminLoginPage() {
     }
   }, []);
 
-  // Handle Admin Sign Up
-  const handleSignUp = (e: React.FormEvent) => {
+  // Handle Admin Sign Up → bootstrap single admin on backend
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
 
@@ -43,83 +41,76 @@ export default function AdminLoginPage() {
       return;
     }
 
-    if (signUpPassword.length < 4) {
-      setErrorMessage("Password must be at least 4 characters long.");
+    if (signUpPassword.length < 10) {
+      setErrorMessage(
+        "Password must be at least 10 characters with upper, lower, number, and special character."
+      );
       return;
     }
 
-    // Save Admin Credentials
-    const adminCredentials = {
-      name: signUpName,
-      email: signUpEmail,
-      password: signUpPassword,
-      createdAt: new Date().toISOString(),
-    };
-
-    localStorage.setItem("kodraxelsoft_admin_credentials", JSON.stringify(adminCredentials));
-    setSignUpSuccess(true);
-    setLoginEmail(signUpEmail);
-
-    setTimeout(() => {
-      setSignUpSuccess(false);
-      setActiveTab("login");
-    }, 1500);
+    try {
+      const { apiBootstrapAdmin, apiLogin } = await import("@/lib/cmsApi");
+      await apiBootstrapAdmin({
+        name: signUpName,
+        email: signUpEmail,
+        password: signUpPassword,
+      });
+      const session = await apiLogin(signUpEmail, signUpPassword);
+      sessionStorage.setItem("kodraxelsoft_admin_name", session.admin.name);
+      localStorage.setItem("kodraxelsoft_admin_name", session.admin.name);
+      setSignUpSuccess(true);
+      setTimeout(() => router.push("/admin/dashboard"), 800);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Signup failed";
+      // If admin already exists, switch to login
+      if (/already exists|only one admin/i.test(msg)) {
+        setErrorMessage("Admin already exists. Please login instead.");
+        setActiveTab("login");
+        setLoginEmail(signUpEmail);
+        return;
+      }
+      setErrorMessage(`${msg} — Make sure backend is running on port 5000.`);
+    }
   };
 
-  // Handle Admin Login
-  const handleLogin = (e: React.FormEvent) => {
+  // Handle Admin Login → JWT from Express/Supabase
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
 
-    const savedAdminStr = localStorage.getItem("kodraxelsoft_admin_credentials");
-
-    if (savedAdminStr) {
-      const savedAdmin = JSON.parse(savedAdminStr);
-      if (
-        loginEmail.toLowerCase() === savedAdmin.email.toLowerCase() &&
-        loginPassword === savedAdmin.password
-      ) {
-        sessionStorage.setItem("kodraxelsoft_admin_auth", "true");
-        sessionStorage.setItem("kodraxelsoft_admin_name", savedAdmin.name);
-        router.push("/admin/dashboard");
-        return;
-      }
-    }
-
-    // Fallback default master key check
-    if (loginPassword === "admin123" || loginPassword === "kodraxelsoft") {
-      sessionStorage.setItem("kodraxelsoft_admin_auth", "true");
-      sessionStorage.setItem("kodraxelsoft_admin_name", "Principal Architect");
+    try {
+      const { apiLogin } = await import("@/lib/cmsApi");
+      const session = await apiLogin(loginEmail, loginPassword);
+      sessionStorage.setItem("kodraxelsoft_admin_name", session.admin.name);
+      localStorage.setItem("kodraxelsoft_admin_name", session.admin.name);
       router.push("/admin/dashboard");
       return;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Login failed";
+      if (/failed to fetch|network|reach|ECONNREFUSED/i.test(msg)) {
+        setErrorMessage(
+          "Cannot reach CMS API. Start backend: cd backend && npm run dev"
+        );
+        return;
+      }
+      if (/invalid email or password/i.test(msg)) {
+        setErrorMessage(
+          "Wrong password for this admin. Use the password set when admin was first created, or reset it: cd backend && npm run seed:admin -- --reset"
+        );
+        return;
+      }
+      if (/too many|try again later|locked|rate/i.test(msg)) {
+        setErrorMessage(
+          `${msg} — Yeh galat password nahi: security limit lag gayi hai. Backend restart karein (cd backend && npm run dev) phir dubara Sign In.`
+        );
+        return;
+      }
+      setErrorMessage(msg);
     }
-
-    setErrorMessage("Invalid credentials. Please check your email and password.");
   };
 
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-[#070a12] text-slate-900 dark:text-white flex flex-col items-center justify-center p-4 relative overflow-hidden select-none transition-colors duration-300">
-      
-      {/* Top Right Theme Toggle Button */}
-      <div className="absolute top-6 right-6 z-20">
-        <button
-          onClick={toggleTheme}
-          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors shadow-md flex items-center gap-2 text-xs font-semibold"
-          aria-label="Toggle Theme"
-        >
-          {theme === "dark" ? (
-            <>
-              <Sun className="w-4 h-4 text-amber-400" />
-              <span>Light Mode</span>
-            </>
-          ) : (
-            <>
-              <Moon className="w-4 h-4 text-slate-700" />
-              <span>Dark Mode</span>
-            </>
-          )}
-        </button>
-      </div>
 
       {/* Ambient Background Glow */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-[#004d4d]/20 rounded-full blur-[140px]" />
@@ -314,18 +305,12 @@ export default function AdminLoginPage() {
             >
               Sign In to CMS Dashboard
             </Button>
-
-            <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-center">
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                Demo Key Fallback: <span className="text-[#004d4d] dark:text-cyan-400 font-mono font-bold">admin123</span>
-              </div>
-            </div>
           </form>
         )}
 
         <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 border-t border-slate-200 dark:border-slate-800/80 pt-4">
           <ShieldCheck className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
-          <span>256-Bit Encrypted Session Protection</span>
+          <span>HttpOnly secure session · Brute-force lockout · JWT verified</span>
         </div>
 
       </div>

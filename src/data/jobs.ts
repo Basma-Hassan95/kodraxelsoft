@@ -1,7 +1,7 @@
 export interface JobRole {
   id: string;
   title: string;
-  department: "Engineering" | "AI & Data" | "Product & Design" | "Growth";
+  department: string;
   location: string;
   type: string;
   salaryRange: string;

@@ -1,68 +1,65 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { servicesData, Service } from "@/data/services";
 import { projectsData, Project } from "@/data/projects";
 import { blogPosts, BlogPost } from "@/data/blog";
+import type {
+  LeadInquiry,
+  CareerPosition,
+  TestimonialItem,
+  MediaAsset,
+  SiteSettings,
+} from "@/types/admin";
+import { DEFAULT_SITE_SETTINGS } from "@/lib/siteSettings";
+import {
+  apiCreate,
+  apiDelete,
+  apiList,
+  apiPatch,
+  apiUpdate,
+  apiUploadMedia,
+  isUuid,
+  pingCmsApi,
+} from "@/lib/cmsApi";
+import {
+  serviceFromApi,
+  serviceToApi,
+  projectFromApi,
+  projectToApi,
+  blogFromApi,
+  blogToApi,
+  leadFromOrder,
+  leadStatusToApi,
+  careerFromApi,
+  careerToApi,
+  testimonialFromApi,
+  testimonialToApi,
+  mediaFromApi,
+  settingsFromApi,
+  settingsToApi,
+} from "@/lib/cmsMappers";
 
-export interface LeadInquiry {
-  id: string;
-  clientName: string;
-  clientEmail: string;
-  clientCompany: string;
-  projectType: string;
-  selectedBudget: string;
-  projectDetails: string;
-  status: "New" | "Contacted" | "In Progress" | "Closed Won" | "Archived";
-  createdAt: string;
-}
-
-export interface CareerPosition {
-  id: string;
-  title: string;
-  department: string;
-  type: string;
-  location: string;
-  salary: string;
-  description: string;
-  requirements: string[];
-  active: boolean;
-}
-
-export interface TestimonialItem {
-  id: string;
-  clientName: string;
-  role: string;
-  company: string;
-  review: string;
-  rating: number;
-  avatar: string;
-}
-
-export interface MediaAsset {
-  id: string;
-  filename: string;
-  url: string;
-  size: string;
-  type: "image" | "video";
-  uploadedAt: string;
-}
-
-export interface SiteSettings {
-  companyName: string;
-  contactEmail: string;
-  contactPhone: string;
-  address: string;
-  githubUrl: string;
-  linkedinUrl: string;
-  twitterUrl: string;
-  metaTitle: string;
-  metaDescription: string;
-  keywords: string;
-  ogImageUrl: string;
-}
+export type {
+  LeadInquiry,
+  CareerPosition,
+  TestimonialItem,
+  MediaAsset,
+  SiteSettings,
+} from "@/types/admin";
 
 interface AdminDataContextType {
+  loading: boolean;
+  apiConnected: boolean;
+  refreshAll: () => Promise<void>;
+  refreshLeads: () => Promise<void>;
+
   services: Service[];
   projects: Project[];
   blogPosts: BlogPost[];
@@ -71,72 +68,39 @@ interface AdminDataContextType {
   testimonials: TestimonialItem[];
   mediaAssets: MediaAsset[];
   settings: SiteSettings;
-  
-  // CRUD Handlers
-  addService: (service: Service) => void;
-  updateService: (service: Service) => void;
-  deleteService: (id: string) => void;
 
-  addProject: (project: Project) => void;
-  updateProject: (project: Project) => void;
-  deleteProject: (id: string) => void;
+  addService: (service: Service) => Promise<void>;
+  updateService: (service: Service) => Promise<void>;
+  deleteService: (id: string) => Promise<void>;
 
-  addBlogPost: (post: BlogPost) => void;
-  updateBlogPost: (post: BlogPost) => void;
-  deleteBlogPost: (id: string) => void;
+  addProject: (project: Project) => Promise<void>;
+  updateProject: (project: Project) => Promise<void>;
+  deleteProject: (id: string) => Promise<void>;
 
-  updateLeadStatus: (id: string, status: LeadInquiry["status"]) => void;
-  deleteLead: (id: string) => void;
+  addBlogPost: (post: BlogPost) => Promise<void>;
+  updateBlogPost: (post: BlogPost) => Promise<void>;
+  deleteBlogPost: (id: string) => Promise<void>;
 
-  addCareer: (career: CareerPosition) => void;
-  updateCareer: (career: CareerPosition) => void;
-  deleteCareer: (id: string) => void;
+  updateLeadStatus: (id: string, status: LeadInquiry["status"]) => Promise<void>;
+  deleteLead: (id: string) => Promise<void>;
 
-  addTestimonial: (item: TestimonialItem) => void;
-  updateTestimonial: (item: TestimonialItem) => void;
-  deleteTestimonial: (id: string) => void;
+  addCareer: (career: CareerPosition) => Promise<void>;
+  updateCareer: (career: CareerPosition) => Promise<void>;
+  deleteCareer: (id: string) => Promise<void>;
 
-  addMediaAsset: (asset: MediaAsset) => void;
-  deleteMediaAsset: (id: string) => void;
+  addTestimonial: (item: TestimonialItem) => Promise<void>;
+  updateTestimonial: (item: TestimonialItem) => Promise<void>;
+  deleteTestimonial: (id: string) => Promise<void>;
+  moderateTestimonial: (id: string, approve: boolean) => Promise<void>;
 
-  updateSettings: (newSettings: SiteSettings) => void;
+  addMediaAsset: (asset: MediaAsset) => Promise<void | MediaAsset>;
+  uploadMediaFile: (file: File) => Promise<MediaAsset>;
+  deleteMediaAsset: (id: string) => Promise<void>;
+
+  updateSettings: (newSettings: SiteSettings) => Promise<void>;
 }
 
-const defaultLeads: LeadInquiry[] = [
-  {
-    id: "lead-101",
-    clientName: "Jonathan Hayes",
-    clientEmail: "j.hayes@apexfintech.com",
-    clientCompany: "Apex Fintech Partners",
-    projectType: "Next.js Web App",
-    selectedBudget: "$50,000 - $100,000+",
-    projectDetails: "Looking to architect a sub-50ms institutional trading portal with WebGL charts.",
-    status: "New",
-    createdAt: "2026-07-27 18:42"
-  },
-  {
-    id: "lead-102",
-    clientName: "Sarah Lin",
-    clientEmail: "slin@biovanguard.org",
-    clientCompany: "BioVanguard Research",
-    projectType: "AI Model & Multi-Agent",
-    selectedBudget: "$30,000 - $50,000",
-    projectDetails: "Custom PyTorch RAG vector pipeline for analyzing clinical trial publications.",
-    status: "In Progress",
-    createdAt: "2026-07-26 14:15"
-  },
-  {
-    id: "lead-103",
-    clientName: "David Miller",
-    clientEmail: "d.miller@strataloud.io",
-    clientCompany: "Strata Cloud Corp",
-    projectType: "Cloud Infrastructure",
-    selectedBudget: "Custom / Enterprise Scope",
-    projectDetails: "Multi-region Kubernetes cluster auto-scaling across AWS and GCP.",
-    status: "Closed Won",
-    createdAt: "2026-07-25 09:30"
-  }
-];
+const defaultLeads: LeadInquiry[] = [];
 
 const defaultCareers: CareerPosition[] = [
   {
@@ -146,21 +110,15 @@ const defaultCareers: CareerPosition[] = [
     type: "Full-Time",
     location: "San Francisco, CA / Remote",
     salary: "$180,000 - $240,000",
-    description: "Lead the architecture of sub-50ms Next.js 16 App Router platforms with WebGL and GSAP motion.",
-    requirements: ["7+ years React/Next.js experience", "Deep TypeScript & WebGL mastery", "Track record of high-scale apps"],
-    active: true
+    description:
+      "Lead the architecture of sub-50ms Next.js 16 App Router platforms with WebGL and GSAP motion.",
+    requirements: [
+      "7+ years React/Next.js experience",
+      "Deep TypeScript & WebGL mastery",
+      "Track record of high-scale apps",
+    ],
+    active: true,
   },
-  {
-    id: "role-2",
-    title: "AI Research & PyTorch Engineer",
-    department: "Machine Learning Studio",
-    type: "Full-Time",
-    location: "San Francisco, CA",
-    salary: "$190,000 - $250,000",
-    description: "Design custom PyTorch RAG pipelines, fine-tune domain LLMs, and optimize vector search latency.",
-    requirements: ["PyTorch & CUDA proficiency", "Vector DBs (Pinecone, Qdrant)", "FastAPI production deployment"],
-    active: true
-  }
 ];
 
 const defaultTestimonials: TestimonialItem[] = [
@@ -169,94 +127,452 @@ const defaultTestimonials: TestimonialItem[] = [
     clientName: "Marcus Thorne",
     role: "VP of Engineering",
     company: "Velox Global Capital",
-    review: "Kodraxelsoft engineered our high-frequency trading portal in 5 weeks. UI rendering latency dropped by 85% with zero frame stutters.",
+    review:
+      "Kodraxelsoft engineered our high-frequency trading portal in 5 weeks. UI rendering latency dropped by 85%.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80"
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
   },
-  {
-    id: "test-2",
-    clientName: "Elena Rostova",
-    role: "Chief Technology Officer",
-    company: "Aegis CyberCorp",
-    review: "The autonomous AI defense model built by Kodraxelsoft reduced false-positive security alerts by 99.8%. Unbelievable technical precision.",
-    rating: 5,
-    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80"
+];
+
+const defaultSettings: SiteSettings = { ...DEFAULT_SITE_SETTINGS };
+
+const AdminDataContext = createContext<AdminDataContextType | undefined>(
+  undefined
+);
+
+async function safeList<T>(
+  path: string,
+  map: (row: Record<string, unknown>) => T,
+  auth = true,
+  query: Record<string, string | number | boolean | undefined> = {}
+): Promise<T[] | null> {
+  try {
+    const { data } = await apiList<Record<string, unknown>>(
+      path,
+      { limit: 100, ...query },
+      auth
+    );
+    return (data || []).map(map);
+  } catch {
+    return null;
   }
-];
+}
 
-const defaultMediaAssets: MediaAsset[] = [
-  { id: "m-1", filename: "video1.mp4", url: "/video1.mp4", size: "1.51 MB", type: "video", uploadedAt: "2026-07-28" },
-  { id: "m-2", filename: "video2.mp4", url: "/video2.mp4", size: "1.22 MB", type: "video", uploadedAt: "2026-07-28" },
-  { id: "m-3", filename: "ks-emblem.jpg", url: "/ks-emblem.jpg", size: "39.7 KB", type: "image", uploadedAt: "2026-07-26" },
-  { id: "m-4", filename: "logo.jpg", url: "/logo.jpg", size: "39.7 KB", type: "image", uploadedAt: "2026-07-26" }
-];
+export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [loading, setLoading] = useState(true);
+  const [apiConnected, setApiConnected] = useState(false);
 
-const defaultSettings: SiteSettings = {
-  companyName: "Kodraxelsoft Inc.",
-  contactEmail: "hello@kodraxelsoft.com",
-  contactPhone: "+1 (415) 890-4221",
-  address: "Market Street, Suite 1400, San Francisco, CA",
-  githubUrl: "https://github.com",
-  linkedinUrl: "https://linkedin.com",
-  twitterUrl: "https://twitter.com",
-  metaTitle: "Kodraxelsoft | Ultra-Premium Software Engineering & AI Studio",
-  metaDescription: "Elite software architecture laboratory specializing in Next.js web applications, custom AI model integration, and high-scale cloud infrastructure.",
-  keywords: "Next.js 16, AI Engineering, Web Architecture, Sub-50ms SLA, Software Studio",
-  ogImageUrl: "/logo.png"
-};
-
-const AdminDataContext = createContext<AdminDataContextType | undefined>(undefined);
-
-export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [services, setServices] = useState<Service[]>(servicesData);
   const [projects, setProjects] = useState<Project[]>(projectsData);
   const [blogPostsState, setBlogPostsState] = useState<BlogPost[]>(blogPosts);
   const [leads, setLeads] = useState<LeadInquiry[]>(defaultLeads);
   const [careers, setCareers] = useState<CareerPosition[]>(defaultCareers);
-  const [testimonials, setTestimonials] = useState<TestimonialItem[]>(defaultTestimonials);
-  const [mediaAssets, setMediaAssets] = useState<MediaAsset[]>(defaultMediaAssets);
+  const [testimonials, setTestimonials] =
+    useState<TestimonialItem[]>(defaultTestimonials);
+  const [mediaAssets, setMediaAssets] = useState<MediaAsset[]>([]);
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
 
-  // Services Handlers
-  const addService = (service: Service) => setServices((prev) => [service, ...prev]);
-  const updateService = (updated: Service) => setServices((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
-  const deleteService = (id: string) => setServices((prev) => prev.filter((s) => s.id !== id));
+  const refreshAll = useCallback(async () => {
+    setLoading(true);
+    const alive = await pingCmsApi();
+    setApiConnected(alive);
 
-  // Projects Handlers
-  const addProject = (project: Project) => setProjects((prev) => [project, ...prev]);
-  const updateProject = (updated: Project) => setProjects((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
-  const deleteProject = (id: string) => setProjects((prev) => prev.filter((p) => p.id !== id));
+    const [svc, proj, blog, orders, cars, tests, media] = await Promise.all([
+      safeList("/admin/services", serviceFromApi),
+      safeList("/admin/projects", projectFromApi),
+      safeList("/admin/blog", blogFromApi),
+      safeList("/admin/orders", leadFromOrder),
+      safeList("/admin/careers", careerFromApi, true, {
+        sortBy: "created_at",
+        sortOrder: "desc",
+      }),
+      safeList("/admin/testimonials", testimonialFromApi),
+      safeList("/admin/media", mediaFromApi),
+    ]);
 
-  // Blog Handlers
-  const addBlogPost = (post: BlogPost) => setBlogPostsState((prev) => [post, ...prev]);
-  const updateBlogPost = (updated: BlogPost) => setBlogPostsState((prev) => prev.map((b) => (b.id === updated.id ? updated : b)));
-  const deleteBlogPost = (id: string) => setBlogPostsState((prev) => prev.filter((b) => b.id !== id));
+    let settingsMapped: SiteSettings | null = null;
+    try {
+      const { cmsFetch } = await import("@/lib/cmsApi");
+      const { data } = await cmsFetch<Record<string, unknown>>("/admin/settings");
+      settingsMapped = settingsFromApi(data);
+    } catch {
+      try {
+        const { cmsFetch } = await import("@/lib/cmsApi");
+        const { data } = await cmsFetch<Record<string, unknown>>(
+          "/public/settings",
+          {},
+          { auth: false }
+        );
+        settingsMapped = settingsFromApi(data);
+      } catch {
+        settingsMapped = null;
+      }
+    }
 
-  // Leads CRM Handlers
-  const updateLeadStatus = (id: string, status: LeadInquiry["status"]) =>
+    if (svc) setServices(svc.length ? svc : servicesData);
+    if (proj) setProjects(proj.length ? proj : projectsData);
+    if (blog) setBlogPostsState(blog.length ? blog : blogPosts);
+    if (orders) setLeads(orders);
+    if (cars) setCareers(cars.length ? cars : defaultCareers);
+    if (tests) setTestimonials(tests.length ? tests : defaultTestimonials);
+    // Empty DB is valid — do not fall back to fake local media after API success
+    if (media) setMediaAssets(media);
+    if (settingsMapped) setSettings(settingsMapped);
+
+    if (svc || proj || blog || orders) setApiConnected(true);
+    setLoading(false);
+  }, []);
+
+  const refreshLeads = useCallback(async () => {
+    const orders = await safeList("/admin/orders", leadFromOrder);
+    if (orders) {
+      setLeads(orders);
+      setApiConnected(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    void refreshAll();
+  }, [refreshAll]);
+
+  // Poll new contact leads so admin CRM + bell stay live
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      void refreshLeads();
+    }, 5000);
+    const onFocus = () => void refreshLeads();
+    window.addEventListener("focus", onFocus);
+    return () => {
+      window.clearInterval(id);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, [refreshLeads]);
+
+  /* ---- Services ---- */
+  const addService = async (service: Service) => {
+    try {
+      const created = await apiCreate<Record<string, unknown>>(
+        "/admin/services",
+        serviceToApi(service)
+      );
+      setServices((prev) => [serviceFromApi(created), ...prev]);
+    } catch {
+      setServices((prev) => [service, ...prev]);
+    }
+  };
+
+  const updateService = async (updated: Service) => {
+    try {
+      if (isUuid(updated.id)) {
+        const row = await apiUpdate<Record<string, unknown>>(
+          `/admin/services/${updated.id}`,
+          serviceToApi(updated)
+        );
+        setServices((prev) =>
+          prev.map((s) => (s.id === updated.id ? serviceFromApi(row) : s))
+        );
+        return;
+      }
+      const created = await apiCreate<Record<string, unknown>>(
+        "/admin/services",
+        serviceToApi(updated)
+      );
+      setServices((prev) =>
+        prev.map((s) => (s.id === updated.id ? serviceFromApi(created) : s))
+      );
+    } catch {
+      setServices((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+    }
+  };
+
+  const deleteService = async (id: string) => {
+    try {
+      if (isUuid(id)) await apiDelete(`/admin/services/${id}`);
+    } catch {
+      /* local remove anyway */
+    }
+    setServices((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  /* ---- Projects ---- */
+  const addProject = async (project: Project) => {
+    try {
+      const created = await apiCreate<Record<string, unknown>>(
+        "/admin/projects",
+        projectToApi(project)
+      );
+      setProjects((prev) => [projectFromApi(created), ...prev]);
+    } catch {
+      setProjects((prev) => [project, ...prev]);
+    }
+  };
+
+  const updateProject = async (updated: Project) => {
+    try {
+      if (isUuid(updated.id)) {
+        const row = await apiUpdate<Record<string, unknown>>(
+          `/admin/projects/${updated.id}`,
+          projectToApi(updated)
+        );
+        setProjects((prev) =>
+          prev.map((p) => (p.id === updated.id ? projectFromApi(row) : p))
+        );
+        return;
+      }
+      const created = await apiCreate<Record<string, unknown>>(
+        "/admin/projects",
+        projectToApi(updated)
+      );
+      setProjects((prev) =>
+        prev.map((p) => (p.id === updated.id ? projectFromApi(created) : p))
+      );
+    } catch {
+      setProjects((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    }
+  };
+
+  const deleteProject = async (id: string) => {
+    try {
+      if (isUuid(id)) await apiDelete(`/admin/projects/${id}`);
+    } catch {
+      /* */
+    }
+    setProjects((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  /* ---- Blog ---- */
+  const addBlogPost = async (post: BlogPost) => {
+    try {
+      const created = await apiCreate<Record<string, unknown>>(
+        "/admin/blog",
+        blogToApi(post)
+      );
+      setBlogPostsState((prev) => [blogFromApi(created), ...prev]);
+    } catch {
+      setBlogPostsState((prev) => [post, ...prev]);
+    }
+  };
+
+  const updateBlogPost = async (updated: BlogPost) => {
+    try {
+      if (isUuid(updated.id)) {
+        const row = await apiUpdate<Record<string, unknown>>(
+          `/admin/blog/${updated.id}`,
+          blogToApi(updated)
+        );
+        setBlogPostsState((prev) =>
+          prev.map((b) => (b.id === updated.id ? blogFromApi(row) : b))
+        );
+        return;
+      }
+      const created = await apiCreate<Record<string, unknown>>(
+        "/admin/blog",
+        blogToApi(updated)
+      );
+      setBlogPostsState((prev) =>
+        prev.map((b) => (b.id === updated.id ? blogFromApi(created) : b))
+      );
+    } catch {
+      setBlogPostsState((prev) =>
+        prev.map((b) => (b.id === updated.id ? updated : b))
+      );
+    }
+  };
+
+  const deleteBlogPost = async (id: string) => {
+    try {
+      if (isUuid(id)) await apiDelete(`/admin/blog/${id}`);
+    } catch {
+      /* */
+    }
+    setBlogPostsState((prev) => prev.filter((b) => b.id !== id));
+  };
+
+  /* ---- Leads / Orders ---- */
+  const updateLeadStatus = async (id: string, status: LeadInquiry["status"]) => {
+    try {
+      if (isUuid(id)) {
+        await apiPatch(`/admin/orders/${id}/status`, {
+          status: leadStatusToApi(status),
+        });
+      }
+    } catch {
+      /* */
+    }
     setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
-  const deleteLead = (id: string) => setLeads((prev) => prev.filter((l) => l.id !== id));
+  };
 
-  // Careers Handlers
-  const addCareer = (career: CareerPosition) => setCareers((prev) => [career, ...prev]);
-  const updateCareer = (updated: CareerPosition) => setCareers((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
-  const deleteCareer = (id: string) => setCareers((prev) => prev.filter((c) => c.id !== id));
+  const deleteLead = async (id: string) => {
+    try {
+      if (isUuid(id)) await apiDelete(`/admin/orders/${id}`);
+    } catch {
+      /* */
+    }
+    setLeads((prev) => prev.filter((l) => l.id !== id));
+  };
 
-  // Testimonials Handlers
-  const addTestimonial = (item: TestimonialItem) => setTestimonials((prev) => [item, ...prev]);
-  const updateTestimonial = (updated: TestimonialItem) => setTestimonials((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
-  const deleteTestimonial = (id: string) => setTestimonials((prev) => prev.filter((t) => t.id !== id));
+  /* ---- Careers ---- */
+  const addCareer = async (career: CareerPosition) => {
+    try {
+      const created = await apiCreate<Record<string, unknown>>(
+        "/admin/careers",
+        careerToApi(career)
+      );
+      setCareers((prev) => [careerFromApi(created), ...prev]);
+    } catch {
+      setCareers((prev) => [career, ...prev]);
+    }
+  };
 
-  // Media Handlers
-  const addMediaAsset = (asset: MediaAsset) => setMediaAssets((prev) => [asset, ...prev]);
-  const deleteMediaAsset = (id: string) => setMediaAssets((prev) => prev.filter((m) => m.id !== id));
+  const updateCareer = async (updated: CareerPosition) => {
+    try {
+      if (isUuid(updated.id)) {
+        const row = await apiUpdate<Record<string, unknown>>(
+          `/admin/careers/${updated.id}`,
+          careerToApi(updated)
+        );
+        setCareers((prev) =>
+          prev.map((c) => (c.id === updated.id ? careerFromApi(row) : c))
+        );
+        return;
+      }
+      const created = await apiCreate<Record<string, unknown>>(
+        "/admin/careers",
+        careerToApi(updated)
+      );
+      setCareers((prev) =>
+        prev.map((c) => (c.id === updated.id ? careerFromApi(created) : c))
+      );
+    } catch {
+      setCareers((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
+    }
+  };
 
-  // Settings Handler
-  const updateSettings = (newSettings: SiteSettings) => setSettings(newSettings);
+  const deleteCareer = async (id: string) => {
+    try {
+      if (isUuid(id)) await apiDelete(`/admin/careers/${id}`);
+    } catch {
+      /* */
+    }
+    setCareers((prev) => prev.filter((c) => c.id !== id));
+  };
+
+  /* ---- Testimonials ---- */
+  const addTestimonial = async (item: TestimonialItem) => {
+    try {
+      const created = await apiCreate<Record<string, unknown>>(
+        "/admin/testimonials",
+        testimonialToApi(item)
+      );
+      setTestimonials((prev) => [testimonialFromApi(created), ...prev]);
+    } catch {
+      setTestimonials((prev) => [item, ...prev]);
+    }
+  };
+
+  const updateTestimonial = async (updated: TestimonialItem) => {
+    try {
+      if (isUuid(updated.id)) {
+        const row = await apiUpdate<Record<string, unknown>>(
+          `/admin/testimonials/${updated.id}`,
+          testimonialToApi(updated)
+        );
+        setTestimonials((prev) =>
+          prev.map((t) => (t.id === updated.id ? testimonialFromApi(row) : t))
+        );
+        return;
+      }
+      const created = await apiCreate<Record<string, unknown>>(
+        "/admin/testimonials",
+        testimonialToApi(updated)
+      );
+      setTestimonials((prev) =>
+        prev.map((t) => (t.id === updated.id ? testimonialFromApi(created) : t))
+      );
+    } catch {
+      setTestimonials((prev) =>
+        prev.map((t) => (t.id === updated.id ? updated : t))
+      );
+    }
+  };
+
+  const deleteTestimonial = async (id: string) => {
+    try {
+      if (isUuid(id)) await apiDelete(`/admin/testimonials/${id}`);
+    } catch {
+      /* */
+    }
+    setTestimonials((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  const moderateTestimonial = async (id: string, approve: boolean) => {
+    if (!isUuid(id)) return;
+    await apiPatch(`/admin/testimonials/${id}/moderate`, { approve });
+    setTestimonials((prev) =>
+      prev.map((t) =>
+        t.id === id
+          ? { ...t, isApproved: approve, isEnabled: approve }
+          : t
+      )
+    );
+  };
+
+  /* ---- Media ---- */
+  const addMediaAsset = async (asset: MediaAsset) => {
+    const created = await apiCreate<Record<string, unknown>>("/admin/media", {
+      filename: asset.filename,
+      original_name: asset.filename,
+      url: asset.url,
+      media_type: asset.type === "video" ? "video" : "image",
+      folder: "external",
+    });
+    const mapped = mediaFromApi(created);
+    setMediaAssets((prev) => [mapped, ...prev.filter((m) => m.id !== mapped.id)]);
+    return mapped;
+  };
+
+  const uploadMediaFile = async (file: File) => {
+    const row = await apiUploadMedia(file, "uploads");
+    const mapped = mediaFromApi(row as unknown as Record<string, unknown>);
+    setMediaAssets((prev) => [mapped, ...prev.filter((m) => m.id !== mapped.id)]);
+    return mapped;
+  };
+
+  const deleteMediaAsset = async (id: string) => {
+    if (!isUuid(id)) {
+      setMediaAssets((prev) => prev.filter((m) => m.id !== id));
+      return;
+    }
+    await apiDelete(`/admin/media/${id}`);
+    setMediaAssets((prev) => prev.filter((m) => m.id !== id));
+  };
+
+  /* ---- Settings ---- */
+  const updateSettings = async (newSettings: SiteSettings) => {
+    try {
+      const { cmsFetch } = await import("@/lib/cmsApi");
+      const { data } = await cmsFetch<Record<string, unknown>>("/admin/settings", {
+        method: "PUT",
+        body: JSON.stringify(settingsToApi(newSettings)),
+      });
+      const mapped = settingsFromApi(data);
+      if (mapped) setSettings(mapped);
+      else setSettings(newSettings);
+    } catch {
+      setSettings(newSettings);
+    }
+  };
 
   return (
     <AdminDataContext.Provider
       value={{
+        loading,
+        apiConnected,
+        refreshAll,
+        refreshLeads,
         services,
         projects,
         blogPosts: blogPostsState,
@@ -282,7 +598,9 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         addTestimonial,
         updateTestimonial,
         deleteTestimonial,
+        moderateTestimonial,
         addMediaAsset,
+        uploadMediaFile,
         deleteMediaAsset,
         updateSettings,
       }}
@@ -294,6 +612,7 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
 export const useAdminData = () => {
   const context = useContext(AdminDataContext);
-  if (!context) throw new Error("useAdminData must be used within AdminDataProvider");
+  if (!context)
+    throw new Error("useAdminData must be used within AdminDataProvider");
   return context;
 };

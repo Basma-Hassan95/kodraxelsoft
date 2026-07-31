@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { SocialCampaignsShowcase } from "@/components/ui/SocialCampaignsShowcase";
 import { blogPosts, BlogPost } from "@/data/blog";
+import { usePublicBlog } from "@/hooks/usePublicCms";
 import { Search, Clock, ArrowRight } from "lucide-react";
 
 export default function BlogPage() {
+  const blogPosts = usePublicBlog();
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [activeArticle, setActiveArticle] = useState<BlogPost | null>(null);

@@ -11,8 +11,8 @@ import { Hero3DCanvas } from "@/components/ui/Hero3DCanvas";
 import { CaseStudies3DSlider } from "@/components/ui/CaseStudies3DSlider";
 import { CapabilitiesStackedCarousel } from "@/components/ui/CapabilitiesStackedCarousel";
 import { SocialCampaignsShowcase } from "@/components/ui/SocialCampaignsShowcase";
-import { servicesData } from "@/data/services";
-import { projectsData } from "@/data/projects";
+import { HomeTestimonials } from "@/components/ui/HomeTestimonials";
+import { usePublicProjects } from "@/hooks/usePublicCms";
 import {
   Sparkles,
   ArrowRight,
@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 
 export default function HomePage() {
+  const projectsData = usePublicProjects();
   const featuredProjects = projectsData.filter((p) => p.featured);
 
   return (
@@ -203,6 +204,9 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         <SocialCampaignsShowcase />
       </section>
+
+      {/* 5b. CLIENT REVIEWS */}
+      <HomeTestimonials />
 
       {/* 6. DYNAMIC LEAD GENERATION BANNER */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

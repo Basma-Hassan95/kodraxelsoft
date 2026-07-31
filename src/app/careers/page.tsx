@@ -1,45 +1,38 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import Link from "next/link";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
-import { Button } from "@/components/ui/Button";
-import { Modal } from "@/components/ui/Modal";
 import { jobRoles, JobRole } from "@/data/jobs";
-import confetti from "canvas-confetti";
-import { Briefcase, MapPin, DollarSign, CheckCircle2, ArrowRight, Send } from "lucide-react";
+import { usePublicCareers } from "@/hooks/usePublicCms";
+import { Briefcase, MapPin, DollarSign, ArrowRight, CheckCircle2 } from "lucide-react";
 
 export default function CareersPage() {
-  const [activeJobModal, setActiveJobModal] = useState<JobRole | null>(null);
-  const [applicantName, setApplicantName] = useState("");
-  const [applicantEmail, setApplicantEmail] = useState("");
-  const [portfolioUrl, setPortfolioUrl] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const cmsCareers = usePublicCareers();
+  const roles: JobRole[] =
+    cmsCareers.length > 0
+      ? cmsCareers.map((c) => ({
+          id: c.id,
+          title: c.title,
+          department: c.department || "Engineering",
+          location: c.location,
+          type: c.type,
+          salaryRange: c.salary,
+          experience: c.type,
+          description: c.description,
+          responsibilities: c.requirements,
+          requirements: c.requirements,
+          perks: [],
+        }))
+      : jobRoles;
 
-  const handleApply = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (applicantName && applicantEmail) {
-      setSubmitted(true);
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-      setTimeout(() => {
-        setSubmitted(false);
-        setActiveJobModal(null);
-        setApplicantName("");
-        setApplicantEmail("");
-        setPortfolioUrl("");
-      }, 2500);
-    }
-  };
+  const applyHref = (role: JobRole) =>
+    `/careers/apply?career=${encodeURIComponent(role.id)}&title=${encodeURIComponent(role.title)}`;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 py-12">
-      
-      {/* Header */}
       <SectionHeader
         badgeText="Join Kodraxelsoft"
         title="Build the Next Generation of"
@@ -47,7 +40,6 @@ export default function CareersPage() {
         subtitle="Work directly alongside senior principal architects. We are scaling our engineering team with passionate senior engineers, AI researchers, and creative technologists."
       />
 
-      {/* Staggered Perks Banner Grid */}
       <GSAPReveal stagger={0.08} className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <GlowCard className="p-6">
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">100% Remote Flexibility</h3>
@@ -69,111 +61,76 @@ export default function CareersPage() {
         </GlowCard>
       </GSAPReveal>
 
-      {/* Open Roles List */}
       <div className="space-y-8">
-        <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">Current Open Positions ({jobRoles.length})</h2>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+            Current Open Positions ({roles.length})
+          </h2>
+          <Link
+            href="/careers/apply"
+            className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-cyan-500/40 transition-colors"
+          >
+            General application
+          </Link>
+        </div>
 
         <GSAPReveal stagger={0.1} className="space-y-6">
-          {jobRoles.map((role) => (
-            <GlowCard key={role.id} className="p-8">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
-                <div>
+          {roles.map((role) => (
+            <GlowCard key={role.id} className="p-8 space-y-5">
+              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                <div className="min-w-0">
                   <span className="px-2.5 py-1 rounded bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 text-[10px] font-bold uppercase tracking-wider">
-                    {role.department}
+                    {role.type}
                   </span>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-2">{role.title}</h3>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-2">{role.department}</h3>
                   <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mt-2">
-                    <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" /> {role.location}</span>
-                    <span className="flex items-center gap-1"><Briefcase className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" /> {role.type}</span>
-                    <span className="flex items-center gap-1"><DollarSign className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" /> {role.salaryRange}</span>
+                    <span className="flex items-center gap-1">
+                      <MapPin className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" /> {role.location}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Briefcase className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" /> {role.type}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <DollarSign className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" /> {role.salaryRange}
+                    </span>
                   </div>
                 </div>
 
-                <Button
-                  variant="teal-gradient"
-                  size="md"
-                  onClick={() => setActiveJobModal(role)}
-                  icon={<ArrowRight className="w-4 h-4" />}
+                <Link
+                  href={applyHref(role)}
+                  className="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#004d4d] to-cyan-600 hover:from-[#006666] hover:to-cyan-500 shadow-md transition-all active:scale-[0.98]"
                 >
-                  View Role & Apply
-                </Button>
+                  Apply for this role
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
 
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-4 leading-relaxed">
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                 {role.description}
               </p>
+
+              {role.requirements?.length > 0 && (
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#004d4d] dark:text-cyan-400 mb-3">
+                    Requirements
+                  </h4>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {role.requirements.map((req) => (
+                      <li
+                        key={req}
+                        className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-400"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5 text-cyan-500 shrink-0 mt-0.5" />
+                        <span>{req}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </GlowCard>
           ))}
         </GSAPReveal>
       </div>
-
-      {/* Application Modal */}
-      {activeJobModal && (
-        <Modal
-          isOpen={!!activeJobModal}
-          onClose={() => setActiveJobModal(null)}
-          title={`Apply: ${activeJobModal.title}`}
-        >
-          {submitted ? (
-            <div className="text-center py-10 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-8 h-8" />
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Application Received!</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
-                Our engineering team will review your materials and reach out via email within 48 hours.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleApply} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Jane Doe"
-                  value={applicantName}
-                  onChange={(e) => setApplicantName(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl text-sm border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
-                <input
-                  type="email"
-                  required
-                  placeholder="jane@company.com"
-                  value={applicantEmail}
-                  onChange={(e) => setApplicantEmail(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl text-sm border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">GitHub / Portfolio URL</label>
-                <input
-                  type="url"
-                  placeholder="https://github.com/janedoe"
-                  value={portfolioUrl}
-                  onChange={(e) => setPortfolioUrl(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl text-sm border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
-                />
-              </div>
-
-              <div className="pt-4 flex justify-end gap-3">
-                <Button variant="outline" size="sm" onClick={() => setActiveJobModal(null)}>
-                  Cancel
-                </Button>
-                <Button variant="teal-gradient" size="sm" icon={<Send className="w-4 h-4" />}>
-                  Submit Application
-                </Button>
-              </div>
-            </form>
-          )}
-        </Modal>
-      )}
-
     </div>
   );
 }

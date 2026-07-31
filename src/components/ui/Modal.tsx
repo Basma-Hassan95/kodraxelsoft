@@ -6,43 +6,76 @@ import { X } from "lucide-react";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
   children: React.ReactNode;
+  size?: "sm" | "md" | "lg";
+  showHeader?: boolean;
 }
 
-export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+export const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+  size = "md",
+  showHeader = true,
+}) => {
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
+    if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
     };
-  }, [isOpen]);
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
+  const maxWidth =
+    size === "sm" ? "max-w-md" : size === "lg" ? "max-w-3xl" : "max-w-2xl";
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 bg-slate-950/70 backdrop-blur-md animate-fadeIn">
+    <div
+      className="fixed inset-0 z-[80] flex items-center justify-center p-4 sm:p-6 bg-slate-950/70 backdrop-blur-md animate-fadeIn"
+      onClick={onClose}
+      role="presentation"
+    >
       <div
-        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#111726] p-6 sm:p-8 shadow-2xl transition-all animate-scaleUp"
+        role="dialog"
+        aria-modal="true"
+        aria-label={title || "Dialog"}
+        className={`relative w-full ${maxWidth} max-h-[90vh] overflow-y-auto rounded-2xl border border-slate-300/80 dark:border-slate-700/80 bg-white dark:bg-[#111726] p-6 sm:p-8 shadow-2xl transition-all animate-scaleUp`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">{title}</h3>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        {showHeader && (
+          <div className="flex items-center justify-between pb-4 mb-2 border-b border-slate-200 dark:border-slate-800">
+            {title ? (
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                {title}
+              </h3>
+            ) : (
+              <span />
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        )}
 
-        {/* Content */}
-        <div className="mt-6">{children}</div>
+        <div className={showHeader ? "mt-4" : ""}>{children}</div>
       </div>
     </div>
   );

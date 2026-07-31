@@ -1,0 +1,52 @@
+node_modules/
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Keys / credentials
+*.pem
+*.key
+*.p12
+*.pfx
+*.p8
+*.crt
+credentials.json
+service-account*.json
+firebase-adminsdk*.json
+secrets/
+auth.json
+.npmrc
+
+# Cloud local state
+.supabase/
+.vercel/
+supabase/.temp/
+
+# Local runtime
+uploads/
+uploads/tmp/
+*.log
+*.dump
+*.bak
+*.backup
+*.sql.gz
+
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# ---------------------------------------------------------------------------
+# Commit these SQL files (schema / seed — not secrets):
+#   supabase/migrations/*.sql
+#   supabase/seed.sql
+# ---------------------------------------------------------------------------
+!supabase/migrations/
+!supabase/migrations/*.sql
+!supabase/seed.sql

@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { servicesData, Service } from "@/data/services";
+import { Service } from "@/data/services";
+import { usePublicServices } from "@/hooks/usePublicCms";
 import { Button } from "@/components/ui/Button";
 import { Code2, CheckCircle2, ArrowRight } from "lucide-react";
 
@@ -26,6 +27,7 @@ const cardVariant: Variants = {
 };
 
 export const CapabilitiesStackedCarousel: React.FC = () => {
+  const services = usePublicServices();
   const [activeIndex, setActiveIndex] = useState(0);
   const [hovered, setHovered] = useState<number | null>(null);
 
@@ -34,15 +36,22 @@ export const CapabilitiesStackedCarousel: React.FC = () => {
     threshold: 0.15,
   });
 
-  const cardsCount = servicesData.length;
+  const cardsCount = services.length;
 
   // Auto-slide every 5 seconds for desktop/tablet
   useEffect(() => {
+    if (cardsCount < 1) return;
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % cardsCount);
     }, 5000);
     return () => clearInterval(interval);
   }, [cardsCount]);
+
+  useEffect(() => {
+    if (activeIndex >= cardsCount && cardsCount > 0) setActiveIndex(0);
+  }, [cardsCount, activeIndex]);
+
+  if (!services.length) return null;
 
   return (
     <div className="w-full relative py-4 isolate z-10">
@@ -54,7 +63,7 @@ export const CapabilitiesStackedCarousel: React.FC = () => {
         animate={cardInView ? "visible" : "hidden"}
         className="hidden sm:flex relative items-center justify-center h-[520px] sm:h-[480px]"
       >
-        {servicesData.map((card: Service, i: number) => {
+        {services.map((card: Service, i: number) => {
           // Calculate offset position relative to active index
           const offset = (i - activeIndex + cardsCount) % cardsCount;
 
@@ -154,20 +163,20 @@ export const CapabilitiesStackedCarousel: React.FC = () => {
       <div className="hidden sm:block text-center mt-6">
         <AnimatePresence mode="wait">
           <motion.h4
-            key={servicesData[activeIndex].title}
+            key={services[activeIndex].title}
             className="inline-block text-sm font-semibold text-[#004d4d] dark:text-cyan-400 bg-white dark:bg-[#0B0F17] px-5 py-2 rounded-full border border-slate-300 dark:border-slate-800 shadow-md mb-6"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.4 }}
           >
-            Active: {servicesData[activeIndex].title}
+            Active: {services[activeIndex].title}
           </motion.h4>
         </AnimatePresence>
 
         {/* 4 Interactive Dot Indicators */}
         <div className="flex justify-center gap-2.5">
-          {servicesData.map((_, i) => (
+          {services.map((_, i) => (
             <button
               key={i}
               onClick={() => setActiveIndex(i)}
@@ -189,7 +198,7 @@ export const CapabilitiesStackedCarousel: React.FC = () => {
         animate={cardInView ? "visible" : "hidden"}
         className="sm:hidden space-y-6"
       >
-        {servicesData.map((card: Service, i: number) => (
+        {services.map((card: Service, i: number) => (
           <motion.div
             key={card.id}
             variants={cardVariant}

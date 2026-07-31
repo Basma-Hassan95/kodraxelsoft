@@ -1,10 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
+import {
+  MetaAd,
+  loadPublicMetaAds,
+  META_ADS_EVENT,
+} from "@/lib/metaAds";
 import { Sparkles, ArrowRight } from "lucide-react";
 
 export const LinkedInBrandIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
@@ -25,159 +30,134 @@ export const MetaBrandIcon = ({ className = "w-4 h-4" }: { className?: string })
   </svg>
 );
 
-export interface CampaignAd {
-  id: string;
-  channel: "LinkedIn" | "Instagram" | "Meta / Facebook";
-  icon: React.FC<{ className?: string }>;
-  tagColor: string;
-  badge: string;
-  title: string;
-  copy: string;
-  stats: { label: string; value: string }[];
-  ctaText: string;
-  linkUrl: string;
+function channelStyle(channel: string) {
+  if (channel === "LinkedIn") return "bg-blue-600/20 text-blue-500 border-blue-500/30";
+  if (channel === "Instagram") return "bg-pink-600/20 text-pink-500 border-pink-500/30";
+  return "bg-sky-600/20 text-sky-400 border-sky-500/30";
 }
 
-export const campaignsData: CampaignAd[] = [
-  {
-    id: "campaign-1",
-    channel: "LinkedIn",
-    icon: LinkedInBrandIcon,
-    tagColor: "bg-blue-600/20 text-blue-500 border-blue-500/30",
-    badge: "LinkedIn Sponsored Executive Brief",
-    title: "Sub-50ms Next.js 16 Edge Architectures for Enterprise Leaders",
-    copy: "Eliminate render bottlenecks with React Server Components & Turbopack. Partner directly with our senior principal architects.",
-    stats: [
-      { label: "Impressions", value: "340K" },
-      { label: "CTR Avg", value: "5.2%" },
-      { label: "Client Match", value: "99.4%" }
-    ],
-    ctaText: "View Campaign Brief",
-    linkUrl: "/services"
-  },
-  {
-    id: "campaign-2",
-    channel: "Instagram",
-    icon: InstagramBrandIcon,
-    tagColor: "bg-pink-600/20 text-pink-500 border-pink-500/30",
-    badge: "Instagram Creative Reel Highlight",
-    title: "60 FPS GSAP Motion Engineering & UI Micro-Physics",
-    copy: "Transform static browser layouts into fluid interactive experiences. Watch our latest WebGL & GSAP animation design breakdown.",
-    stats: [
-      { label: "Video Views", value: "180K" },
-      { label: "Engagement", value: "98.2%" },
-      { label: "Likes & Shares", value: "14.2K" }
-    ],
-    ctaText: "Watch Ad Breakdown",
-    linkUrl: "/portfolio"
-  },
-  {
-    id: "campaign-3",
-    channel: "Meta / Facebook",
-    icon: MetaBrandIcon,
-    tagColor: "bg-sky-600/20 text-sky-400 border-sky-500/30",
-    badge: "Meta Enterprise Sponsored Ad",
-    title: "Autonomous AI Multi-Agent Orchestrations for Scale",
-    copy: "Empower your business with domain-specific vector memory, custom PyTorch LLM pipelines, and automated zero-hallucination agents.",
-    stats: [
-      { label: "Reach", value: "520K" },
-      { label: "ROI Multiple", value: "4.8x" },
-      { label: "Target CTOs", value: "Fortune 500" }
-    ],
-    ctaText: "Explore AI Case Study",
-    linkUrl: "/about"
-  }
-];
+function ChannelIcon({ channel, className }: { channel: string; className?: string }) {
+  if (channel === "LinkedIn") return <LinkedInBrandIcon className={className} />;
+  if (channel === "Instagram") return <InstagramBrandIcon className={className} />;
+  return <MetaBrandIcon className={className} />;
+}
 
 export const SocialCampaignsShowcase: React.FC = () => {
+  const [ads, setAds] = useState<MetaAd[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  const refresh = async () => {
+    const list = await loadPublicMetaAds();
+    setAds(list);
+    setLoaded(true);
+  };
+
+  useEffect(() => {
+    void refresh();
+    const onUpdate = () => {
+      void refresh();
+    };
+    window.addEventListener(META_ADS_EVENT, onUpdate);
+    window.addEventListener("storage", onUpdate);
+    return () => {
+      window.removeEventListener(META_ADS_EVENT, onUpdate);
+      window.removeEventListener("storage", onUpdate);
+    };
+  }, []);
+
+  if (loaded && ads.length === 0) {
+    return null;
+  }
+
   return (
     <section className="space-y-10">
       <SectionHeader
         badgeText="Marketing & Media Highlights"
         title="Active Social Media"
         gradientTitle="Campaigns & Ad Showcases"
-        subtitle="Live marketing ad highlights running across Meta, Instagram, and LinkedIn demonstrating Kodraxelsoft's architectural capabilities."
+        subtitle="Live marketing ad highlights managed from the Admin CMS — Meta, Instagram, and LinkedIn campaigns."
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {campaignsData.map((ad, idx) => {
-          const Icon = ad.icon;
-          return (
-            <GSAPReveal key={ad.id} direction="up" delay={idx * 0.1}>
-              <GlowCard className="h-full flex flex-col justify-between p-6 group">
-                <div>
-                  {/* Mock Ad Header */}
-                  <div className="flex items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-200 dark:border-slate-800">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center border ${ad.tagColor}`}>
-                        <Icon className="w-4 h-4" />
+        {ads.map((ad, idx) => (
+          <GSAPReveal key={ad.id} direction="up" delay={idx * 0.1}>
+            <GlowCard className="h-full flex flex-col justify-between p-6 group">
+              <div>
+                <div className="flex items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-200 dark:border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center border ${channelStyle(ad.channel)}`}
+                    >
+                      <ChannelIcon channel={ad.channel} className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1">
+                        <span>Kodraxelsoft</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                       </div>
-                      <div>
-                        <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1">
-                          <span>Kodraxelsoft</span>
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                        </div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                          {ad.channel} • Sponsored Campaign
-                        </div>
+                      <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                        {ad.channel} • {ad.badge || "Sponsored Campaign"}
                       </div>
                     </div>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
-                      Live Ad
-                    </span>
                   </div>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                    Live Ad
+                  </span>
+                </div>
 
-                  {/* Mock Ad Visual Solid Matte Canvas */}
-                  <div className="relative w-full h-44 rounded-xl overflow-hidden mb-5 border border-slate-300 dark:border-slate-800 bg-[#0f172a] dark:bg-[#0a0f1d] p-4 flex flex-col justify-between text-white group-hover:scale-[1.02] transition-transform duration-500">
+                <div className="relative w-full h-44 rounded-xl overflow-hidden mb-5 border border-slate-300 dark:border-slate-800 bg-[#0f172a] dark:bg-[#0a0f1d] group-hover:scale-[1.02] transition-transform duration-500">
+                  {ad.image_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={ad.image_url}
+                      alt={ad.title}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  ) : null}
+                  <div
+                    className={`absolute inset-0 p-4 flex flex-col justify-between text-white ${
+                      ad.image_url ? "bg-gradient-to-t from-black/80 via-black/40 to-black/20" : ""
+                    }`}
+                  >
                     <div className="flex justify-between items-start">
                       <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-slate-900/90 border border-slate-700">
-                        {ad.badge}
+                        {ad.badge || "Sponsored"}
                       </span>
                       <Sparkles className="w-4 h-4 text-cyan-400" />
                     </div>
-                    
                     <div>
                       <div className="text-xs font-extrabold tracking-tight text-white drop-shadow-md line-clamp-2">
                         {ad.title}
                       </div>
                       <div className="text-[10px] text-cyan-400 mt-1 font-mono">
-                        SLA: &lt;50ms • Next.js 16 • PyTorch
+                        CMS Managed • Live Campaign
                       </div>
                     </div>
                   </div>
-
-                  {/* Ad Body Copy */}
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                    {ad.copy}
-                  </p>
-
-                  {/* Ad Performance Metrics Chips */}
-                  <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-slate-100 dark:bg-[#090d16] border border-slate-200 dark:border-slate-800 mb-4 text-center">
-                    {ad.stats.map((stat, sIdx) => (
-                      <div key={sIdx}>
-                        <div className="text-xs font-extrabold text-cyan-600 dark:text-cyan-400">{stat.value}</div>
-                        <div className="text-[9px] text-slate-500 dark:text-slate-400 font-medium truncate">{stat.label}</div>
-                      </div>
-                    ))}
-                  </div>
                 </div>
 
-                {/* Ad CTA Link */}
-                <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
-                  <Button
-                    variant="teal-gradient"
-                    size="sm"
-                    icon={<ArrowRight className="w-3.5 h-3.5" />}
-                    onClick={() => (window.location.href = ad.linkUrl)}
-                    className="w-full justify-center text-xs"
-                  >
-                    {ad.ctaText}
-                  </Button>
-                </div>
-              </GlowCard>
-            </GSAPReveal>
-          );
-        })}
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                  {ad.description}
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
+                <Button
+                  variant="teal-gradient"
+                  size="sm"
+                  icon={<ArrowRight className="w-3.5 h-3.5" />}
+                  onClick={() => {
+                    if (ad.link.startsWith("http")) window.open(ad.link, "_blank");
+                    else window.location.href = ad.link;
+                  }}
+                  className="w-full justify-center text-xs"
+                >
+                  {ad.cta_text || "Learn More"}
+                </Button>
+              </div>
+            </GlowCard>
+          </GSAPReveal>
+        ))}
       </div>
     </section>
   );

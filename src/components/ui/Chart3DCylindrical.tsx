@@ -75,13 +75,20 @@ const defaultChartData: Chart3DDataItem[] = [
 ];
 
 export const Chart3DCylindrical: React.FC<Chart3DCylindricalProps> = ({
-  data = defaultChartData
+  data = defaultChartData,
 }) => {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const hasTraffic = data.some((d) => Number(d.actualVal) > 0);
 
   return (
     <div className="w-full space-y-4 select-none">
-      
+      {!hasTraffic && (
+        <p className="text-[11px] text-slate-500 text-center">
+          No visitor traffic recorded yet for this week — numbers will grow as
+          people browse the public site (VisitTracker).
+        </p>
+      )}
+
       {/* 3D Cylinder Chart Container */}
       <div className="relative w-full h-64 sm:h-72 bg-slate-900/60 dark:bg-[#090d16]/80 rounded-2xl border border-slate-300/60 dark:border-slate-800 p-6 flex items-end justify-between gap-2 sm:gap-6 shadow-inner overflow-hidden">
         
@@ -95,7 +102,7 @@ export const Chart3DCylindrical: React.FC<Chart3DCylindricalProps> = ({
 
         {data.map((item, idx) => {
           const isHovered = hoveredIdx === idx;
-          const heightPercent = Math.max(item.value, 15); // Minimum 15% height for 3D visibility
+              const heightPercent = Math.max(item.value, hasTraffic ? 8 : 12);
 
           return (
             <div

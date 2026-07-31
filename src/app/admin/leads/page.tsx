@@ -7,8 +7,10 @@ import { LeadInquiry } from "@/context/AdminDataContext";
 import { Inbox, Trash2, Download, Filter, Mail, Phone, Building, CheckCircle2 } from "lucide-react";
 
 export default function AdminLeadsPage() {
-  const { leads, updateLeadStatus, deleteLead } = useAdminData();
+  const { leads, updateLeadStatus, deleteLead, refreshLeads, apiConnected, loading } =
+    useAdminData();
   const [filterStatus, setFilterStatus] = useState<string>("All");
+  const [refreshing, setRefreshing] = useState(false);
 
   const filteredLeads = filterStatus === "All"
     ? leads
@@ -31,6 +33,15 @@ export default function AdminLeadsPage() {
     a.click();
   };
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await refreshLeads();
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       
@@ -41,18 +52,36 @@ export default function AdminLeadsPage() {
             Client Inquiries & Leads CRM
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Review incoming project briefs from `/contact`, update deal pipeline statuses, and export CSV reports.
+            Live from Supabase `orders` — contact form submissions appear here automatically.
           </p>
         </div>
 
-        <button
-          onClick={handleExportCSV}
-          className="px-4 py-2.5 rounded-xl bg-[#004d4d] hover:bg-[#006666] text-white font-bold text-xs shadow-md transition-colors flex items-center gap-2"
-        >
-          <Download className="w-4 h-4" />
-          <span>Export Leads (CSV)</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => void handleRefresh()}
+            disabled={refreshing || loading}
+            className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 disabled:opacity-50"
+          >
+            {refreshing ? "Refreshing..." : "Refresh"}
+          </button>
+          <button
+            type="button"
+            onClick={handleExportCSV}
+            className="px-4 py-2.5 rounded-xl bg-[#004d4d] hover:bg-[#006666] text-white font-bold text-xs shadow-md transition-colors flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            <span>Export Leads (CSV)</span>
+          </button>
+        </div>
       </div>
+
+      {!apiConnected && (
+        <div className="px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-semibold">
+          CMS API offline or admin not logged in — leads will not sync from the database.
+          Start backend (`cd backend && npm run dev`) and login again.
+        </div>
+      )}
 
       {/* Filter Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2">
@@ -73,6 +102,17 @@ export default function AdminLeadsPage() {
 
       {/* Leads List */}
       <div className="space-y-4">
+        {!loading && filteredLeads.length === 0 && (
+          <GlowCard className="p-10 text-center space-y-2">
+            <Inbox className="w-8 h-8 mx-auto text-slate-400" />
+            <div className="text-sm font-bold text-slate-900 dark:text-white">No leads yet</div>
+            <p className="text-xs text-slate-500 max-w-md mx-auto">
+              Submit the public contact form at `/contact`. New inquiries save to Supabase
+              `orders` and show up here + in the bell notifications.
+            </p>
+          </GlowCard>
+        )}
+
         {filteredLeads.map((lead) => (
           <GlowCard key={lead.id} className="p-6 space-y-4">
             

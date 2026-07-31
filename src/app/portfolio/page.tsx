@@ -7,9 +7,11 @@ import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { projectsData, Project } from "@/data/projects";
+import { usePublicProjects } from "@/hooks/usePublicCms";
 import { ExternalLink, Filter, Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
 
 export default function PortfolioPage() {
+  const projectsData = usePublicProjects();
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [activeModalProject, setActiveModalProject] = useState<Project | null>(null);
 

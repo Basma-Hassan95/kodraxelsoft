@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -31,7 +31,7 @@ export default function AdminLoginPage() {
     }
   }, []);
 
-  // Handle Admin Sign Up ΓåÆ bootstrap single admin on backend
+  // Handle Admin Sign Up → bootstrap single admin on backend
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
@@ -69,11 +69,11 @@ export default function AdminLoginPage() {
         setLoginEmail(signUpEmail);
         return;
       }
-      setErrorMessage(`${msg} ΓÇö Make sure backend is running on port 5000.`);
+      setErrorMessage(`${msg} — Make sure backend is running on port 5000.`);
     }
   };
 
-  // Handle Admin Login ΓåÆ JWT from Express/Supabase
+  // Handle Admin Login → JWT from Express/Supabase
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
@@ -310,7 +310,7 @@ export default function AdminLoginPage() {
 
         <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 border-t border-slate-200 dark:border-slate-800/80 pt-4">
           <ShieldCheck className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
-          <span>HttpOnly secure session ┬╖ Brute-force lockout ┬╖ JWT verified</span>
+          <span>HttpOnly secure session · Brute-force lockout · JWT verified</span>
         </div>
 
       </div>

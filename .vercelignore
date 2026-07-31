@@ -1,0 +1,10 @@
+# Local / heavy paths — not needed for the Next.js frontend deploy
+backend/node_modules
+backend/uploads
+**/node_modules
+.next
+.git
+*.log
+.env
+.env.*
+!.env.example

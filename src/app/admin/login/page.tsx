@@ -64,12 +64,21 @@ export default function AdminLoginPage() {
       const msg = err instanceof Error ? err.message : "Signup failed";
       // If admin already exists, switch to login
       if (/already exists|only one admin/i.test(msg)) {
-        setErrorMessage("Admin already exists. Please login instead.");
+        setErrorMessage(
+          "Admin pehle se maujood hai. Dusre naam se naya admin nahi ban sakta — Sign In use karo (email + password)."
+        );
         setActiveTab("login");
         setLoginEmail(signUpEmail);
         return;
       }
-      setErrorMessage(`${msg} — Make sure backend is running on port 5000.`);
+      if (/bootstrap|BOOTSTRAP_SECRET/i.test(msg)) {
+        setErrorMessage(
+          "Sign Up sirf pehle admin ke liye hai. Agar account pehle se hai to Sign In tab use karo."
+        );
+        setActiveTab("login");
+        return;
+      }
+      setErrorMessage(msg);
     }
   };
 

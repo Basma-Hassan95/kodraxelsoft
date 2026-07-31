@@ -191,14 +191,8 @@ export const authService = {
       );
     }
 
-    // Production: require BOOTSTRAP_SECRET so random visitors cannot claim first admin
-    if (config.isProd && !config.bootstrapKey) {
-      throw new ApiError(
-        403,
-        'Set BOOTSTRAP_SECRET in server env before creating the first admin.'
-      );
-    }
-
+    // If BOOTSTRAP_SECRET is set, require matching X-Bootstrap-Key header.
+    // If not set, first admin signup is still allowed when no admin exists yet.
     if (config.bootstrapKey) {
       const provided = meta.bootstrapKey || '';
       if (provided !== config.bootstrapKey) {
@@ -208,7 +202,10 @@ export const authService = {
 
     const exists = await this.ensureAdminExists();
     if (exists) {
-      throw new ApiError(409, 'Admin already exists. Only one admin is allowed.');
+      throw new ApiError(
+        409,
+        'Admin already exists. Only one admin is allowed — use Sign In (a different name on Sign Up cannot create another admin).'
+      );
     }
 
     const password_hash = await bcrypt.hash(password, 12);

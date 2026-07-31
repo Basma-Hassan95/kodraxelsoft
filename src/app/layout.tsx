@@ -33,21 +33,27 @@ export async function generateMetadata(): Promise<Metadata> {
     description: settings.metaDescription,
     keywords: keywords.length ? keywords : undefined,
     icons: {
-      icon: "/ks-emblem.jpg",
-      shortcut: "/ks-emblem.jpg",
-      apple: "/ks-emblem.jpg",
+      icon: [
+        { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+        { url: "/favicon-16.png", sizes: "16x16", type: "image/png" },
+        { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      ],
+      shortcut: "/favicon.png",
+      apple: "/apple-icon.png",
     },
     openGraph: {
       title: settings.metaTitle,
       description: settings.metaDescription,
       type: "website",
-      images: settings.ogImageUrl ? [{ url: settings.ogImageUrl }] : undefined,
+      images: settings.ogImageUrl
+        ? [{ url: settings.ogImageUrl }]
+        : [{ url: "/logo-512.png", width: 512, height: 512, alt: "Kodraxelsoft" }],
     },
     twitter: {
       card: "summary_large_image",
       title: settings.metaTitle,
       description: settings.metaDescription,
-      images: settings.ogImageUrl ? [settings.ogImageUrl] : undefined,
+      images: settings.ogImageUrl ? [settings.ogImageUrl] : ["/logo-512.png"],
     },
   };
 }

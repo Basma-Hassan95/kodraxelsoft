@@ -50,3 +50,5 @@ Thumbs.db
 !supabase/migrations/
 !supabase/migrations/*.sql
 !supabase/seed.sql
+.vercel
+.env*

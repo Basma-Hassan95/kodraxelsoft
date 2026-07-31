@@ -12,6 +12,7 @@ import { servicesData, type Service } from "@/data/services";
 import { projectsData, type Project } from "@/data/projects";
 import { blogPosts, type BlogPost } from "@/data/blog";
 import type { CareerPosition, TestimonialItem } from "@/types/admin";
+import { testimonialsData } from "@/data/testimonials";
 
 export function usePublicServices() {
   const [services, setServices] = useState<Service[]>(servicesData);
@@ -46,7 +47,7 @@ export function usePublicCareers() {
 }
 
 export function usePublicTestimonials() {
-  const [items, setItems] = useState<TestimonialItem[]>([]);
+  const [items, setItems] = useState<TestimonialItem[]>(testimonialsData);
   useEffect(() => {
     void fetchPublicTestimonials().then(setItems);
   }, []);

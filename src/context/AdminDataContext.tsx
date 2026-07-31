@@ -18,6 +18,7 @@ import type {
   SiteSettings,
 } from "@/types/admin";
 import { DEFAULT_SITE_SETTINGS } from "@/lib/siteSettings";
+import { testimonialsData } from "@/data/testimonials";
 import {
   apiCreate,
   apiDelete,
@@ -121,19 +122,7 @@ const defaultCareers: CareerPosition[] = [
   },
 ];
 
-const defaultTestimonials: TestimonialItem[] = [
-  {
-    id: "test-1",
-    clientName: "Marcus Thorne",
-    role: "VP of Engineering",
-    company: "Velox Global Capital",
-    review:
-      "Kodraxelsoft engineered our high-frequency trading portal in 5 weeks. UI rendering latency dropped by 85%.",
-    rating: 5,
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
-  },
-];
+const defaultTestimonials: TestimonialItem[] = testimonialsData;
 
 const defaultSettings: SiteSettings = { ...DEFAULT_SITE_SETTINGS };
 

@@ -68,6 +68,7 @@ export async function fetchPublicCareers(): Promise<CareerPosition[]> {
 }
 
 export async function fetchPublicTestimonials(): Promise<TestimonialItem[]> {
+  const { testimonialsData } = await import("@/data/testimonials");
   try {
     const { data } = await cmsList<Record<string, unknown>>(
       "/public/testimonials",
@@ -78,7 +79,7 @@ export async function fetchPublicTestimonials(): Promise<TestimonialItem[]> {
   } catch {
     /* seed */
   }
-  return [];
+  return testimonialsData;
 }
 
 export async function fetchPublicSettings(): Promise<SiteSettings | null> {

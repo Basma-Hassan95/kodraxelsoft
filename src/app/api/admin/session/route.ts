@@ -6,6 +6,10 @@ const BACKEND =
   process.env.NEXT_PUBLIC_CMS_API_URL ||
   "http://localhost:5000/api";
 
+function backendLooksLocal(url: string) {
+  return /localhost|127\.0\.0\.1/.test(url);
+}
+
 function cookieOptions(maxAge: number) {
   return {
     httpOnly: true,
@@ -36,6 +40,20 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  if (
+    process.env.NODE_ENV === "production" &&
+    backendLooksLocal(BACKEND)
+  ) {
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          "CMS backend URL missing on Vercel. Set CMS_API_INTERNAL_URL (and NEXT_PUBLIC_CMS_API_URL) to your hosted API, e.g. https://your-api.onrender.com/api — localhost only works on your PC.",
+      },
+      { status: 503 }
+    );
+  }
+
   let upstream: Response;
   try {
     const clientIp =
@@ -56,7 +74,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        message: "Cannot reach CMS API. Start backend: cd backend && npm run dev",
+        message:
+          process.env.NODE_ENV === "production"
+            ? `Cannot reach CMS API at ${BACKEND}. Host the backend and set CMS_API_INTERNAL_URL in Vercel.`
+            : "Cannot reach CMS API. Start backend: cd backend && npm run dev",
       },
       { status: 502 }
     );

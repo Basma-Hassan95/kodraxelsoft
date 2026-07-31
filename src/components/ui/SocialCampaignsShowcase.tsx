@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { GSAPReveal } from "@/components/ui/GSAPReveal";
@@ -96,7 +96,7 @@ export const SocialCampaignsShowcase: React.FC = () => {
                         <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                       </div>
                       <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                        {ad.channel} • {ad.badge || "Sponsored Campaign"}
+                        {ad.channel} ΓÇó {ad.badge || "Sponsored Campaign"}
                       </div>
                     </div>
                   </div>
@@ -130,7 +130,7 @@ export const SocialCampaignsShowcase: React.FC = () => {
                         {ad.title}
                       </div>
                       <div className="text-[10px] text-cyan-400 mt-1 font-mono">
-                        CMS Managed • Live Campaign
+                        CMS Managed ΓÇó Live Campaign
                       </div>
                     </div>
                   </div>

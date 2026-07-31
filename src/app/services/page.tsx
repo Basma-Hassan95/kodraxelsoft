@@ -50,14 +50,14 @@ export default function ServicesPage() {
             </p>
           </div>
 
-          <div className="lg:col-span-6 relative w-full h-56 sm:h-64 rounded-2xl overflow-hidden border border-slate-800 bg-black shadow-2xl">
+          <div className="lg:col-span-6 relative w-full aspect-video sm:h-64 rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-2xl flex items-center justify-center">
             <video
               src="/video1.mp4"
               autoPlay
               loop
               muted={isMuted}
               playsInline
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-contain sm:object-cover group-hover:scale-105 transition-transform duration-500 transform-gpu"
             />
             <button
               onClick={() => setIsMuted(!isMuted)}

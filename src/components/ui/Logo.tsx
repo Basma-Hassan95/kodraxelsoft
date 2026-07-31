@@ -31,7 +31,7 @@ export const Logo: React.FC<LogoProps> = ({ size = "md", className = "" }) => {
         <img
           src="/ks-emblem.png"
           alt="Kodraxelsoft"
-          className="w-full h-full object-contain brightness-0 dark:brightness-0 dark:invert transition-[filter] duration-300"
+          className="w-full h-full object-contain dark:brightness-0 dark:invert transition-[filter] duration-300"
         />
       </div>
 

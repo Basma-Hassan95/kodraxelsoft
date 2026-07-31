@@ -1,10 +1,13 @@
-# Local / heavy paths — not needed for the Next.js frontend deploy
-backend/node_modules
-backend/uploads
-**/node_modules
+# Keep Vercel deploy focused on the Next.js frontend only
+backend
+backend/**
+**/backend/node_modules
+node_modules
 .next
 .git
 *.log
 .env
 .env.*
 !.env.example
+logo-source.png
+logo-trimmed.png

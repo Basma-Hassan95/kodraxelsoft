@@ -25,13 +25,13 @@ export const Logo: React.FC<LogoProps> = ({ size = "md", className = "" }) => {
       className={`inline-flex items-center gap-2.5 group focus:outline-none ${className}`}
     >
       <div
-        className={`relative rounded-xl bg-slate-950 dark:bg-black p-1 shadow-md border border-slate-200/80 dark:border-cyan-500/40 ring-1 ring-black/5 dark:ring-cyan-400/20 group-hover:scale-105 transition-transform duration-300 shrink-0 overflow-hidden ${iconBoxSizes[size]}`}
+        className={`relative rounded-xl bg-white dark:bg-slate-950 p-1 shadow-md border border-slate-200 dark:border-cyan-500/40 ring-1 ring-black/5 dark:ring-cyan-400/20 group-hover:scale-105 transition-transform duration-300 shrink-0 overflow-hidden ${iconBoxSizes[size]}`}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/ks-emblem.png"
           alt="Kodraxelsoft"
-          className="w-full h-full object-contain"
+          className="w-full h-full object-contain brightness-0 dark:brightness-0 dark:invert transition-[filter] duration-300"
         />
       </div>
 

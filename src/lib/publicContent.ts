@@ -8,8 +8,15 @@ import {
   blogFromApi,
   careerFromApi,
   testimonialFromApi,
+  pricingFromApi,
 } from "@/lib/cmsMappers";
-import type { CareerPosition, TestimonialItem, SiteSettings } from "@/types/admin";
+import type {
+  CareerPosition,
+  TestimonialItem,
+  SiteSettings,
+  PricingPlan,
+} from "@/types/admin";
+import { pricingData } from "@/data/pricing";
 
 export async function fetchPublicServices(): Promise<Service[]> {
   try {
@@ -67,6 +74,20 @@ export async function fetchPublicCareers(): Promise<CareerPosition[]> {
   return [];
 }
 
+export async function fetchPublicPricing(): Promise<PricingPlan[]> {
+  try {
+    const { data } = await cmsList<Record<string, unknown>>(
+      "/public/pricing-plans",
+      { limit: 50, sortBy: "display_order", sortOrder: "asc" },
+      false
+    );
+    if (data?.length) return data.map(pricingFromApi);
+  } catch {
+    /* seed */
+  }
+  return pricingData;
+}
+
 export async function fetchPublicTestimonials(): Promise<TestimonialItem[]> {
   const { testimonialsData } = await import("@/data/testimonials");
   try {
@@ -91,6 +112,13 @@ export async function fetchPublicSettings(): Promise<SiteSettings | null> {
   }
 }
 
+export interface PublicOrderMetadata {
+  source?: "service_page" | "pricing_page" | "contact_page";
+  service_slug?: string;
+  service_name?: string;
+  pricing_plan?: string;
+}
+
 export async function submitPublicOrder(payload: {
   client_name: string;
   client_email: string;
@@ -98,6 +126,7 @@ export async function submitPublicOrder(payload: {
   project_type?: string;
   budget?: string;
   details?: string;
+  metadata?: PublicOrderMetadata;
 }) {
   let res: Response;
   try {

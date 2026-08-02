@@ -6,60 +6,93 @@ import { useAdminData } from "@/context/AdminDataContext";
 import { Service } from "@/data/services";
 import { Layers, Plus, Trash2, Edit3, ShieldCheck, CheckCircle2 } from "lucide-react";
 
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
 export default function AdminServicesPage() {
   const { services, addService, updateService, deleteService } = useAdminData();
   const [editingService, setEditingService] = useState<Service | null>(null);
 
   const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
+  const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
   const [weeks, setWeeks] = useState("4");
+  const [basePrice, setBasePrice] = useState("$15,000");
   const [featureInput, setFeatureInput] = useState("");
   const [techInput, setTechInput] = useState("");
+  const [deliverablesInput, setDeliverablesInput] = useState("");
+
+  const resetForm = () => {
+    setTitle("");
+    setSubtitle("");
+    setSlug("");
+    setDescription("");
+    setWeeks("4");
+    setBasePrice("$15,000");
+    setFeatureInput("");
+    setTechInput("");
+    setDeliverablesInput("");
+  };
 
   const handleCreateOrUpdate = (e: React.FormEvent) => {
     e.preventDefault();
-    const features = featureInput ? featureInput.split(",").map((f) => f.trim()) : ["Sub-50ms SLA"];
-    const technologies = techInput ? techInput.split(",").map((t) => t.trim()) : ["Next.js 16", "TypeScript"];
+    const features = featureInput ? featureInput.split(",").map((f) => f.trim()).filter(Boolean) : ["Sub-50ms SLA"];
+    const technologies = techInput ? techInput.split(",").map((t) => t.trim()).filter(Boolean) : ["Next.js 16", "TypeScript"];
+    const deliverables = deliverablesInput
+      ? deliverablesInput.split("\n").map((d) => d.trim()).filter(Boolean)
+      : ["Production Edge Deployment", "Full Source Code"];
 
     if (editingService) {
       updateService({
         ...editingService,
         title,
+        subtitle: subtitle || title,
+        slug: slug || slugify(title) || editingService.id,
         description,
         estimatedWeeks: String(weeks),
+        basePrice,
         features,
-        technologies
+        technologies,
+        deliverables
       });
       setEditingService(null);
     } else {
+      const newId = slug || slugify(title) || `service-${Date.now()}`;
       addService({
-        id: `service-${Date.now()}`,
+        id: newId,
+        slug: newId,
         iconName: "Code",
         title,
-        subtitle: title,
+        subtitle: subtitle || title,
         description,
-        basePrice: "$15,000",
+        basePrice,
         estimatedWeeks: String(weeks),
         features,
         technologies,
-        deliverables: ["Production Edge Deployment", "Full Source Code"]
+        deliverables
       });
     }
 
-    setTitle("");
-    setDescription("");
-    setWeeks("4");
-    setFeatureInput("");
-    setTechInput("");
+    resetForm();
   };
 
   const handleEditClick = (service: Service) => {
     setEditingService(service);
     setTitle(service.title);
+    setSubtitle(service.subtitle);
+    setSlug(service.slug || service.id);
     setDescription(service.description);
     setWeeks(service.estimatedWeeks);
+    setBasePrice(service.basePrice);
     setFeatureInput(service.features.join(", "));
     setTechInput(service.technologies.join(", "));
+    setDeliverablesInput(service.deliverables.join("\n"));
   };
 
   return (
@@ -108,6 +141,43 @@ export default function AdminServicesPage() {
             </div>
           </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Subtitle</label>
+              <input
+                type="text"
+                placeholder="e.g. Ultra-fast, SEO-optimized enterprise platforms"
+                value={subtitle}
+                onChange={(e) => setSubtitle(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Starting Price</label>
+              <input
+                type="text"
+                placeholder="$15,000"
+                value={basePrice}
+                onChange={(e) => setBasePrice(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+              URL Slug <span className="font-normal text-slate-400">(optional — auto-generated from title if left blank)</span>
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. wordpress"
+              value={slug}
+              onChange={(e) => setSlug(slugify(e.target.value))}
+              className="w-full px-3 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
+            />
+          </div>
+
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Service Overview Description *</label>
             <textarea
@@ -144,6 +214,17 @@ export default function AdminServicesPage() {
             </div>
           </div>
 
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Deliverables (One Per Line)</label>
+            <textarea
+              rows={4}
+              placeholder={"Production-ready codebase & repository\nDesign system & component library\n30-day post-launch warranty"}
+              value={deliverablesInput}
+              onChange={(e) => setDeliverablesInput(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
+            />
+          </div>
+
           <div className="flex gap-2">
             <button
               type="submit"
@@ -154,7 +235,10 @@ export default function AdminServicesPage() {
             {editingService && (
               <button
                 type="button"
-                onClick={() => setEditingService(null)}
+                onClick={() => {
+                  setEditingService(null);
+                  resetForm();
+                }}
                 className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs"
               >
                 Cancel
@@ -169,12 +253,16 @@ export default function AdminServicesPage() {
         {services.map((service) => (
           <GlowCard key={service.id} className="p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-2 max-w-2xl">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="px-2.5 py-0.5 rounded-md bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 text-[10px] font-bold uppercase">
                   {service.estimatedWeeks} Weeks Sprint
                 </span>
+                <span className="px-2.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold">
+                  {service.basePrice}
+                </span>
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white">{service.title}</h3>
               </div>
+              <p className="text-[10px] font-mono text-slate-400">/services/{service.slug || service.id}</p>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{service.description}</p>
               
               <div className="flex flex-wrap gap-1.5 pt-1">

@@ -6,9 +6,10 @@ interface GlowCardProps {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
+  id?: string;
 }
 
-export const GlowCard: React.FC<GlowCardProps> = ({ children, className = "", onClick }) => {
+export const GlowCard: React.FC<GlowCardProps> = ({ children, className = "", onClick, id }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [mousePos, setMousePos] = useState({ x: -200, y: -200 });
   const [transformStyle, setTransformStyle] = useState("");
@@ -43,6 +44,7 @@ export const GlowCard: React.FC<GlowCardProps> = ({ children, className = "", on
 
   return (
     <div
+      id={id}
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}

@@ -7,12 +7,14 @@ import {
   fetchPublicBlog,
   fetchPublicCareers,
   fetchPublicTestimonials,
+  fetchPublicPricing,
 } from "@/lib/publicContent";
 import { servicesData, type Service } from "@/data/services";
 import { projectsData, type Project } from "@/data/projects";
 import { blogPosts, type BlogPost } from "@/data/blog";
-import type { CareerPosition, TestimonialItem } from "@/types/admin";
+import type { CareerPosition, TestimonialItem, PricingPlan } from "@/types/admin";
 import { testimonialsData } from "@/data/testimonials";
+import { pricingData } from "@/data/pricing";
 
 export function usePublicServices() {
   const [services, setServices] = useState<Service[]>(servicesData);
@@ -52,4 +54,12 @@ export function usePublicTestimonials() {
     void fetchPublicTestimonials().then(setItems);
   }, []);
   return items;
+}
+
+export function usePublicPricing() {
+  const [plans, setPlans] = useState<PricingPlan[]>(pricingData);
+  useEffect(() => {
+    void fetchPublicPricing().then(setPlans);
+  }, []);
+  return plans;
 }

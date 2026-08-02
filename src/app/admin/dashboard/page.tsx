@@ -464,10 +464,19 @@ export default function AdminDashboardPage() {
                 {recentLeads.map((lead) => (
                   <tr
                     key={lead.id}
-                    className="hover:bg-slate-100/50 dark:hover:bg-slate-900/50 transition-colors"
+                    className="hover:bg-slate-100/50 dark:hover:bg-slate-900/50 transition-colors cursor-pointer"
+                    onClick={() => {
+                      window.location.href = `/admin/leads/${lead.id}`;
+                    }}
                   >
                     <td className="py-3 font-bold text-slate-900 dark:text-white">
-                      {lead.clientName}
+                      <Link
+                        href={`/admin/leads/${lead.id}`}
+                        className="hover:text-[#004d4d] dark:hover:text-cyan-400"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {lead.clientName}
+                      </Link>
                     </td>
                     <td className="py-3 text-slate-600 dark:text-slate-400">
                       {lead.clientCompany}

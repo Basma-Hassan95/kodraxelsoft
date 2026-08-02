@@ -17,13 +17,29 @@ import {
   ShieldCheck,
   Sparkles,
   Volume2,
-  VolumeX
+  VolumeX,
+  Briefcase
 } from "lucide-react";
 import { DEFAULT_SITE_SETTINGS } from "@/lib/siteSettings";
 
+const SERVICE_SLUG_TO_TYPE: Record<string, string> = {
+  "web-architecture": "web",
+  "ai-integration": "ai",
+  "cloud-infrastructure": "cloud",
+  "mobile-enterprise": "mobile",
+  "ai-automation": "ai-automation",
+  wordpress: "wordpress",
+  "custom-software": "saas"
+};
+
 function ContactFormContent() {
   const searchParams = useSearchParams();
-  const initialType = searchParams ? searchParams.get("type") || "web" : "web";
+  const serviceSlug = searchParams ? searchParams.get("service") || "" : "";
+  const serviceName = searchParams ? searchParams.get("serviceName") || "" : "";
+  const pricingPlan = searchParams ? searchParams.get("plan") || "" : "";
+  const initialType = searchParams
+    ? searchParams.get("type") || SERVICE_SLUG_TO_TYPE[serviceSlug] || "web"
+    : "web";
   const initialBudget = searchParams ? searchParams.get("budget") || "$15,000 - $30,000" : "$15,000 - $30,000";
 
   const [projectType, setProjectType] = useState<string>(initialType);
@@ -31,7 +47,11 @@ function ContactFormContent() {
   const [clientName, setClientName] = useState("");
   const [clientEmail, setClientEmail] = useState("");
   const [clientCompany, setClientCompany] = useState("");
-  const [projectDetails, setProjectDetails] = useState("");
+  const [projectDetails, setProjectDetails] = useState(
+    serviceName
+      ? `I'm interested in: ${serviceName}${pricingPlan ? ` (${pricingPlan} plan)` : ""}. `
+      : ""
+  );
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -47,7 +67,10 @@ function ContactFormContent() {
     { id: "web", name: "Next.js Web App" },
     { id: "ai", name: "AI Model & Multi-Agent" },
     { id: "cloud", name: "Cloud Infrastructure" },
-    { id: "mobile", name: "Cross-Platform Mobile" }
+    { id: "mobile", name: "Cross-Platform Mobile" },
+    { id: "ai-automation", name: "AI Automation" },
+    { id: "wordpress", name: "WordPress Development" },
+    { id: "saas", name: "Custom Software / SaaS" }
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,6 +92,16 @@ function ContactFormContent() {
         project_type: typeLabel,
         budget: selectedBudget,
         details: projectDetails.trim() || undefined,
+        metadata: {
+          source: pricingPlan
+            ? "pricing_page"
+            : serviceSlug
+              ? "service_page"
+              : "contact_page",
+          service_slug: serviceSlug || undefined,
+          service_name: serviceName || undefined,
+          pricing_plan: pricingPlan || undefined,
+        },
       });
 
       setFormSubmitted(true);
@@ -105,13 +138,40 @@ function ContactFormContent() {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
-          
+
+          {(serviceName || pricingPlan) && (
+            <div className="flex items-start gap-3 p-4 rounded-xl bg-[#004d4d]/10 border border-[#004d4d]/30 text-[#004d4d] dark:text-cyan-400">
+              <Briefcase className="w-4 h-4 mt-0.5 shrink-0" />
+              <div className="text-xs font-semibold leading-relaxed space-y-1">
+                {serviceName ? (
+                  <p>
+                    You came through:{" "}
+                    <span className="font-extrabold">{serviceName}</span>
+                    {serviceSlug === "wordpress" ||
+                    /wordpress/i.test(serviceName) ? (
+                      <span className="font-bold"> (WordPress service inquiry)</span>
+                    ) : null}
+                  </p>
+                ) : null}
+                {pricingPlan ? (
+                  <p>
+                    Pricing plan selected:{" "}
+                    <span className="font-extrabold">{pricingPlan}</span>
+                  </p>
+                ) : null}
+                <p className="text-[11px] opacity-80 font-medium">
+                  Our team will see this source on your inquiry so we can tailor the reply.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* 1. Project Type Chips */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-[#004d4d] dark:text-cyan-400 mb-3">
               1. Select Primary Architecture Type
             </label>
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
               {projectTypesList.map((type) => (
                 <button
                   key={type.id}

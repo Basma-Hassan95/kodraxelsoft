@@ -168,7 +168,7 @@ export const AdminHeader: React.FC = () => {
       for (const order of inbox?.pendingOrders || []) {
         incoming.push({
           id: `lead-${order.id}`,
-          href: "/admin/leads",
+          href: `/admin/leads/${order.id}`,
           title: `New lead: ${order.client_name}`,
           body: `${order.project_type || "Project"} · ${order.budget || "Budget TBD"} · ${order.client_email}`,
           createdAt: order.created_at || new Date().toISOString(),
@@ -238,7 +238,7 @@ export const AdminHeader: React.FC = () => {
     for (const l of leads.filter((x) => x.status === "New").slice(0, 20)) {
       incoming.push({
         id: `lead-${l.id}`,
-        href: "/admin/leads",
+        href: `/admin/leads/${l.id}`,
         title: `New lead: ${l.clientName}`,
         body: `${l.projectType || "Project"} · ${l.selectedBudget || "Budget TBD"} · ${l.clientEmail}`,
         createdAt: l.createdAt || new Date().toISOString(),
@@ -289,7 +289,7 @@ export const AdminHeader: React.FC = () => {
 
   const searchIcon = (category: string) => {
     if (category === "Services") return <Layers className="w-3.5 h-3.5" />;
-    if (category === "Case Studies") return <Briefcase className="w-3.5 h-3.5" />;
+    if (category === "Projects" || category === "Case Studies") return <Briefcase className="w-3.5 h-3.5" />;
     if (category === "Blog") return <PenTool className="w-3.5 h-3.5" />;
     if (category === "Leads") return <Inbox className="w-3.5 h-3.5" />;
     if (category === "Careers") return <Users className="w-3.5 h-3.5" />;

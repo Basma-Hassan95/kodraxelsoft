@@ -19,6 +19,7 @@ import {
   ChevronRight,
   Eye,
   Megaphone,
+  Tag,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { apiLogout, clearAdminToken } from "@/lib/cmsApi";
@@ -37,7 +38,8 @@ export const adminMenuItems: AdminMenuItem[] = [
   { name: "Meta Ads", href: "/admin/meta-ads", icon: Megaphone, badge: "Ads" },
   { name: "Media Library", href: "/admin/media", icon: Folder },
   { name: "Services", href: "/admin/services", icon: Layers },
-  { name: "Case Studies", href: "/admin/portfolio", icon: Briefcase },
+  { name: "Pricing Plans", href: "/admin/pricing", icon: Tag },
+  { name: "Projects", href: "/admin/portfolio", icon: Briefcase },
   { name: "Blog Posts", href: "/admin/blog", icon: PenTool },
   { name: "Leads CRM", href: "/admin/leads", icon: Inbox },
   { name: "Careers & Hiring", href: "/admin/careers", icon: Users },

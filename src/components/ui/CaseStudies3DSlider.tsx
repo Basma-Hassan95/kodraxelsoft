@@ -12,8 +12,10 @@ export interface CaseStudyProject {
   category: string;
   description: string;
   image: string;
+  videoUrl?: string;
   impactMetrics: { label: string; value: string }[];
   technologies: string[];
+  /** External live site URL — opens in new tab with a short lag */
   link?: string;
 }
 
@@ -77,6 +79,49 @@ export const CaseStudies3DSlider: React.FC<CaseStudies3DSliderProps> = ({ projec
   const currentImage = projects[currentIndex].image;
   const nextImage = projects[nextIndex].image;
 
+  const handleOpenProject = () => {
+    const url = activeProject.link;
+    if (!url) {
+      window.location.href = `/portfolio#${activeProject.id}`;
+      return;
+    }
+    // Brief lag so the click feels intentional / premium
+    setIsFadingDetails(true);
+    window.setTimeout(() => {
+      window.open(url, "_blank", "noopener,noreferrer");
+      setIsFadingDetails(false);
+    }, 420);
+  };
+
+  const MediaFace = ({
+    image,
+    videoUrl,
+    bgYPercent,
+  }: {
+    image: string;
+    videoUrl?: string;
+    bgYPercent: number;
+  }) =>
+    videoUrl ? (
+      <video
+        src={videoUrl}
+        muted
+        loop
+        autoPlay
+        playsInline
+        poster={image}
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+    ) : (
+      <div
+        className="absolute inset-0 backface-hidden bg-cover bg-no-repeat"
+        style={{
+          backgroundImage: `url(${image})`,
+          backgroundPosition: `center ${bgYPercent}%`,
+        }}
+      />
+    );
+
   // 4 Horizontal Slices for 3D Cube Rotation
   const slices = [0, 1, 2, 3];
 
@@ -113,48 +158,76 @@ export const CaseStudies3DSlider: React.FC<CaseStudies3DSliderProps> = ({ projec
                           : "rotateX(0deg)",
                       }}
                     >
-                      {/* Front Face: Current Image Segment */}
+                      {/* Front Face */}
                       <div
-                        className="absolute inset-0 backface-hidden bg-cover bg-no-repeat"
-                        style={{
-                          backgroundImage: `url(${currentImage})`,
-                          backgroundPosition: `center ${bgYPercent}%`,
-                          transform: "translateZ(144px)",
-                        }}
-                      />
+                        className="absolute inset-0 backface-hidden overflow-hidden"
+                        style={{ transform: "translateZ(144px)" }}
+                      >
+                        <MediaFace
+                          image={currentImage}
+                          videoUrl={
+                            sliceIdx === 0
+                              ? projects[currentIndex]?.videoUrl
+                              : undefined
+                          }
+                          bgYPercent={bgYPercent}
+                        />
+                      </div>
 
-                      {/* Top/Bottom Face: Next Image Segment */}
+                      {/* Next Face */}
                       <div
-                        className="absolute inset-0 backface-hidden bg-cover bg-no-repeat"
+                        className="absolute inset-0 backface-hidden overflow-hidden"
                         style={{
-                          backgroundImage: `url(${nextImage})`,
-                          backgroundPosition: `center ${bgYPercent}%`,
                           transform:
                             direction === "next"
                               ? "rotateX(90deg) translateZ(144px)"
                               : "rotateX(-90deg) translateZ(144px)",
                         }}
-                      />
+                      >
+                        <MediaFace
+                          image={nextImage}
+                          videoUrl={
+                            sliceIdx === 0
+                              ? projects[nextIndex]?.videoUrl
+                              : undefined
+                          }
+                          bgYPercent={bgYPercent}
+                        />
+                      </div>
                     </div>
                   </div>
                 );
               })}
             </div>
           ) : (
-            /* Mobile: Smooth Cross-Fade Image Fallback */
+            /* Mobile: image or video */
             <div className="relative w-full h-full">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={activeProject.image}
-                alt={activeProject.title}
-                className="w-full h-full object-cover transition-opacity duration-400"
-              />
+              {activeProject.videoUrl ? (
+                <video
+                  key={activeProject.id}
+                  src={activeProject.videoUrl}
+                  poster={activeProject.image}
+                  muted
+                  loop
+                  autoPlay
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={activeProject.image}
+                  alt={activeProject.title}
+                  className="w-full h-full object-cover transition-opacity duration-400"
+                />
+              )}
             </div>
           )}
 
           {/* Category Tag Overlay */}
           <div className="absolute top-4 left-4 z-20 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-xs font-semibold text-cyan-400 border border-cyan-500/30 shadow-md">
             {activeProject.category}
+            {activeProject.videoUrl ? " · Video" : ""}
           </div>
 
           {/* Next / Prev Navigation Arrow Buttons */}
@@ -224,19 +297,29 @@ export const CaseStudies3DSlider: React.FC<CaseStudies3DSliderProps> = ({ projec
             ))}
           </div>
 
-          {/* CTA Link Button */}
-          <div className="pt-2">
-            <Link href={activeProject.link || `/portfolio#${activeProject.id}`}>
-              <Button variant="teal-gradient" size="md" icon={<ArrowRight className="w-4 h-4" />}>
-                View Case Study
-              </Button>
-            </Link>
+          {/* CTA — opens live site with lag, or portfolio fallback */}
+          <div className="pt-2 flex flex-wrap gap-2">
+            <Button
+              variant="teal-gradient"
+              size="md"
+              icon={<ArrowRight className="w-4 h-4" />}
+              onClick={handleOpenProject}
+            >
+              {activeProject.link ? "Open Live Project" : "View Case Study"}
+            </Button>
+            {activeProject.link && (
+              <Link href={`/portfolio#${activeProject.id}`}>
+                <Button variant="outline" size="md">
+                  Case details
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 
       </div>
 
-      {/* Interactive 3-Dot Slider Indicators */}
+      {/* Interactive Slider Indicators */}
       <div className="flex items-center justify-center gap-2.5 pt-2">
         {projects.map((proj, idx) => (
           <button

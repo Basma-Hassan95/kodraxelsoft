@@ -1,10 +1,35 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { useAdminData } from "@/context/AdminDataContext";
 import { LeadInquiry } from "@/context/AdminDataContext";
-import { Inbox, Trash2, Download, Filter, Mail, Phone, Building, CheckCircle2 } from "lucide-react";
+import {
+  Inbox,
+  Trash2,
+  Download,
+  Mail,
+  Building,
+  Briefcase,
+  ChevronRight,
+} from "lucide-react";
+
+function leadSourceLabel(lead: LeadInquiry): string | null {
+  const m = lead.metadata;
+  if (!m) return null;
+  if (m.service_name && m.source === "service_page") {
+    return `Came via service: ${m.service_name}`;
+  }
+  if (m.pricing_plan && m.source === "pricing_page") {
+    return `Came via pricing: ${m.pricing_plan}`;
+  }
+  if (m.service_name) return `Service: ${m.service_name}`;
+  if (m.pricing_plan) return `Pricing: ${m.pricing_plan}`;
+  if (m.source === "service_page") return "Came via Services page";
+  if (m.source === "pricing_page") return "Came via Pricing page";
+  return null;
+}
 
 export default function AdminLeadsPage() {
   const { leads, updateLeadStatus, deleteLead, refreshLeads, apiConnected, loading } =
@@ -17,11 +42,11 @@ export default function AdminLeadsPage() {
     : leads.filter((l) => l.status === filterStatus);
 
   const handleExportCSV = () => {
-    const headers = "ID,Client Name,Client Email,Company,Architecture Type,Budget Range,Status,Timestamp\n";
+    const headers = "ID,Client Name,Client Email,Company,Architecture Type,Budget Range,Status,Timestamp,Service,Pricing Plan\n";
     const rows = leads
       .map(
         (l) =>
-          `"${l.id}","${l.clientName}","${l.clientEmail}","${l.clientCompany}","${l.projectType}","${l.selectedBudget}","${l.status}","${l.createdAt}"`
+          `"${l.id}","${l.clientName}","${l.clientEmail}","${l.clientCompany}","${l.projectType}","${l.selectedBudget}","${l.status}","${l.createdAt}","${l.metadata?.service_name || ""}","${l.metadata?.pricing_plan || ""}"`
       )
       .join("\n");
 
@@ -52,7 +77,7 @@ export default function AdminLeadsPage() {
             Client Inquiries & Leads CRM
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Live from Supabase `orders` — contact form submissions appear here automatically.
+            Click any lead to open the full project brief and selected service details.
           </p>
         </div>
 
@@ -114,22 +139,30 @@ export default function AdminLeadsPage() {
         )}
 
         {filteredLeads.map((lead) => (
-          <GlowCard key={lead.id} className="p-6 space-y-4">
+          <GlowCard key={lead.id} className="p-6 space-y-4 hover:border-[#004d4d]/40 dark:hover:border-cyan-500/40 transition-colors">
             
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">{lead.clientName}</h3>
+              <Link href={`/admin/leads/${lead.id}`} className="space-y-1 flex-1 min-w-0 group">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-[#004d4d] dark:group-hover:text-cyan-400 transition-colors">
+                    {lead.clientName}
+                  </h3>
                   <span className="px-2.5 py-0.5 rounded-md bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 text-[10px] font-bold">
                     {lead.projectType}
                   </span>
+                  {leadSourceLabel(lead) && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30 text-[10px] font-bold">
+                      <Briefcase className="w-3 h-3" />
+                      {leadSourceLabel(lead)}
+                    </span>
+                  )}
                 </div>
                 <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 font-medium">
                   <span className="flex items-center gap-1">
                     <Mail className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
-                    <a href={`mailto:${lead.clientEmail}`} className="hover:underline text-slate-900 dark:text-slate-100 font-semibold">
+                    <span className="text-slate-900 dark:text-slate-100 font-semibold">
                       {lead.clientEmail}
-                    </a>
+                    </span>
                   </span>
                   <span className="flex items-center gap-1">
                     <Building className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
@@ -137,13 +170,14 @@ export default function AdminLeadsPage() {
                   </span>
                   <span>• Budget: <strong className="text-emerald-500">{lead.selectedBudget}</strong></span>
                 </div>
-              </div>
+              </Link>
 
               {/* Status Selector & Actions */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 shrink-0">
                 <select
                   value={lead.status}
                   onChange={(e) => updateLeadStatus(lead.id, e.target.value as LeadInquiry["status"])}
+                  onClick={(e) => e.stopPropagation()}
                   className="px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none"
                 >
                   <option value="New">New</option>
@@ -151,6 +185,14 @@ export default function AdminLeadsPage() {
                   <option value="Closed Won">Closed Won</option>
                   <option value="Archived">Archived</option>
                 </select>
+
+                <Link
+                  href={`/admin/leads/${lead.id}`}
+                  className="p-2 rounded-xl bg-[#004d4d]/10 hover:bg-[#004d4d] text-[#004d4d] hover:text-white dark:text-cyan-400 dark:hover:text-white border border-[#004d4d]/30 transition-colors"
+                  aria-label="Open lead details"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
 
                 <button
                   onClick={() => deleteLead(lead.id)}
@@ -162,14 +204,21 @@ export default function AdminLeadsPage() {
               </div>
             </div>
 
-            {/* Scope Details */}
-            <div className="bg-slate-50 dark:bg-[#090d16] p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
-              <div className="font-bold text-slate-900 dark:text-slate-200 mb-1">Project Objectives & Scope Brief:</div>
-              <p>{lead.projectDetails || "Client requested technical discovery call for architecture roadmap."}</p>
-            </div>
+            <Link href={`/admin/leads/${lead.id}`} className="block">
+              <div className="bg-slate-50 dark:bg-[#090d16] p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 leading-relaxed hover:border-[#004d4d]/30 transition-colors">
+                <div className="font-bold text-slate-900 dark:text-slate-200 mb-1">Project Objectives & Scope Brief:</div>
+                <p className="line-clamp-2">{lead.projectDetails || "Client requested technical discovery call for architecture roadmap."}</p>
+              </div>
+            </Link>
 
-            <div className="text-[10px] text-slate-400 font-mono text-right">
-              Submitted: {lead.createdAt}
+            <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono">
+              <Link
+                href={`/admin/leads/${lead.id}`}
+                className="text-[#004d4d] dark:text-cyan-400 font-bold hover:underline inline-flex items-center gap-1"
+              >
+                Open full details <ChevronRight className="w-3 h-3" />
+              </Link>
+              <span>Submitted: {lead.createdAt}</span>
             </div>
 
           </GlowCard>

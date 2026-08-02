@@ -74,8 +74,8 @@ interface AdminDataContextType {
   updateService: (service: Service) => Promise<void>;
   deleteService: (id: string) => Promise<void>;
 
-  addProject: (project: Project) => Promise<void>;
-  updateProject: (project: Project) => Promise<void>;
+  addProject: (project: Project) => Promise<Project | void>;
+  updateProject: (project: Project) => Promise<Project | void>;
   deleteProject: (id: string) => Promise<void>;
 
   addBlogPost: (post: BlogPost) => Promise<void>;
@@ -288,47 +288,39 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({
 
   /* ---- Projects ---- */
   const addProject = async (project: Project) => {
-    try {
-      const created = await apiCreate<Record<string, unknown>>(
-        "/admin/projects",
-        projectToApi(project)
-      );
-      setProjects((prev) => [projectFromApi(created), ...prev]);
-    } catch {
-      setProjects((prev) => [project, ...prev]);
-    }
+    const created = await apiCreate<Record<string, unknown>>(
+      "/admin/projects",
+      projectToApi(project)
+    );
+    setProjects((prev) => [projectFromApi(created), ...prev]);
+    return projectFromApi(created);
   };
 
   const updateProject = async (updated: Project) => {
-    try {
-      if (isUuid(updated.id)) {
-        const row = await apiUpdate<Record<string, unknown>>(
-          `/admin/projects/${updated.id}`,
-          projectToApi(updated)
-        );
-        setProjects((prev) =>
-          prev.map((p) => (p.id === updated.id ? projectFromApi(row) : p))
-        );
-        return;
-      }
-      const created = await apiCreate<Record<string, unknown>>(
-        "/admin/projects",
+    if (isUuid(updated.id)) {
+      const row = await apiUpdate<Record<string, unknown>>(
+        `/admin/projects/${updated.id}`,
         projectToApi(updated)
       );
+      const mapped = projectFromApi(row);
       setProjects((prev) =>
-        prev.map((p) => (p.id === updated.id ? projectFromApi(created) : p))
+        prev.map((p) => (p.id === updated.id ? mapped : p))
       );
-    } catch {
-      setProjects((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+      return mapped;
     }
+    const created = await apiCreate<Record<string, unknown>>(
+      "/admin/projects",
+      projectToApi(updated)
+    );
+    const mapped = projectFromApi(created);
+    setProjects((prev) =>
+      prev.map((p) => (p.id === updated.id ? mapped : p))
+    );
+    return mapped;
   };
 
   const deleteProject = async (id: string) => {
-    try {
-      if (isUuid(id)) await apiDelete(`/admin/projects/${id}`);
-    } catch {
-      /* */
-    }
+    if (isUuid(id)) await apiDelete(`/admin/projects/${id}`);
     setProjects((prev) => prev.filter((p) => p.id !== id));
   };
 

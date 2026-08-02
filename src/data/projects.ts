@@ -12,7 +12,11 @@ export interface Project {
   image: string;
   year: string;
   featured: boolean;
+  /** Show in homepage Live Projects section */
+  liveProject?: boolean;
   demoUrl?: string;
+  /** Optional showcase video (mp4/webm URL) — shown instead of image when set */
+  videoUrl?: string;
 }
 
 export const projectsData: Project[] = [
@@ -34,6 +38,7 @@ export const projectsData: Project[] = [
     image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200",
     year: "2026",
     featured: true,
+    liveProject: false,
     demoUrl: "https://example.com"
   },
   {
@@ -54,6 +59,7 @@ export const projectsData: Project[] = [
     image: "https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&q=80&w=1200",
     year: "2025",
     featured: true,
+    liveProject: false,
     demoUrl: "https://example.com"
   },
   {
@@ -74,6 +80,7 @@ export const projectsData: Project[] = [
     image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=1200",
     year: "2025",
     featured: true,
+    liveProject: false,
     demoUrl: "https://example.com"
   },
   {
@@ -94,6 +101,7 @@ export const projectsData: Project[] = [
     image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1200",
     year: "2026",
     featured: false,
+    liveProject: true,
     demoUrl: "https://example.com"
   },
   {
@@ -114,6 +122,7 @@ export const projectsData: Project[] = [
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200",
     year: "2025",
     featured: false,
+    liveProject: true,
     demoUrl: "https://example.com"
   }
 ];

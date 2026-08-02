@@ -81,6 +81,7 @@ export const projectSchema = Joi.object({
   ).default([]),
   images: Joi.array().items(Joi.string()).default([]),
   cover_image: Joi.string().allow('', null),
+  video_url: Joi.string().allow('', null),
   live_url: Joi.string().allow('', null),
   github_url: Joi.string().allow('', null),
   client_name: Joi.string().allow('', null),
@@ -88,8 +89,27 @@ export const projectSchema = Joi.object({
   year: Joi.string().allow('', null),
   status: Joi.string().valid('draft', 'published', 'archived').default('published'),
   is_featured: Joi.boolean().default(false),
+  is_live_project: Joi.boolean().default(false),
   display_order: Joi.number().integer().default(0),
   slug: Joi.string().allow('', null),
+});
+
+export const pricingPlanSchema = Joi.object({
+  title: Joi.string().required(),
+  subtitle: Joi.string().allow('', null),
+  description: Joi.string().allow('', null),
+  price: Joi.string().required(),
+  compare_at_price: Joi.string().allow('', null),
+  discount_percent: Joi.number().min(0).max(100).default(0),
+  discount_label: Joi.string().allow('', null),
+  features: Joi.array().items(Joi.string()).default([]),
+  badge: Joi.string().allow('', null),
+  cta_text: Joi.string().allow('', null).default('Contact Us'),
+  cta_link: Joi.string().allow('', null).default('/contact'),
+  service_slug: Joi.string().allow('', null),
+  is_featured: Joi.boolean().default(false),
+  is_active: Joi.boolean().default(true),
+  display_order: Joi.number().integer().default(0),
 });
 
 export const metaAdSchema = Joi.object({

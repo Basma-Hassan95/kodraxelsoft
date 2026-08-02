@@ -10,6 +10,7 @@ import {
   serviceSchema,
   projectSchema,
   metaAdSchema,
+  pricingPlanSchema,
   testimonialSchema,
   orderCreateSchema,
   orderUpdateSchema,
@@ -36,6 +37,7 @@ import {
   servicesController,
   projectsController,
   metaAdsController,
+  pricingPlansController,
   testimonialsController,
   ordersController,
   contactController,
@@ -72,6 +74,7 @@ router.get('/public/services/:id', servicesController.get);
 router.get('/public/projects', projectsController.list);
 router.get('/public/projects/:id', projectsController.get);
 router.get('/public/meta-ads', metaAdsController.list);
+router.get('/public/pricing-plans', pricingPlansController.list);
 router.get('/public/testimonials', testimonialsController.list);
 router.get('/public/settings', settingsController.get);
 router.get('/public/seo', seoController.list);
@@ -150,6 +153,23 @@ router.get('/admin/meta-ads/:id', authenticateAdmin, metaAdsController.get);
 router.post('/admin/meta-ads', authenticateAdmin, validate(metaAdSchema), metaAdsController.create);
 router.put('/admin/meta-ads/:id', authenticateAdmin, validate(metaAdSchema), metaAdsController.update);
 router.delete('/admin/meta-ads/:id', authenticateAdmin, metaAdsController.remove);
+
+// Pricing Plans
+router.get('/admin/pricing-plans', authenticateAdmin, pricingPlansController.list);
+router.get('/admin/pricing-plans/:id', authenticateAdmin, pricingPlansController.get);
+router.post(
+  '/admin/pricing-plans',
+  authenticateAdmin,
+  validate(pricingPlanSchema),
+  pricingPlansController.create
+);
+router.put(
+  '/admin/pricing-plans/:id',
+  authenticateAdmin,
+  validate(pricingPlanSchema),
+  pricingPlansController.update
+);
+router.delete('/admin/pricing-plans/:id', authenticateAdmin, pricingPlansController.remove);
 
 // Testimonials
 router.get('/admin/testimonials', authenticateAdmin, testimonialsController.list);

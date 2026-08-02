@@ -69,7 +69,7 @@ export function searchAdminCms(opts: {
         title: p.title,
         subtitle: `${p.client} · ${p.category}`,
         href: "/admin/portfolio",
-        category: "Case Studies",
+        category: "Projects",
       });
     }
   }
@@ -103,7 +103,7 @@ export function searchAdminCms(opts: {
         id: `lead-${l.id}`,
         title: l.clientName,
         subtitle: `${l.clientEmail} · ${l.projectType || "Lead"} · ${l.status}`,
-        href: "/admin/leads",
+        href: `/admin/leads/${l.id}`,
         category: "Leads",
       });
     }

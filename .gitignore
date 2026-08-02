@@ -129,3 +129,4 @@ agent-transcripts/
 !backend/supabase/migrations/
 !backend/supabase/migrations/*.sql
 !backend/supabase/seed.sql
+.env*

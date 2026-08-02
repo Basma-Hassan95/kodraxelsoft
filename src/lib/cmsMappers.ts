@@ -7,12 +7,14 @@ import type {
   TestimonialItem,
   MediaAsset,
   SiteSettings,
+  PricingPlan,
 } from "@/types/admin";
 
 /* ---------- Services ---------- */
 export function serviceFromApi(row: Record<string, unknown>): Service {
   return {
     id: String(row.id),
+    slug: String(row.slug || row.id || ""),
     iconName: String(row.icon || "Code"),
     title: String(row.title || ""),
     subtitle: String(row.subtitle || ""),
@@ -31,6 +33,7 @@ export function serviceFromApi(row: Record<string, unknown>): Service {
 
 export function serviceToApi(s: Service) {
   return {
+    slug: s.slug || s.id,
     title: s.title,
     subtitle: s.subtitle,
     description: s.description,
@@ -66,7 +69,9 @@ export function projectFromApi(row: Record<string, unknown>): Project {
     image: String(row.cover_image || (Array.isArray(row.images) ? row.images[0] : "") || ""),
     year: String(row.year || ""),
     featured: Boolean(row.is_featured),
+    liveProject: Boolean(row.is_live_project),
     demoUrl: row.live_url ? String(row.live_url) : undefined,
+    videoUrl: row.video_url ? String(row.video_url) : undefined,
   };
 }
 
@@ -85,7 +90,9 @@ export function projectToApi(p: Project) {
     images: p.image ? [p.image] : [],
     year: p.year,
     is_featured: p.featured,
+    is_live_project: Boolean(p.liveProject),
     live_url: p.demoUrl || null,
+    video_url: p.videoUrl || null,
     status: "published",
   };
 }
@@ -149,6 +156,11 @@ const orderStatusToLead: Record<string, LeadInquiry["status"]> = {
 };
 
 export function leadFromOrder(row: Record<string, unknown>): LeadInquiry {
+  const meta =
+    row.metadata && typeof row.metadata === "object" && !Array.isArray(row.metadata)
+      ? (row.metadata as Record<string, unknown>)
+      : {};
+
   return {
     id: String(row.id),
     clientName: String(row.client_name || ""),
@@ -159,6 +171,12 @@ export function leadFromOrder(row: Record<string, unknown>): LeadInquiry {
     projectDetails: String(row.details || ""),
     status: orderStatusToLead[String(row.status)] || "New",
     createdAt: String(row.created_at || "").replace("T", " ").slice(0, 16),
+    metadata: {
+      source: meta.source ? String(meta.source) : undefined,
+      service_slug: meta.service_slug ? String(meta.service_slug) : undefined,
+      service_name: meta.service_name ? String(meta.service_name) : undefined,
+      pricing_plan: meta.pricing_plan ? String(meta.pricing_plan) : undefined,
+    },
   };
 }
 
@@ -223,6 +241,48 @@ export function testimonialToApi(t: TestimonialItem) {
     is_enabled: true,
     is_approved: true,
     source: "admin",
+  };
+}
+
+/* ---------- Pricing Plans ---------- */
+export function pricingFromApi(row: Record<string, unknown>): PricingPlan {
+  return {
+    id: String(row.id),
+    title: String(row.title || ""),
+    subtitle: String(row.subtitle || ""),
+    description: String(row.description || ""),
+    price: String(row.price || ""),
+    compareAtPrice: String(row.compare_at_price || ""),
+    discountPercent: Number(row.discount_percent || 0),
+    discountLabel: String(row.discount_label || ""),
+    features: Array.isArray(row.features) ? (row.features as string[]) : [],
+    badge: String(row.badge || ""),
+    ctaText: String(row.cta_text || "Contact Us"),
+    ctaLink: String(row.cta_link || "/contact"),
+    serviceSlug: String(row.service_slug || ""),
+    isFeatured: Boolean(row.is_featured),
+    isActive: row.is_active !== false,
+    displayOrder: Number(row.display_order || 0),
+  };
+}
+
+export function pricingToApi(p: PricingPlan) {
+  return {
+    title: p.title,
+    subtitle: p.subtitle,
+    description: p.description,
+    price: p.price,
+    compare_at_price: p.compareAtPrice || null,
+    discount_percent: p.discountPercent || 0,
+    discount_label: p.discountLabel || null,
+    features: p.features || [],
+    badge: p.badge || null,
+    cta_text: p.ctaText || "Contact Us",
+    cta_link: p.ctaLink || "/contact",
+    service_slug: p.serviceSlug || null,
+    is_featured: p.isFeatured,
+    is_active: p.isActive,
+    display_order: p.displayOrder || 0,
   };
 }
 

@@ -101,12 +101,26 @@ export const projectsService = Object.assign(
   }),
   {
     async create(payload) {
+      const baseSlug = payload.slug || slugify(payload.name) || `project-${Date.now()}`;
       const body = {
         ...payload,
-        slug: payload.slug || slugify(payload.name),
+        slug: baseSlug,
       };
-      return CrudService.prototype.create.call(this, body);
+
+      // Unique slug — avoid silent unique-constraint failures
+      body.slug = await ensureUniqueProjectSlug(body.slug);
+
+      return insertProjectWithSchemaFallback(body);
     },
+
+    async update(id, payload) {
+      const body = { ...payload };
+      if (body.slug) {
+        body.slug = await ensureUniqueProjectSlug(body.slug, id);
+      }
+      return updateProjectWithSchemaFallback(id, body);
+    },
+
     async reorder(items = []) {
       for (const item of items) {
         const { error } = await supabase
@@ -124,6 +138,107 @@ export const projectsService = Object.assign(
     },
   }
 );
+
+/** Columns added in later migrations — strip if DB not migrated yet */
+const OPTIONAL_PROJECT_COLUMNS = ['video_url', 'is_live_project'];
+
+function stripOptionalColumns(payload, columns) {
+  const next = { ...payload };
+  for (const col of columns) delete next[col];
+  return next;
+}
+
+function missingOptionalFromError(message = '') {
+  return OPTIONAL_PROJECT_COLUMNS.filter((col) =>
+    String(message).toLowerCase().includes(col)
+  );
+}
+
+async function ensureUniqueProjectSlug(slug, excludeId = null) {
+  let candidate = slug || `project-${Date.now()}`;
+  for (let i = 0; i < 8; i += 1) {
+    let q = supabase.from('projects').select('id').eq('slug', candidate).limit(1);
+    if (excludeId) q = q.neq('id', excludeId);
+    const { data, error } = await q;
+    if (error) {
+      return `${candidate}-${Date.now().toString(36)}`;
+    }
+    if (!data || data.length === 0) return candidate;
+    candidate = `${slug}-${Date.now().toString(36).slice(-4)}${i}`;
+  }
+  return `${slug}-${Date.now()}`;
+}
+
+async function insertProjectWithSchemaFallback(body) {
+  let attempt = { ...body };
+  for (let i = 0; i < 4; i += 1) {
+    const { data, error } = await supabase
+      .from('projects')
+      .insert(attempt)
+      .select('*')
+      .single();
+
+    if (!error) {
+      await logActivity({
+        action: 'create',
+        entityType: 'project',
+        entityId: data.id,
+        summary: 'Created project',
+      });
+      return data;
+    }
+
+    const missing = missingOptionalFromError(error.message);
+    if (missing.length) {
+      attempt = stripOptionalColumns(attempt, missing);
+      continue;
+    }
+
+    // Unique slug race
+    if (/duplicate|unique|slug/i.test(error.message)) {
+      attempt = {
+        ...attempt,
+        slug: `${body.slug || 'project'}-${Date.now().toString(36)}`,
+      };
+      continue;
+    }
+
+    throw new ApiError(400, error.message);
+  }
+  throw new ApiError(400, 'Could not create project after schema fallbacks');
+}
+
+async function updateProjectWithSchemaFallback(id, body) {
+  let attempt = { ...body };
+  for (let i = 0; i < 4; i += 1) {
+    const { data, error } = await supabase
+      .from('projects')
+      .update(attempt)
+      .eq('id', id)
+      .select('*')
+      .maybeSingle();
+
+    if (!error) {
+      if (!data) throw new ApiError(404, 'project not found');
+      await logActivity({
+        action: 'update',
+        entityType: 'project',
+        entityId: id,
+        summary: 'Updated project',
+      });
+      return data;
+    }
+
+    const missing = missingOptionalFromError(error.message);
+    if (missing.length) {
+      attempt = stripOptionalColumns(attempt, missing);
+      continue;
+    }
+
+    throw new ApiError(400, error.message);
+  }
+  throw new ApiError(400, 'Could not update project after schema fallbacks');
+}
 
 export const metaAdsService = Object.assign(
   new CrudService('meta_ads', {
@@ -177,6 +292,13 @@ export const metaAdsService = Object.assign(
     },
   }
 );
+
+export const pricingPlansService = new CrudService('pricing_plans', {
+  entityName: 'pricing_plan',
+  searchColumns: ['title', 'subtitle'],
+  defaultOrder: { column: 'display_order', ascending: true },
+  publicFilter: (q) => q.eq('is_active', true),
+});
 
 export const testimonialsService = new CrudService('testimonials', {
   entityName: 'testimonial',

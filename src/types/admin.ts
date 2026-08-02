@@ -8,6 +8,13 @@ export interface LeadInquiry {
   projectDetails: string;
   status: "New" | "Contacted" | "In Progress" | "Closed Won" | "Archived";
   createdAt: string;
+  /** Contact form tracking — e.g. WordPress service / pricing plan */
+  metadata?: {
+    source?: string;
+    service_slug?: string;
+    service_name?: string;
+    pricing_plan?: string;
+  };
 }
 
 export interface CareerPosition {
@@ -56,6 +63,25 @@ export interface SiteSettings {
   metaDescription: string;
   keywords: string;
   ogImageUrl: string;
+}
+
+export interface PricingPlan {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  price: string;
+  compareAtPrice: string;
+  discountPercent: number;
+  discountLabel: string;
+  features: string[];
+  badge: string;
+  ctaText: string;
+  ctaLink: string;
+  serviceSlug: string;
+  isFeatured: boolean;
+  isActive: boolean;
+  displayOrder: number;
 }
 
 export type JobApplicationStatus =

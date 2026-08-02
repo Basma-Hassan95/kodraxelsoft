@@ -20,6 +20,7 @@ import {
   servicesService,
   projectsService,
   metaAdsService,
+  pricingPlansService,
   testimonialsService,
   ordersService,
   contactService,
@@ -202,6 +203,9 @@ export const projectsController = {
 };
 
 export const metaAdsController = makeCrudController(metaAdsService, { entityLabel: 'Meta ad' });
+export const pricingPlansController = makeCrudController(pricingPlansService, {
+  entityLabel: 'Pricing plan',
+});
 export const testimonialsController = makeCrudController(testimonialsService, {
   entityLabel: 'Testimonial',
 });

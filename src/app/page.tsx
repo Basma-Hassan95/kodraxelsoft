@@ -8,11 +8,13 @@ import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { Hero3DCanvas } from "@/components/ui/Hero3DCanvas";
-import { CaseStudies3DSlider } from "@/components/ui/CaseStudies3DSlider";
-import { CapabilitiesStackedCarousel } from "@/components/ui/CapabilitiesStackedCarousel";
+import { CapabilitiesShowcase } from "@/components/ui/CapabilitiesShowcase";
+import { CaseStudiesStackedCarousel } from "@/components/ui/CaseStudiesStackedCarousel";
+import { LiveProjectsShowcase } from "@/components/ui/LiveProjectsShowcase";
 import { SocialCampaignsShowcase } from "@/components/ui/SocialCampaignsShowcase";
 import { HomeTestimonials } from "@/components/ui/HomeTestimonials";
 import { usePublicProjects } from "@/hooks/usePublicCms";
+import { projectsData as fallbackProjects } from "@/data/projects";
 import {
   Sparkles,
   ArrowRight,
@@ -28,7 +30,18 @@ import {
 
 export default function HomePage() {
   const projectsData = usePublicProjects();
-  const featuredProjects = projectsData.filter((p) => p.featured);
+  // Case Studies: admin "Case Studies" flag; fallback to demo featured so stacked animation stays visible
+  const featuredFromCms = projectsData.filter((p) => p.featured);
+  const homeCaseStudies =
+    featuredFromCms.length > 0
+      ? featuredFromCms
+      : fallbackProjects.filter((p) => p.featured);
+  // Live Projects: admin "Live Projects"; else live URL and not case-study
+  const liveMarked = projectsData.filter((p) => p.liveProject);
+  const homeLiveProjects =
+    liveMarked.length > 0
+      ? liveMarked
+      : projectsData.filter((p) => Boolean(p.demoUrl) && !p.featured);
 
   return (
     <div className="space-y-24 md:space-y-36 pb-20 overflow-x-hidden">
@@ -174,7 +187,7 @@ export default function HomePage() {
         </GSAPReveal>
       </section>
 
-      {/* 3. CAPABILITIES / SERVICES (Framer Motion Stacked 3D Carousel) */}
+      {/* 3. CAPABILITIES / SERVICES */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           badgeText="Capabilities"
@@ -183,32 +196,42 @@ export default function HomePage() {
           subtitle="From zero-downtime microservices to custom LLM agent deployments, we craft software systems engineered for scale."
         />
 
-        <CapabilitiesStackedCarousel />
+        <CapabilitiesShowcase />
       </section>
 
-      {/* 4. FEATURED PORTFOLIO SHOWCASE (3D Slicebox Slider) */}
+      {/* 4. CASE STUDIES — stacked card animation */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           badgeText="Case Studies"
           title="Mission-Critical Systems Built for"
           gradientTitle="Global Industry Leaders"
-          subtitle="Explore selected engineering case studies highlighting performance gains, ROI metrics, and architectural innovation."
+          subtitle="Explore selected engineering case studies — image or video, impact metrics, and full project breakdowns."
         />
 
-        <GSAPReveal direction="up">
-          <CaseStudies3DSlider projects={featuredProjects} />
-        </GSAPReveal>
+        <CaseStudiesStackedCarousel projects={homeCaseStudies} />
       </section>
 
-      {/* 5. SOCIAL MEDIA CAMPAIGNS SHOWCASE */}
+      {/* 5. LIVE PROJECTS — cinematic cards, click opens live host */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHeader
+          badgeText="Live Projects"
+          title="Products We Shipped to"
+          gradientTitle="Production"
+          subtitle="Real builds with image or video previews. Click any project to open its live hosted website."
+        />
+
+        <LiveProjectsShowcase projects={homeLiveProjects} />
+      </section>
+
+      {/* 6. SOCIAL MEDIA CAMPAIGNS SHOWCASE */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         <SocialCampaignsShowcase />
       </section>
 
-      {/* 5b. CLIENT REVIEWS */}
+      {/* 6b. CLIENT REVIEWS */}
       <HomeTestimonials />
 
-      {/* 6. DYNAMIC LEAD GENERATION BANNER */}
+      {/* 7. DYNAMIC LEAD GENERATION BANNER */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <GSAPReveal direction="up">
           <div className="relative rounded-3xl border border-[#006666]/40 bg-[#0c1424] dark:bg-[#111726] p-10 md:p-16 overflow-hidden shadow-2xl text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">

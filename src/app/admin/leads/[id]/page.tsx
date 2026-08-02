@@ -63,7 +63,10 @@ function sourceSummary(lead: LeadInquiry): string | null {
     return `Client selected service: ${m.service_name}`;
   }
   if (m.pricing_plan && m.source === "pricing_page") {
-    return `Client selected pricing plan: ${m.pricing_plan}`;
+    const price = m.quoted_price || lead.selectedBudget;
+    return price
+      ? `Client selected pricing plan: ${m.pricing_plan} · Quoted ${price}`
+      : `Client selected pricing plan: ${m.pricing_plan}`;
   }
   if (m.service_name) return `Service: ${m.service_name}`;
   if (m.pricing_plan) return `Pricing: ${m.pricing_plan}`;
@@ -236,10 +239,12 @@ export default function AdminLeadDetailPage() {
                 {lead.clientCompany || "Not provided"}
               </span>
             </Field>
-            <Field label="Budget">
+            <Field label="Budget / Quoted price">
               <span className="inline-flex items-center gap-1 text-emerald-500">
                 <Wallet className="w-3.5 h-3.5" />
-                {lead.selectedBudget || "Not specified"}
+                {lead.metadata?.quoted_price ||
+                  lead.selectedBudget ||
+                  "Not specified"}
               </span>
             </Field>
           </div>
@@ -295,6 +300,9 @@ export default function AdminLeadDetailPage() {
           </Field>
           <Field label="Pricing plan">
             {lead.metadata?.pricing_plan || "—"}
+          </Field>
+          <Field label="Quoted price">
+            {lead.metadata?.quoted_price || lead.selectedBudget || "—"}
           </Field>
         </div>
       </GlowCard>

@@ -133,9 +133,16 @@ export default function PricingPage() {
                   onClick={() => {
                     const params = new URLSearchParams({
                       plan: plan.title,
+                      price: plan.price,
                       serviceName: `${plan.title} Pricing Plan`,
                     });
                     if (plan.serviceSlug) params.set("service", plan.serviceSlug);
+                    if (plan.compareAtPrice) {
+                      params.set("compareAt", plan.compareAtPrice);
+                    }
+                    if (plan.discountPercent > 0) {
+                      params.set("discount", String(plan.discountPercent));
+                    }
                     window.location.href = `/contact?${params.toString()}`;
                   }}
                   className="w-full justify-center mt-8"

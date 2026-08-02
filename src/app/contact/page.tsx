@@ -37,21 +37,32 @@ function ContactFormContent() {
   const serviceSlug = searchParams ? searchParams.get("service") || "" : "";
   const serviceName = searchParams ? searchParams.get("serviceName") || "" : "";
   const pricingPlan = searchParams ? searchParams.get("plan") || "" : "";
+  const quotedPrice = searchParams ? searchParams.get("price") || "" : "";
+  const compareAtPrice = searchParams ? searchParams.get("compareAt") || "" : "";
+  const discountPercent = searchParams ? searchParams.get("discount") || "" : "";
   const initialType = searchParams
     ? searchParams.get("type") || SERVICE_SLUG_TO_TYPE[serviceSlug] || "web"
     : "web";
-  const initialBudget = searchParams ? searchParams.get("budget") || "$15,000 - $30,000" : "$15,000 - $30,000";
+  const hasExactQuote = Boolean(quotedPrice.trim());
+  const initialBudget = searchParams
+    ? searchParams.get("budget") ||
+      (hasExactQuote ? quotedPrice.trim() : "$15,000 - $30,000")
+    : "$15,000 - $30,000";
 
   const [projectType, setProjectType] = useState<string>(initialType);
   const [selectedBudget, setSelectedBudget] = useState<string>(initialBudget);
   const [clientName, setClientName] = useState("");
   const [clientEmail, setClientEmail] = useState("");
   const [clientCompany, setClientCompany] = useState("");
-  const [projectDetails, setProjectDetails] = useState(
-    serviceName
-      ? `I'm interested in: ${serviceName}${pricingPlan ? ` (${pricingPlan} plan)` : ""}. `
-      : ""
-  );
+  const [projectDetails, setProjectDetails] = useState(() => {
+    if (pricingPlan && quotedPrice) {
+      return `I'm interested in the ${pricingPlan} plan at the quoted price of ${quotedPrice}. `;
+    }
+    if (serviceName) {
+      return `I'm interested in: ${serviceName}${pricingPlan ? ` (${pricingPlan} plan)` : ""}. `;
+    }
+    return "";
+  });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -80,6 +91,9 @@ function ContactFormContent() {
     const typeLabel =
       projectTypesList.find((t) => t.id === projectType)?.name || projectType;
 
+    // Always send exact plan price when client came from a pricing plan
+    const budgetToSave = hasExactQuote ? quotedPrice.trim() : selectedBudget;
+
     setSubmitting(true);
     setSubmitError("");
 
@@ -90,7 +104,7 @@ function ContactFormContent() {
         client_email: clientEmail.trim(),
         client_company: clientCompany.trim() || undefined,
         project_type: typeLabel,
-        budget: selectedBudget,
+        budget: budgetToSave,
         details: projectDetails.trim() || undefined,
         metadata: {
           source: pricingPlan
@@ -101,6 +115,9 @@ function ContactFormContent() {
           service_slug: serviceSlug || undefined,
           service_name: serviceName || undefined,
           pricing_plan: pricingPlan || undefined,
+          quoted_price: hasExactQuote ? quotedPrice.trim() : undefined,
+          compare_at_price: compareAtPrice || undefined,
+          discount_percent: discountPercent || undefined,
         },
       });
 
@@ -130,7 +147,23 @@ function ContactFormContent() {
           </div>
           <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white">Project Brief Received!</h3>
           <p className="text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
-            Thank you, <strong className="text-slate-900 dark:text-white">{clientName}</strong>. Our engineering team has received your details for <strong className="text-[#004d4d] dark:text-cyan-400">{projectType}</strong>. We will contact you at <strong className="text-slate-900 dark:text-white">{clientEmail}</strong> within 24 hours.
+            Thank you, <strong className="text-slate-900 dark:text-white">{clientName}</strong>. Our engineering team has received your details
+            {hasExactQuote ? (
+              <>
+                {" "}for the quoted price of{" "}
+                <strong className="text-[#004d4d] dark:text-cyan-400">{quotedPrice}</strong>
+                {pricingPlan ? (
+                  <>
+                    {" "}({pricingPlan})
+                  </>
+                ) : null}
+              </>
+            ) : (
+              <>
+                {" "}for <strong className="text-[#004d4d] dark:text-cyan-400">{projectType}</strong>
+              </>
+            )}
+            . We will contact you at <strong className="text-slate-900 dark:text-white">{clientEmail}</strong> within 24 hours.
           </p>
           <Button variant="teal-gradient" size="md" onClick={() => setFormSubmitted(false)}>
             Submit Another Project Inquiry
@@ -139,7 +172,7 @@ function ContactFormContent() {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          {(serviceName || pricingPlan) && (
+          {(serviceName || pricingPlan || hasExactQuote) && (
             <div className="flex items-start gap-3 p-4 rounded-xl bg-[#004d4d]/10 border border-[#004d4d]/30 text-[#004d4d] dark:text-cyan-400">
               <Briefcase className="w-4 h-4 mt-0.5 shrink-0" />
               <div className="text-xs font-semibold leading-relaxed space-y-1">
@@ -159,8 +192,22 @@ function ContactFormContent() {
                     <span className="font-extrabold">{pricingPlan}</span>
                   </p>
                 ) : null}
+                {hasExactQuote ? (
+                  <p>
+                    Agreed quote:{" "}
+                    <span className="font-extrabold text-lg">{quotedPrice}</span>
+                    {compareAtPrice ? (
+                      <span className="ml-2 line-through opacity-60">{compareAtPrice}</span>
+                    ) : null}
+                    {discountPercent ? (
+                      <span className="ml-2 text-emerald-600 dark:text-emerald-400">
+                        ({discountPercent}% off)
+                      </span>
+                    ) : null}
+                  </p>
+                ) : null}
                 <p className="text-[11px] opacity-80 font-medium">
-                  Our team will see this source on your inquiry so we can tailor the reply.
+                  Our team will see this exact quote on your inquiry.
                 </p>
               </div>
             </div>
@@ -189,27 +236,46 @@ function ContactFormContent() {
             </div>
           </div>
 
-          {/* 2. Budget Range Selector */}
+          {/* 2. Exact quoted price OR budget ranges */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-[#004d4d] dark:text-cyan-400 mb-3">
-              2. Estimated Budget Investment
+              2. {hasExactQuote ? "Quoted Plan Price" : "Estimated Budget Investment"}
             </label>
-            <div className="grid grid-cols-2 gap-2.5">
-              {budgetOptions.map((budget) => (
-                <button
-                  key={budget}
-                  type="button"
-                  onClick={() => setSelectedBudget(budget)}
-                  className={`p-3 rounded-xl border text-xs font-semibold text-center transition-all ${
-                    selectedBudget === budget
-                      ? "border-[#004d4d] bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400"
-                      : "border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-400"
-                  }`}
-                >
-                  {budget}
-                </button>
-              ))}
-            </div>
+            {hasExactQuote ? (
+              <div className="p-4 rounded-xl border-2 border-[#004d4d] bg-[#004d4d]/10 dark:border-cyan-500/50 dark:bg-cyan-500/10">
+                <div className="flex flex-wrap items-end gap-2">
+                  <span className="text-2xl sm:text-3xl font-extrabold text-[#004d4d] dark:text-cyan-300">
+                    {quotedPrice}
+                  </span>
+                  {compareAtPrice ? (
+                    <span className="text-sm font-semibold text-slate-400 line-through">
+                      {compareAtPrice}
+                    </span>
+                  ) : null}
+                </div>
+                <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 mt-2">
+                  This exact price from your selected plan will be saved with your inquiry
+                  {pricingPlan ? ` (${pricingPlan})` : ""}. Budget ranges are not used for pricing-page quotes.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-2.5">
+                {budgetOptions.map((budget) => (
+                  <button
+                    key={budget}
+                    type="button"
+                    onClick={() => setSelectedBudget(budget)}
+                    className={`p-3 rounded-xl border text-xs font-semibold text-center transition-all ${
+                      selectedBudget === budget
+                        ? "border-[#004d4d] bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400"
+                        : "border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-400"
+                    }`}
+                  >
+                    {budget}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* 3. Client Contact Details */}

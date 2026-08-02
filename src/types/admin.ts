@@ -14,6 +14,9 @@ export interface LeadInquiry {
     service_slug?: string;
     service_name?: string;
     pricing_plan?: string;
+    quoted_price?: string;
+    compare_at_price?: string;
+    discount_percent?: string;
   };
 }
 

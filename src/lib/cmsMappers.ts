@@ -176,6 +176,13 @@ export function leadFromOrder(row: Record<string, unknown>): LeadInquiry {
       service_slug: meta.service_slug ? String(meta.service_slug) : undefined,
       service_name: meta.service_name ? String(meta.service_name) : undefined,
       pricing_plan: meta.pricing_plan ? String(meta.pricing_plan) : undefined,
+      quoted_price: meta.quoted_price ? String(meta.quoted_price) : undefined,
+      compare_at_price: meta.compare_at_price
+        ? String(meta.compare_at_price)
+        : undefined,
+      discount_percent: meta.discount_percent
+        ? String(meta.discount_percent)
+        : undefined,
     },
   };
 }

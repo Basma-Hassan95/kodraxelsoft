@@ -117,6 +117,10 @@ export interface PublicOrderMetadata {
   service_slug?: string;
   service_name?: string;
   pricing_plan?: string;
+  /** Exact plan price agreed from pricing page, e.g. "$22,000" */
+  quoted_price?: string;
+  compare_at_price?: string;
+  discount_percent?: string;
 }
 
 export async function submitPublicOrder(payload: {

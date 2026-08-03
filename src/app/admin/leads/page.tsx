@@ -10,6 +10,7 @@ import {
   Trash2,
   Download,
   Mail,
+  Phone,
   Building,
   Briefcase,
   ChevronRight,
@@ -28,7 +29,19 @@ function leadSourceLabel(lead: LeadInquiry): string | null {
   if (m.pricing_plan) return `Pricing: ${m.pricing_plan}`;
   if (m.source === "service_page") return "Came via Services page";
   if (m.source === "pricing_page") return "Came via Pricing page";
+  if (m.source === "contact_page") return "Contact form";
   return null;
+}
+
+function briefPreview(lead: LeadInquiry): string | null {
+  const m = lead.metadata;
+  if (!m) return null;
+  const parts = [
+    m.design_ready_label,
+    m.timeline_label,
+    m.color_theme,
+  ].filter(Boolean);
+  return parts.length ? parts.join(" · ") : null;
 }
 
 export default function AdminLeadsPage() {
@@ -42,12 +55,35 @@ export default function AdminLeadsPage() {
     : leads.filter((l) => l.status === filterStatus);
 
   const handleExportCSV = () => {
-    const headers = "ID,Client Name,Client Email,Company,Architecture Type,Budget Range,Status,Timestamp,Service,Pricing Plan\n";
+    const headers =
+      "ID,Client Name,Email,Phone,Company,Project Type,Budget,Status,Timestamp,Service,Pricing Plan,Design,Domain,Integrations,Aesthetic,Timeline,Reference,Additional Specs\n";
     const rows = leads
-      .map(
-        (l) =>
-          `"${l.id}","${l.clientName}","${l.clientEmail}","${l.clientCompany}","${l.projectType}","${l.selectedBudget}","${l.status}","${l.createdAt}","${l.metadata?.service_name || ""}","${l.metadata?.pricing_plan || ""}"`
-      )
+      .map((l) => {
+        const m = l.metadata || {};
+        const esc = (v: string) => `"${String(v || "").replace(/"/g, '""')}"`;
+        return [
+          l.id,
+          l.clientName,
+          l.clientEmail,
+          l.clientPhone,
+          l.clientCompany,
+          l.projectType,
+          l.selectedBudget,
+          l.status,
+          l.createdAt,
+          m.service_name || "",
+          m.pricing_plan || "",
+          m.design_ready_label || "",
+          m.domain_hosting_label || "",
+          m.integrations_label || "",
+          m.color_theme || "",
+          m.timeline_label || "",
+          m.reference_website || "",
+          m.additional_specs || "",
+        ]
+          .map(esc)
+          .join(",");
+      })
       .join("\n");
 
     const blob = new Blob([headers + rows], { type: "text/csv" });
@@ -164,12 +200,25 @@ export default function AdminLeadsPage() {
                       {lead.clientEmail}
                     </span>
                   </span>
+                  {lead.clientPhone && (
+                    <span className="flex items-center gap-1">
+                      <Phone className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
+                      <span className="text-slate-900 dark:text-slate-100 font-semibold">
+                        {lead.clientPhone}
+                      </span>
+                    </span>
+                  )}
                   <span className="flex items-center gap-1">
                     <Building className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
                     <span>{lead.clientCompany || "Enterprise Client"}</span>
                   </span>
-                  <span>• Budget: <strong className="text-emerald-500">{lead.selectedBudget}</strong></span>
+                  <span>• Budget: <strong className="text-emerald-500">{lead.selectedBudget || "—"}</strong></span>
                 </div>
+                {briefPreview(lead) && (
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">
+                    Brief: {briefPreview(lead)}
+                  </p>
+                )}
               </Link>
 
               {/* Status Selector & Actions */}

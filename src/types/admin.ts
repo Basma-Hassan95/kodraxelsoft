@@ -2,13 +2,14 @@ export interface LeadInquiry {
   id: string;
   clientName: string;
   clientEmail: string;
+  clientPhone: string;
   clientCompany: string;
   projectType: string;
   selectedBudget: string;
   projectDetails: string;
   status: "New" | "Contacted" | "In Progress" | "Closed Won" | "Archived";
   createdAt: string;
-  /** Contact form tracking — e.g. WordPress service / pricing plan */
+  /** Contact form tracking — service / pricing / project brief answers */
   metadata?: {
     source?: string;
     service_slug?: string;
@@ -17,6 +18,18 @@ export interface LeadInquiry {
     quoted_price?: string;
     compare_at_price?: string;
     discount_percent?: string;
+    platform?: string;
+    color_theme?: string;
+    design_source?: string;
+    reference_website?: string;
+    domain_hosting?: string;
+    integrations?: string;
+    timeline?: string;
+    additional_specs?: string;
+    design_ready_label?: string;
+    domain_hosting_label?: string;
+    integrations_label?: string;
+    timeline_label?: string;
   };
 }
 

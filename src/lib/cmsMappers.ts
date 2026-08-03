@@ -163,10 +163,16 @@ export function leadFromOrder(row: Record<string, unknown>): LeadInquiry {
       ? (row.metadata as Record<string, unknown>)
       : {};
 
+  const str = (key: string) =>
+    meta[key] != null && String(meta[key]).trim()
+      ? String(meta[key])
+      : undefined;
+
   return {
     id: String(row.id),
     clientName: String(row.client_name || ""),
     clientEmail: String(row.client_email || ""),
+    clientPhone: String(row.client_phone || ""),
     clientCompany: String(row.client_company || ""),
     projectType: String(row.project_type || ""),
     selectedBudget: String(row.budget || ""),
@@ -174,17 +180,25 @@ export function leadFromOrder(row: Record<string, unknown>): LeadInquiry {
     status: orderStatusToLead[String(row.status)] || "New",
     createdAt: String(row.created_at || "").replace("T", " ").slice(0, 16),
     metadata: {
-      source: meta.source ? String(meta.source) : undefined,
-      service_slug: meta.service_slug ? String(meta.service_slug) : undefined,
-      service_name: meta.service_name ? String(meta.service_name) : undefined,
-      pricing_plan: meta.pricing_plan ? String(meta.pricing_plan) : undefined,
-      quoted_price: meta.quoted_price ? String(meta.quoted_price) : undefined,
-      compare_at_price: meta.compare_at_price
-        ? String(meta.compare_at_price)
-        : undefined,
-      discount_percent: meta.discount_percent
-        ? String(meta.discount_percent)
-        : undefined,
+      source: str("source"),
+      service_slug: str("service_slug"),
+      service_name: str("service_name"),
+      pricing_plan: str("pricing_plan"),
+      quoted_price: str("quoted_price"),
+      compare_at_price: str("compare_at_price"),
+      discount_percent: str("discount_percent"),
+      platform: str("platform"),
+      color_theme: str("color_theme"),
+      design_source: str("design_source"),
+      reference_website: str("reference_website"),
+      domain_hosting: str("domain_hosting"),
+      integrations: str("integrations"),
+      timeline: str("timeline"),
+      additional_specs: str("additional_specs"),
+      design_ready_label: str("design_ready_label"),
+      domain_hosting_label: str("domain_hosting_label"),
+      integrations_label: str("integrations_label"),
+      timeline_label: str("timeline_label"),
     },
   };
 }

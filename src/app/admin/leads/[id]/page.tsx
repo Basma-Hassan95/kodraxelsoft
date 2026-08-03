@@ -11,13 +11,16 @@ import {
   ArrowLeft,
   Briefcase,
   Building,
+  ClipboardList,
   Mail,
+  Phone,
   Tag,
   Trash2,
   User,
   Wallet,
   Clock,
   ExternalLink,
+  Globe,
 } from "lucide-react";
 
 const STATUSES: LeadInquiry["status"][] = [
@@ -72,7 +75,22 @@ function sourceSummary(lead: LeadInquiry): string | null {
   if (m.pricing_plan) return `Pricing: ${m.pricing_plan}`;
   if (m.source === "service_page") return "Came via Services page";
   if (m.source === "pricing_page") return "Came via Pricing page";
+  if (m.source === "contact_page") return "Came via Contact / homepage form";
   return null;
+}
+
+function hasProjectBrief(m: LeadInquiry["metadata"]) {
+  if (!m) return false;
+  return Boolean(
+    m.design_ready_label ||
+      m.domain_hosting_label ||
+      m.integrations_label ||
+      m.color_theme ||
+      m.timeline_label ||
+      m.additional_specs ||
+      m.reference_website ||
+      m.design_source
+  );
 }
 
 export default function AdminLeadDetailPage() {
@@ -152,6 +170,7 @@ export default function AdminLeadDetailPage() {
   const source = sourceSummary(lead);
   const serviceSlug = lead.metadata?.service_slug;
   const serviceHref = serviceSlug ? `/services/${serviceSlug}` : "/services";
+  const m = lead.metadata;
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -233,6 +252,18 @@ export default function AdminLeadDetailPage() {
                 <Mail className="w-3.5 h-3.5" /> {lead.clientEmail}
               </a>
             </Field>
+            <Field label="Phone / WhatsApp">
+              {lead.clientPhone ? (
+                <a
+                  href={`tel:${lead.clientPhone.replace(/\s/g, "")}`}
+                  className="text-cyan-500 hover:underline inline-flex items-center gap-1"
+                >
+                  <Phone className="w-3.5 h-3.5" /> {lead.clientPhone}
+                </a>
+              ) : (
+                "Not provided"
+              )}
+            </Field>
             <Field label="Company">
               <span className="inline-flex items-center gap-1">
                 <Building className="w-3.5 h-3.5 shrink-0" />
@@ -307,9 +338,56 @@ export default function AdminLeadDetailPage() {
         </div>
       </GlowCard>
 
+      {hasProjectBrief(m) && (
+        <GlowCard className="p-5 space-y-5">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-cyan-500 flex items-center gap-2">
+            <ClipboardList className="w-4 h-4" /> Project brief answers
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="1. Design ready?">
+              {m?.design_ready_label || m?.design_source || "—"}
+            </Field>
+            <Field label="2. Domain & hosting">
+              {m?.domain_hosting_label || m?.domain_hosting || "—"}
+            </Field>
+            <Field label="3. Database / APIs">
+              {m?.integrations_label || m?.integrations || "—"}
+            </Field>
+            <Field label="4. Aesthetic / theme">
+              {m?.color_theme || "—"}
+            </Field>
+            <Field label="5. Launch timeline">
+              {m?.timeline_label || m?.timeline || "—"}
+            </Field>
+            <Field label="Reference website">
+              {m?.reference_website ? (
+                <a
+                  href={m.reference_website}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-cyan-500 hover:underline inline-flex items-center gap-1 break-all"
+                >
+                  <Globe className="w-3.5 h-3.5 shrink-0" />
+                  {m.reference_website}
+                </a>
+              ) : (
+                "—"
+              )}
+            </Field>
+          </div>
+          {m?.additional_specs && (
+            <Field label="6. Additional specifications">
+              <p className="whitespace-pre-wrap font-medium text-slate-700 dark:text-slate-300">
+                {m.additional_specs}
+              </p>
+            </Field>
+          )}
+        </GlowCard>
+      )}
+
       <GlowCard className="p-5 space-y-3">
         <h2 className="text-xs font-bold uppercase tracking-wider text-cyan-500">
-          Project objectives & scope brief
+          Full message / scope brief
         </h2>
         <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
           {lead.projectDetails ||

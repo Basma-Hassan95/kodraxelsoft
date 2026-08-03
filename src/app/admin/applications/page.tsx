@@ -9,7 +9,6 @@ import {
   APPLICATION_STATUSES,
   applicationStatusClass,
 } from "@/lib/applicationStatus";
-import { AdminStatusSelect } from "@/components/admin/AdminStatusSelect";
 import {
   Briefcase,
   RefreshCw,
@@ -241,11 +240,17 @@ export default function AdminApplicationsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <AdminStatusSelect
+                      <select
                         value={app.status}
-                        onChange={(status) => void updateStatus(app.id, status)}
-                        statuses={STATUSES}
-                      />
+                        onChange={(e) => void updateStatus(app.id, e.target.value)}
+                        className={`px-2.5 py-1.5 rounded-xl border text-[11px] font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[#004d4d]/35 dark:focus:ring-cyan-500/40 ${applicationStatusClass(app.status)}`}
+                      >
+                        {STATUSES.map((s) => (
+                          <option key={s} value={s} className="bg-white dark:bg-[#0b1220] text-slate-900 dark:text-slate-100">
+                            {s}
+                          </option>
+                        ))}
+                      </select>
                     </td>
                     <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
                       {app.created_at

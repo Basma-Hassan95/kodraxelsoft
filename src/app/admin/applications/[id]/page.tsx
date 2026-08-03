@@ -22,7 +22,6 @@ import {
   APPLICATION_STATUSES,
   applicationStatusClass,
 } from "@/lib/applicationStatus";
-import { AdminStatusSelect } from "@/components/admin/AdminStatusSelect";
 
 const STATUSES = APPLICATION_STATUSES;
 
@@ -136,12 +135,17 @@ export default function AdminApplicationDetailPage() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <AdminStatusSelect
+          <select
             value={app.status}
-            onChange={(status) => void updateStatus(status)}
-            statuses={STATUSES}
-            size="md"
-          />
+            onChange={(e) => void updateStatus(e.target.value)}
+            className={`px-3 py-2 rounded-xl border text-xs font-bold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-[#004d4d]/35 dark:focus:ring-cyan-500/40 ${applicationStatusClass(app.status)}`}
+          >
+            {STATUSES.map((s) => (
+              <option key={s} value={s} className="bg-white dark:bg-[#0b1220] text-slate-900 dark:text-slate-100">
+                {s}
+              </option>
+            ))}
+          </select>
           <button
             type="button"
             onClick={() => void remove()}

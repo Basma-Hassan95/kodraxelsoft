@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { cmsList, apiCreate, apiUpdate, apiDelete, isUuid } from "@/lib/cmsApi";
-import { pricingFromApi, pricingToApi } from "@/lib/cmsMappers";
+import { pricingFromApi, pricingToApi, stripCurrencySymbol } from "@/lib/cmsMappers";
 import type { PricingPlan } from "@/types/admin";
 import {
   Tag,
@@ -113,8 +113,8 @@ export default function AdminPricingPage() {
       title: form.title.trim(),
       subtitle: form.subtitle.trim(),
       description: form.description.trim(),
-      price: form.price.trim(),
-      compareAtPrice: form.compareAtPrice.trim(),
+      price: stripCurrencySymbol(form.price.trim()),
+      compareAtPrice: stripCurrencySymbol(form.compareAtPrice.trim()),
       discountPercent: Number(form.discountPercent) || 0,
       discountLabel: form.discountLabel.trim(),
       features: parseFeatures(form.featuresText),
@@ -214,7 +214,7 @@ export default function AdminPricingPage() {
             type="button"
             onClick={() => void refresh()}
             disabled={loading}
-            className="px-4 py-2.5 rounded-xl bg-[#004d4d] hover:bg-[#006666] text-white font-bold text-xs shadow-md flex items-center gap-2 disabled:opacity-60"
+            className="px-4 py-2.5 rounded-xl bg-[#226263] hover:bg-[#1a4f50] text-white font-bold text-xs shadow-md flex items-center gap-2 disabled:opacity-60"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             Refresh from DB
@@ -285,7 +285,7 @@ export default function AdminPricingPage() {
                 required
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: e.target.value })}
-                placeholder="$22,000"
+                placeholder="22,000"
                 className={inputClass}
               />
             </div>
@@ -296,7 +296,7 @@ export default function AdminPricingPage() {
               <input
                 value={form.compareAtPrice}
                 onChange={(e) => setForm({ ...form, compareAtPrice: e.target.value })}
-                placeholder="$28,000"
+                placeholder="28,000"
                 className={inputClass}
               />
             </div>
@@ -375,7 +375,7 @@ export default function AdminPricingPage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-4 py-2.5 rounded-xl bg-[#004d4d] hover:bg-[#006666] text-white font-bold text-xs shadow-md transition-colors disabled:opacity-60"
+              className="px-4 py-2.5 rounded-xl bg-[#226263] hover:bg-[#1a4f50] text-white font-bold text-xs shadow-md transition-colors disabled:opacity-60"
             >
               {saving ? "Saving..." : editing ? "Update Plan" : "Publish Plan"}
             </button>

@@ -28,6 +28,7 @@ export function serviceFromApi(row: Record<string, unknown>): Service {
     technologies: Array.isArray(row.technologies)
       ? (row.technologies as string[])
       : [],
+    imageUrl: String(row.image_url || ""),
   };
 }
 
@@ -38,6 +39,7 @@ export function serviceToApi(s: Service) {
     subtitle: s.subtitle,
     description: s.description,
     icon: s.iconName,
+    image_url: s.imageUrl?.trim() || null,
     features: s.features || [],
     deliverables: s.deliverables || [],
     technologies: s.technologies || [],
@@ -252,14 +254,22 @@ export function testimonialToApi(t: TestimonialItem) {
 }
 
 /* ---------- Pricing Plans ---------- */
+/** Strip $, €, £ and similar currency prefixes from price display strings. */
+export function stripCurrencySymbol(value: string): string {
+  return String(value || "")
+    .replace(/^[\$€£¥₹]\s*/u, "")
+    .replace(/\s*[\$€£¥₹]/gu, "")
+    .trim();
+}
+
 export function pricingFromApi(row: Record<string, unknown>): PricingPlan {
   return {
     id: String(row.id),
     title: String(row.title || ""),
     subtitle: String(row.subtitle || ""),
     description: String(row.description || ""),
-    price: String(row.price || ""),
-    compareAtPrice: String(row.compare_at_price || ""),
+    price: stripCurrencySymbol(String(row.price || "")),
+    compareAtPrice: stripCurrencySymbol(String(row.compare_at_price || "")),
     discountPercent: Number(row.discount_percent || 0),
     discountLabel: String(row.discount_label || ""),
     features: Array.isArray(row.features) ? (row.features as string[]) : [],
@@ -278,8 +288,10 @@ export function pricingToApi(p: PricingPlan) {
     title: p.title,
     subtitle: p.subtitle,
     description: p.description,
-    price: p.price,
-    compare_at_price: p.compareAtPrice || null,
+    price: stripCurrencySymbol(p.price),
+    compare_at_price: p.compareAtPrice
+      ? stripCurrencySymbol(p.compareAtPrice)
+      : null,
     discount_percent: p.discountPercent || 0,
     discount_label: p.discountLabel || null,
     features: p.features || [],

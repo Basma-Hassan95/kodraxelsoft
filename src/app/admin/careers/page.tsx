@@ -351,7 +351,7 @@ export default function AdminCareersPage() {
           <div className="flex gap-2">
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-[#004d4d] hover:bg-[#006666] text-white font-bold text-xs shadow-md transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-[#226263] hover:bg-[#1a4f50] text-white font-bold text-xs shadow-md transition-colors"
             >
               {editingCareer ? "Save Job Role" : "Publish Job Opening"}
             </button>

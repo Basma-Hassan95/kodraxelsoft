@@ -1,112 +1,118 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { GSAPReveal } from "@/components/ui/GSAPReveal";
-import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
 import { processSteps } from "@/data/process";
-import { ArrowRight, CheckCircle2, Clock, Users } from "lucide-react";
+import { ArrowRight, CheckCircle2, Clock } from "lucide-react";
+
+const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function ProcessPage() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ["start 70%", "end 40%"],
+  });
+  const progressHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 py-12">
-      
-      {/* Header */}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 py-12 relative overflow-hidden">
+      <div className="pointer-events-none absolute top-0 right-0 w-96 h-96 rounded-full bg-[#004d4d]/10 blur-[120px]" />
+
       <SectionHeader
-        badgeText="Agile Framework"
-        title="Our 6-Stage Client Onboarding &"
-        gradientTitle="Development Lifecycle"
-        subtitle="How our principal architects take your product from initial architectural discovery to a sub-50ms production edge launch."
+        badgeText="Delivery Process"
+        title="From Discovery to"
+        gradientTitle="Production Launch"
+        subtitle="A clear six-stage path — scroll to watch the journey unlock, teal progress tracking every milestone."
       />
 
-      {/* 6-Stage Timeline List */}
-      <div className="space-y-12 relative">
-        {/* Connecting Vertical Axis Line for Desktop */}
-        <div className="hidden lg:block absolute top-10 bottom-10 left-1/2 -translate-x-1/2 w-0.5 bg-[#004d4d]/40" />
+      <div ref={trackRef} className="relative max-w-3xl mx-auto">
+        {/* Progress rail */}
+        <div className="absolute left-4 sm:left-6 top-0 bottom-0 w-px bg-slate-200 dark:bg-slate-800">
+          <motion.div
+            style={{ height: progressHeight }}
+            className="w-full origin-top bg-gradient-to-b from-[#004d4d] via-[#006666] to-cyan-400"
+          />
+        </div>
 
-        {processSteps.map((step, idx) => {
-          const isEven = idx % 2 === 0;
-          return (
-            <GSAPReveal key={step.stepNumber} direction={isEven ? "left" : "right"} delay={idx * 0.08}>
-              <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-center`}>
-                
-                {/* Step Card */}
-                <div className={`lg:col-span-12`}>
-                  <GlowCard className="p-8">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
-                      <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-[#004d4d]/10 border border-[#006666]/30 flex items-center justify-center text-[#004d4d] dark:text-cyan-400 font-extrabold text-xl shrink-0">
-                          {step.stepNumber}
-                        </div>
-                        <div>
-                          <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{step.title}</h3>
-                          <p className="text-sm font-semibold text-[#004d4d] dark:text-cyan-400">{step.subtitle}</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-3 text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
-                        <span className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
-                          <span>{step.duration}</span>
-                        </span>
-                        <span className="px-3 py-1.5 rounded-full bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 border border-[#006666]/20 flex items-center gap-1.5">
-                          <Users className="w-3.5 h-3.5" />
-                          <span>{step.leadArchitect}</span>
-                        </span>
-                      </div>
-                    </div>
+        <div className="space-y-8 sm:space-y-10">
+          {processSteps.map((step, idx) => (
+            <motion.article
+              key={step.stepNumber}
+              initial={{ opacity: 0, x: 36 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ duration: 0.5, delay: 0.04, ease }}
+              className="relative pl-14 sm:pl-20"
+            >
+              <motion.div
+                initial={{ scale: 0.6, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 280, damping: 18 }}
+                className="absolute left-1.5 sm:left-3.5 top-5 w-6 h-6 rounded-full border-2 border-[#004d4d] dark:border-cyan-400 bg-white dark:bg-[#090d16] flex items-center justify-center shadow-[0_0_0_4px_rgba(0,77,77,0.12)]"
+              >
+                <span className="w-2 h-2 rounded-full bg-[#004d4d] dark:bg-cyan-400" />
+              </motion.div>
 
-                    <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-6">
-                      <div className="md:col-span-7">
-                        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                          {step.description}
-                        </p>
-                      </div>
-                      
-                      <div className="md:col-span-5 p-4 rounded-xl bg-slate-100 dark:bg-[#090d16] border border-slate-200 dark:border-slate-800">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-[#004d4d] dark:text-cyan-400 mb-3">
-                          Key Stage Deliverables:
-                        </h4>
-                        <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-                          {step.keyDeliverables.map((del, dIdx) => (
-                            <li key={dIdx} className="flex items-center gap-2">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400 shrink-0" />
-                              <span>{del}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </GlowCard>
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-[#111726]/90 backdrop-blur-sm p-6 sm:p-7 shadow-sm hover:border-[#004d4d]/40 dark:hover:border-cyan-500/40 transition-colors">
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <span className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#004d4d] dark:text-cyan-400">
+                    Stage {step.stepNumber}
+                  </span>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-semibold text-slate-500">
+                    <Clock className="w-3 h-3" />
+                    {step.duration}
+                  </span>
                 </div>
-
+                <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+                  {step.title}
+                </h3>
+                <p className="mt-1 text-xs font-semibold text-[#004d4d] dark:text-cyan-400">
+                  {step.subtitle}
+                </p>
+                <p className="mt-3 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  {step.description}
+                </p>
+                <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {step.keyDeliverables.map((del) => (
+                    <li
+                      key={del}
+                      className="flex items-start gap-2 text-xs text-slate-700 dark:text-slate-300"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400 shrink-0 mt-0.5" />
+                      {del}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </GSAPReveal>
-          );
-        })}
+            </motion.article>
+          ))}
+        </div>
       </div>
 
-      {/* SLA Guarantees Banner */}
-      <section className="pt-12">
-        <GSAPReveal direction="up">
-          <div className="p-8 md:p-12 rounded-3xl border border-[#006666]/40 bg-[#0c1424] dark:bg-[#111726] text-center space-y-6">
-            <h2 className="text-3xl font-extrabold text-white">Our Enterprise SLA Guarantee</h2>
-            <p className="text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Every project comes signed with our 100/100 Lighthouse performance guarantee, 30-day post-launch code warranty, and direct senior engineering support.
-            </p>
-            <Button
-              variant="teal-gradient"
-              size="lg"
-              icon={<ArrowRight className="w-5 h-5" />}
-              onClick={() => (window.location.href = "/contact")}
-            >
-              Start Your Onboarding
-            </Button>
-          </div>
-        </GSAPReveal>
-      </section>
-
+      <motion.div
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, ease }}
+        className="p-8 md:p-12 rounded-3xl border border-[#006666]/40 bg-[#0c1424] text-center space-y-6"
+      >
+        <h2 className="text-3xl font-extrabold text-white">Ready for Stage One?</h2>
+        <p className="text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
+          Book a discovery call — we map scope, timeline, and architecture before a single line of production code.
+        </p>
+        <Button
+          variant="teal-gradient"
+          size="lg"
+          icon={<ArrowRight className="w-5 h-5" />}
+          onClick={() => (window.location.href = "/contact")}
+        >
+          Start Your Onboarding
+        </Button>
+      </motion.div>
     </div>
   );
 }

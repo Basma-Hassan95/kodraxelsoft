@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import { X, Volume2, VolumeX, ArrowRight } from "lucide-react";
@@ -118,7 +118,7 @@ export const IntroVideoSplash: React.FC = () => {
           {/* Skip Intro Button */}
           <button
             onClick={handleClose}
-            className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#004d4d] hover:bg-[#006666] text-white font-bold text-[11px] sm:text-xs border border-cyan-400/50 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-105 focus:outline-none flex items-center gap-1.5 sm:gap-2"
+            className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#226263] hover:bg-[#1a4f50] text-white font-bold text-[11px] sm:text-xs border border-cyan-400/50 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-105 focus:outline-none flex items-center gap-1.5 sm:gap-2"
           >
             <span>Skip Intro</span>
             <ArrowRight className="w-3.5 h-3.5" />

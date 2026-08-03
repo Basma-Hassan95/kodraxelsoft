@@ -196,7 +196,7 @@ export default function AdminMetaAdsPage() {
             type="button"
             onClick={() => void refresh()}
             disabled={loading}
-            className="px-4 py-2.5 rounded-xl bg-[#004d4d] hover:bg-[#006666] text-white font-bold text-xs shadow-md flex items-center gap-2 disabled:opacity-60"
+            className="px-4 py-2.5 rounded-xl bg-[#226263] hover:bg-[#1a4f50] text-white font-bold text-xs shadow-md flex items-center gap-2 disabled:opacity-60"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             Refresh from DB
@@ -335,7 +335,7 @@ export default function AdminMetaAdsPage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-4 py-2.5 rounded-xl bg-[#004d4d] hover:bg-[#006666] text-white font-bold text-xs shadow-md transition-colors disabled:opacity-60"
+              className="px-4 py-2.5 rounded-xl bg-[#226263] hover:bg-[#1a4f50] text-white font-bold text-xs shadow-md transition-colors disabled:opacity-60"
             >
               {saving ? "Saving..." : editing ? "Update Ad" : "Publish Ad"}
             </button>

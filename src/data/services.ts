@@ -10,6 +10,8 @@ export interface Service {
   basePrice: string;
   estimatedWeeks: string;
   technologies: string[];
+  /** Background image for accordion / cards */
+  imageUrl?: string;
 }
 
 export const servicesData: Service[] = [

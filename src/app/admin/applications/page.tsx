@@ -98,7 +98,7 @@ export default function AdminApplicationsPage() {
         <button
           type="button"
           onClick={() => void load()}
-          className="px-4 py-2.5 rounded-xl bg-[#004d4d] text-white text-xs font-bold flex items-center gap-2"
+          className="px-4 py-2.5 rounded-xl bg-[#226263] text-white text-xs font-bold flex items-center gap-2"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           Refresh

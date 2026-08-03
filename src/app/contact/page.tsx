@@ -10,7 +10,6 @@ import confetti from "canvas-confetti";
 import {
   Mail,
   Phone,
-  MapPin,
   CheckCircle2,
   Send,
   ChevronDown,
@@ -18,94 +17,78 @@ import {
   Sparkles,
   Volume2,
   VolumeX,
-  Briefcase
+  Briefcase,
 } from "lucide-react";
 import { DEFAULT_SITE_SETTINGS } from "@/lib/siteSettings";
 
-const SERVICE_SLUG_TO_TYPE: Record<string, string> = {
-  "web-architecture": "web",
-  "ai-integration": "ai",
-  "cloud-infrastructure": "cloud",
-  "mobile-enterprise": "mobile",
-  "ai-automation": "ai-automation",
-  wordpress: "wordpress",
-  "custom-software": "saas"
-};
+const PLATFORMS = [
+  "Next.js / React",
+  "WordPress",
+  "Mobile App (iOS / Android)",
+  "Custom SaaS",
+  "Other",
+];
+
+const THEMES = [
+  { id: "teal", label: "Teal / Cyan", swatch: "#004d4d" },
+  { id: "navy", label: "Navy Blue", swatch: "#0a2a4a" },
+  { id: "dark", label: "Dark Premium", swatch: "#0f172a" },
+  { id: "light", label: "Clean Light", swatch: "#e2e8f0" },
+  { id: "custom", label: "Custom Brand Colors", swatch: "#f59e0b" },
+];
+
+const inputClass =
+  "w-full px-4 py-2.5 rounded-xl text-sm border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40";
 
 function ContactFormContent() {
   const searchParams = useSearchParams();
-  const serviceSlug = searchParams ? searchParams.get("service") || "" : "";
-  const serviceName = searchParams ? searchParams.get("serviceName") || "" : "";
-  const pricingPlan = searchParams ? searchParams.get("plan") || "" : "";
-  const quotedPrice = searchParams ? searchParams.get("price") || "" : "";
-  const compareAtPrice = searchParams ? searchParams.get("compareAt") || "" : "";
-  const discountPercent = searchParams ? searchParams.get("discount") || "" : "";
-  const initialType = searchParams
-    ? searchParams.get("type") || SERVICE_SLUG_TO_TYPE[serviceSlug] || "web"
-    : "web";
+  const serviceSlug = searchParams?.get("service") || "";
+  const serviceName = searchParams?.get("serviceName") || "";
+  const pricingPlan = searchParams?.get("plan") || "";
+  const quotedPrice = searchParams?.get("price") || "";
+  const compareAtPrice = searchParams?.get("compareAt") || "";
+  const discountPercent = searchParams?.get("discount") || "";
   const hasExactQuote = Boolean(quotedPrice.trim());
-  const initialBudget = searchParams
-    ? searchParams.get("budget") ||
-      (hasExactQuote ? quotedPrice.trim() : "$15,000 - $30,000")
-    : "$15,000 - $30,000";
 
-  const [projectType, setProjectType] = useState<string>(initialType);
-  const [selectedBudget, setSelectedBudget] = useState<string>(initialBudget);
-  const [clientName, setClientName] = useState("");
-  const [clientEmail, setClientEmail] = useState("");
-  const [clientCompany, setClientCompany] = useState("");
-  const [projectDetails, setProjectDetails] = useState(() => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [description, setDescription] = useState(() => {
     if (pricingPlan && quotedPrice) {
-      return `I'm interested in the ${pricingPlan} plan at the quoted price of ${quotedPrice}. `;
+      return `I want the ${pricingPlan} plan at ${quotedPrice}. `;
     }
-    if (serviceName) {
-      return `I'm interested in: ${serviceName}${pricingPlan ? ` (${pricingPlan} plan)` : ""}. `;
-    }
+    if (serviceName) return `I'm interested in: ${serviceName}. `;
     return "";
   });
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [platform, setPlatform] = useState(PLATFORMS[0]);
+  const [theme, setTheme] = useState(THEMES[0].id);
+  const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState("");
-
-  const budgetOptions = [
-    "$15,000 - $30,000",
-    "$30,000 - $50,000",
-    "$50,000 - $100,000+",
-    "Custom / Enterprise Scope"
-  ];
-
-  const projectTypesList = [
-    { id: "web", name: "Next.js Web App" },
-    { id: "ai", name: "AI Model & Multi-Agent" },
-    { id: "cloud", name: "Cloud Infrastructure" },
-    { id: "mobile", name: "Cross-Platform Mobile" },
-    { id: "ai-automation", name: "AI Automation" },
-    { id: "wordpress", name: "WordPress Development" },
-    { id: "saas", name: "Custom Software / SaaS" }
-  ];
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!(clientName && clientEmail)) return;
-
-    const typeLabel =
-      projectTypesList.find((t) => t.id === projectType)?.name || projectType;
-
-    // Always send exact plan price when client came from a pricing plan
-    const budgetToSave = hasExactQuote ? quotedPrice.trim() : selectedBudget;
-
+    if (!(name && email && phone)) return;
     setSubmitting(true);
-    setSubmitError("");
+    setError("");
+    const themeLabel = THEMES.find((t) => t.id === theme)?.label || theme;
+    const details = [
+      description.trim(),
+      `Platform: ${platform}`,
+      `Color theme: ${themeLabel}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     try {
       const { submitPublicOrder } = await import("@/lib/publicContent");
       await submitPublicOrder({
-        client_name: clientName.trim(),
-        client_email: clientEmail.trim(),
-        client_company: clientCompany.trim() || undefined,
-        project_type: typeLabel,
-        budget: budgetToSave,
-        details: projectDetails.trim() || undefined,
+        client_name: name.trim(),
+        client_email: email.trim(),
+        client_phone: phone.trim(),
+        project_type: platform,
+        budget: hasExactQuote ? quotedPrice.trim() : undefined,
+        details,
         metadata: {
           source: pricingPlan
             ? "pricing_page"
@@ -118,243 +101,157 @@ function ContactFormContent() {
           quoted_price: hasExactQuote ? quotedPrice.trim() : undefined,
           compare_at_price: compareAtPrice || undefined,
           discount_percent: discountPercent || undefined,
+          platform,
+          color_theme: themeLabel,
         },
       });
-
-      setFormSubmitted(true);
-      confetti({
-        particleCount: 120,
-        spread: 80,
-        origin: { y: 0.5 },
-      });
+      setSubmitted(true);
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.5 } });
     } catch (err) {
-      setSubmitError(
-        err instanceof Error
-          ? err.message
-          : "Could not save your inquiry. Please ensure the CMS API is running and try again."
-      );
+      setError(err instanceof Error ? err.message : "Could not submit inquiry.");
     } finally {
       setSubmitting(false);
     }
   };
 
+  if (submitted) {
+    return (
+      <div className="text-center py-16 space-y-6">
+        <div className="w-20 h-20 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center mx-auto animate-bounce">
+          <CheckCircle2 className="w-10 h-10" />
+        </div>
+        <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white">
+          Inquiry Received!
+        </h3>
+        <p className="text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+          Thank you, <strong>{name}</strong>
+          {hasExactQuote ? (
+            <>
+              . Quote noted: <strong className="text-[#004d4d] dark:text-cyan-400">{quotedPrice}</strong>
+            </>
+          ) : null}
+          . We will contact you at <strong>{email}</strong> / <strong>{phone}</strong> within 24 hours.
+        </p>
+        <Button variant="teal-gradient" size="md" onClick={() => setSubmitted(false)}>
+          Submit Another Inquiry
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <GlowCard className="p-8 sm:p-10">
-      {formSubmitted ? (
-        <div className="text-center py-16 space-y-6">
-          <div className="w-20 h-20 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center mx-auto animate-bounce">
-            <CheckCircle2 className="w-10 h-10" />
+      <form onSubmit={(e) => void handleSubmit(e)} className="space-y-5">
+        {(serviceName || pricingPlan || hasExactQuote) && (
+          <div className="flex items-start gap-3 p-4 rounded-xl bg-[#004d4d]/10 border border-[#004d4d]/30 text-[#004d4d] dark:text-cyan-400">
+            <Briefcase className="w-4 h-4 mt-0.5 shrink-0" />
+            <div className="text-xs font-semibold space-y-1">
+              {serviceName && (
+                <p>
+                  From: <span className="font-extrabold">{serviceName}</span>
+                </p>
+              )}
+              {pricingPlan && (
+                <p>
+                  Plan: <span className="font-extrabold">{pricingPlan}</span>
+                </p>
+              )}
+              {hasExactQuote && (
+                <p>
+                  Agreed quote:{" "}
+                  <span className="font-extrabold text-base">{quotedPrice}</span>
+                </p>
+              )}
+            </div>
           </div>
-          <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white">Project Brief Received!</h3>
-          <p className="text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
-            Thank you, <strong className="text-slate-900 dark:text-white">{clientName}</strong>. Our engineering team has received your details
-            {hasExactQuote ? (
-              <>
-                {" "}for the quoted price of{" "}
-                <strong className="text-[#004d4d] dark:text-cyan-400">{quotedPrice}</strong>
-                {pricingPlan ? (
-                  <>
-                    {" "}({pricingPlan})
-                  </>
-                ) : null}
-              </>
-            ) : (
-              <>
-                {" "}for <strong className="text-[#004d4d] dark:text-cyan-400">{projectType}</strong>
-              </>
-            )}
-            . We will contact you at <strong className="text-slate-900 dark:text-white">{clientEmail}</strong> within 24 hours.
-          </p>
-          <Button variant="teal-gradient" size="md" onClick={() => setFormSubmitted(false)}>
-            Submit Another Project Inquiry
-          </Button>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold mb-1">Full Name *</label>
+            <input required value={name} onChange={(e) => setName(e.target.value)} className={inputClass} placeholder="Your name" />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold mb-1">Email *</label>
+            <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} placeholder="you@company.com" />
+          </div>
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-6">
 
-          {(serviceName || pricingPlan || hasExactQuote) && (
-            <div className="flex items-start gap-3 p-4 rounded-xl bg-[#004d4d]/10 border border-[#004d4d]/30 text-[#004d4d] dark:text-cyan-400">
-              <Briefcase className="w-4 h-4 mt-0.5 shrink-0" />
-              <div className="text-xs font-semibold leading-relaxed space-y-1">
-                {serviceName ? (
-                  <p>
-                    You came through:{" "}
-                    <span className="font-extrabold">{serviceName}</span>
-                    {serviceSlug === "wordpress" ||
-                    /wordpress/i.test(serviceName) ? (
-                      <span className="font-bold"> (WordPress service inquiry)</span>
-                    ) : null}
-                  </p>
-                ) : null}
-                {pricingPlan ? (
-                  <p>
-                    Pricing plan selected:{" "}
-                    <span className="font-extrabold">{pricingPlan}</span>
-                  </p>
-                ) : null}
-                {hasExactQuote ? (
-                  <p>
-                    Agreed quote:{" "}
-                    <span className="font-extrabold text-lg">{quotedPrice}</span>
-                    {compareAtPrice ? (
-                      <span className="ml-2 line-through opacity-60">{compareAtPrice}</span>
-                    ) : null}
-                    {discountPercent ? (
-                      <span className="ml-2 text-emerald-600 dark:text-emerald-400">
-                        ({discountPercent}% off)
-                      </span>
-                    ) : null}
-                  </p>
-                ) : null}
-                <p className="text-[11px] opacity-80 font-medium">
-                  Our team will see this exact quote on your inquiry.
-                </p>
-              </div>
-            </div>
-          )}
+        <div>
+          <label className="block text-xs font-semibold mb-1">Phone / WhatsApp *</label>
+          <input required value={phone} onChange={(e) => setPhone(e.target.value)} className={inputClass} placeholder="+92 300 0000000" />
+        </div>
 
-          {/* 1. Project Type Chips */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#004d4d] dark:text-cyan-400 mb-3">
-              1. Select Primary Architecture Type
-            </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-              {projectTypesList.map((type) => (
-                <button
-                  key={type.id}
-                  type="button"
-                  onClick={() => setProjectType(type.id)}
-                  className={`p-3 rounded-xl border text-xs font-semibold text-center transition-all ${
-                    projectType === type.id
-                      ? "border-[#004d4d] bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400"
-                      : "border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-400"
-                  }`}
-                >
-                  {type.name}
-                </button>
-              ))}
-            </div>
+        <div>
+          <label className="block text-xs font-semibold mb-1">
+            What kind of website / product do you want? *
+          </label>
+          <textarea
+            required
+            rows={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className={inputClass}
+            placeholder="Describe the website or product you want built…"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold mb-2">Build on which platform? *</label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {PLATFORMS.map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setPlatform(p)}
+                className={`p-2.5 rounded-xl border text-[11px] font-semibold ${
+                  platform === p
+                    ? "border-[#004d4d] bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400"
+                    : "border-slate-300 dark:border-slate-800"
+                }`}
+              >
+                {p}
+              </button>
+            ))}
           </div>
+        </div>
 
-          {/* 2. Exact quoted price OR budget ranges */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#004d4d] dark:text-cyan-400 mb-3">
-              2. {hasExactQuote ? "Quoted Plan Price" : "Estimated Budget Investment"}
-            </label>
-            {hasExactQuote ? (
-              <div className="p-4 rounded-xl border-2 border-[#004d4d] bg-[#004d4d]/10 dark:border-cyan-500/50 dark:bg-cyan-500/10">
-                <div className="flex flex-wrap items-end gap-2">
-                  <span className="text-2xl sm:text-3xl font-extrabold text-[#004d4d] dark:text-cyan-300">
-                    {quotedPrice}
-                  </span>
-                  {compareAtPrice ? (
-                    <span className="text-sm font-semibold text-slate-400 line-through">
-                      {compareAtPrice}
-                    </span>
-                  ) : null}
-                </div>
-                <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 mt-2">
-                  This exact price from your selected plan will be saved with your inquiry
-                  {pricingPlan ? ` (${pricingPlan})` : ""}. Budget ranges are not used for pricing-page quotes.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-2.5">
-                {budgetOptions.map((budget) => (
-                  <button
-                    key={budget}
-                    type="button"
-                    onClick={() => setSelectedBudget(budget)}
-                    className={`p-3 rounded-xl border text-xs font-semibold text-center transition-all ${
-                      selectedBudget === budget
-                        ? "border-[#004d4d] bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400"
-                        : "border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-400"
-                    }`}
-                  >
-                    {budget}
-                  </button>
-                ))}
-              </div>
-            )}
+        <div>
+          <label className="block text-xs font-semibold mb-2">Color theme preference *</label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {THEMES.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setTheme(t.id)}
+                className={`p-2.5 rounded-xl border text-[11px] font-semibold flex items-center gap-2 ${
+                  theme === t.id
+                    ? "border-[#004d4d] bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400"
+                    : "border-slate-300 dark:border-slate-800"
+                }`}
+              >
+                <span className="w-4 h-4 rounded-full border border-white/40" style={{ background: t.swatch }} />
+                {t.label}
+              </button>
+            ))}
           </div>
+        </div>
 
-          {/* 3. Client Contact Details */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Your Full Name *</label>
-              <input
-                type="text"
-                required
-                placeholder="Alex Morgan"
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl text-sm border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Work Email *</label>
-              <input
-                type="email"
-                required
-                placeholder="alex@company.com"
-                value={clientEmail}
-                onChange={(e) => setClientEmail(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl text-sm border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
-              />
-            </div>
+        {error && (
+          <div className="px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-semibold">
+            {error}
           </div>
+        )}
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Company / Organization Name</label>
-            <input
-              type="text"
-              placeholder="Acme Enterprise Inc."
-              value={clientCompany}
-              onChange={(e) => setClientCompany(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl text-sm border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
-            />
-          </div>
+        <Button type="submit" variant="teal-gradient" size="lg" disabled={submitting} icon={<Send className="w-5 h-5" />} className="w-full justify-center">
+          {submitting ? "Sending…" : "Submit Inquiry"}
+        </Button>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Project Scope & Objectives</label>
-            <textarea
-              rows={4}
-              placeholder="Describe your product vision, target launch date, or specific technical requirements..."
-              value={projectDetails}
-              onChange={(e) => setProjectDetails(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl text-sm border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
-            />
-          </div>
-
-          {submitError && (
-            <div className="px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-semibold">
-              {submitError}
-              <div className="mt-1 font-normal text-rose-400/90">
-                Tip: Backend API must be running at{" "}
-                <code className="font-mono">http://localhost:5000</code> (
-                <code className="font-mono">cd backend && npm run dev</code>).
-              </div>
-            </div>
-          )}
-
-          <Button
-            type="submit"
-            variant="teal-gradient"
-            size="lg"
-            disabled={submitting}
-            icon={<Send className="w-5 h-5" />}
-            className="w-full justify-center"
-          >
-            {submitting ? "Sending to CMS..." : "Submit Project Brief"}
-          </Button>
-
-          <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
-            <span>Strict NDA Protection & 24-Hour Technical Response SLA</span>
-          </div>
-        </form>
-      )}
+        <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500">
+          <ShieldCheck className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
+          Strict NDA Protection & 24-Hour Response
+        </div>
+      </form>
     </GlowCard>
   );
 }
@@ -383,168 +280,121 @@ export default function ContactPage() {
   const faqs = [
     {
       q: "Who handles our project technical execution?",
-      a: "You work 1-on-1 exclusively with our senior principal architects. We do not use account managers or offshore sub-contractors."
+      a: "You work 1-on-1 exclusively with our senior principal architects. We do not use account managers or offshore sub-contractors.",
     },
     {
       q: "What is your standard project delivery timeline?",
-      a: "Most Next.js Web App and AI integration projects take between 3 to 6 weeks from initial architecture blueprinting to production edge cutover."
+      a: "Most Next.js Web App and AI integration projects take between 3 to 6 weeks from initial architecture blueprinting to production edge cutover.",
     },
     {
       q: "Do you offer post-launch code warranties & SLAs?",
-      a: "Yes. Every contract includes a 30-day full code warranty, 100/100 Lighthouse performance benchmark guarantee, and an optional continuous SLA maintenance retainer."
+      a: "Yes. Every contract includes a 30-day full code warranty and an optional continuous SLA maintenance retainer.",
     },
     {
-      q: "How do we get started after submitting this lead form?",
-      a: "Within 24 hours, our technical discovery team will schedule a 30-minute technical discovery call with our engineering leads to review your requirements."
-    }
+      q: "How do we get started after submitting this form?",
+      a: "Within 24 hours, our team will schedule a discovery call to review your requirements, platform, and color theme preferences.",
+    },
   ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 py-12">
-      
-      {/* Header */}
       <SectionHeader
         badgeText="Start a Conversation"
-        title="Direct Architectural Lead Form"
-        subtitle="Ready to build? Fill out the project questionnaire below to connect directly with our principal architects within 24 hours."
+        title="Project Inquiry Form"
+        subtitle="Tell us your name, contact, what you want to build, platform, and color theme."
       />
 
-      {/* Main Grid: Form + Contact Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        
-        {/* Form Col */}
         <GSAPReveal direction="left" className="lg:col-span-7">
-          <Suspense fallback={<div className="p-8 rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#111726] text-slate-600 dark:text-slate-400 text-sm">Loading questionnaire...</div>}>
+          <Suspense
+            fallback={
+              <div className="p-8 rounded-2xl border border-slate-300 dark:border-slate-800 text-sm text-slate-500">
+                Loading form…
+              </div>
+            }
+          >
             <ContactFormContent />
           </Suspense>
         </GSAPReveal>
 
-        {/* Contact Info & Video 2 Col */}
         <GSAPReveal direction="right" className="lg:col-span-5 space-y-6">
-          
-          {/* 3D Glassmorphic Studio Trust Video Card (Video 2) */}
           <GlowCard className="p-5">
             <div className="flex items-center justify-between pb-2 mb-3 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-2 text-xs font-bold text-[#004d4d] dark:text-cyan-400 uppercase tracking-wider">
                 <Sparkles className="w-4 h-4 text-cyan-400 animate-pulse" />
-                <span>Kodraxelsoft Studio Identity</span>
+                <span>Studio Identity</span>
               </div>
               <button
                 onClick={() => setIsContactMuted(!isContactMuted)}
-                className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-cyan-400 transition-colors"
+                className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800"
                 aria-label="Toggle Sound"
               >
                 {isContactMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-cyan-400" />}
               </button>
             </div>
-
-            <div className="relative w-full aspect-video sm:h-52 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950 shadow-inner flex items-center justify-center">
+            <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950">
               <video
                 src="/video2.mp4"
                 autoPlay
                 loop
                 muted={isContactMuted}
                 playsInline
-                className="w-full h-full object-contain sm:object-cover group-hover:scale-105 transition-transform duration-500 transform-gpu"
+                className="w-full h-full object-contain sm:object-cover"
               />
             </div>
-            
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 pt-3 leading-relaxed">
-              Engineered by principal software architects. 100% fixed-scope deliverable guarantee backed by NDA protection.
-            </p>
           </GlowCard>
 
           <GlowCard className="p-6">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Direct Contact Channels</h3>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Direct Contact</h3>
             <div className="space-y-4 text-xs">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 flex items-center justify-center shrink-0">
                   <Mail className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-500 dark:text-slate-400">General & Client Inquiries</div>
-                  <a href={`mailto:${settings.contactEmail}`} className="font-bold text-slate-900 dark:text-slate-100 hover:text-[#004d4d] dark:hover:text-cyan-400">
+                  <div className="text-slate-500">Email</div>
+                  <a href={`mailto:${settings.contactEmail}`} className="font-bold text-slate-900 dark:text-slate-100">
                     {settings.contactEmail}
                   </a>
                 </div>
               </div>
-
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 flex items-center justify-center shrink-0">
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-500 dark:text-slate-400">Architect Direct Desk</div>
-                  <a href={`tel:${settings.contactPhone.replace(/\s/g, "")}`} className="font-bold text-slate-900 dark:text-slate-100 hover:text-[#004d4d] dark:hover:text-cyan-400">
+                  <div className="text-slate-500">Phone</div>
+                  <a href={`tel:${settings.contactPhone.replace(/\s/g, "")}`} className="font-bold text-slate-900 dark:text-slate-100">
                     {settings.contactPhone}
                   </a>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 flex items-center justify-center shrink-0">
-                  <MapPin className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-slate-500 dark:text-slate-400">Headquarters</div>
-                  <div className="font-bold text-slate-900 dark:text-slate-100">{settings.address}</div>
-                </div>
-              </div>
-            </div>
-          </GlowCard>
-
-          {/* Location Map Teaser Card */}
-          <GlowCard className="p-6">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">{settings.companyName} HQ Map</h3>
-            <div className="relative w-full h-44 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://images.unsplash.com/photo-1506146332389-18140dc7b2fb?auto=format&fit=crop&q=80&w=800"
-                alt={`${settings.companyName} Map`}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-cyan-950/40 flex items-center justify-center">
-                <div className="px-3 py-1.5 rounded-full bg-slate-950/90 backdrop-blur-md border border-[#006666]/50 text-[11px] font-bold text-cyan-400 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-cyan-400 animate-bounce" />
-                  <span>{settings.companyName.toUpperCase()}</span>
                 </div>
               </div>
             </div>
           </GlowCard>
         </GSAPReveal>
-
       </div>
 
-      {/* FAQ Accordion Section */}
       <section className="pt-12">
-        <SectionHeader
-          badgeText="FAQ"
-          title="Frequently Asked"
-          gradientTitle="Questions"
-          subtitle="Everything you need to know about partnering with our elite software studio."
-        />
-
-        <GSAPReveal stagger={0.08} className="max-w-3xl mx-auto space-y-4">
+        <SectionHeader badgeText="FAQ" title="Frequently Asked" gradientTitle="Questions" />
+        <GSAPReveal stagger={0.06} className="max-w-3xl mx-auto space-y-4">
           {faqs.map((faq, idx) => {
             const isOpen = openFaq === idx;
             return (
               <div
                 key={idx}
-                className={`rounded-2xl border transition-all duration-300 overflow-hidden shadow-sm ${
-                  isOpen
-                    ? "border-[#004d4d] bg-white dark:bg-[#111726] ring-1 ring-[#004d4d]/30"
-                    : "border-slate-300 dark:border-slate-800/80 bg-white dark:bg-[#111726] hover:border-slate-400 dark:hover:border-slate-700"
-                }`}
+                className={`rounded-2xl border overflow-hidden ${
+                  isOpen ? "border-[#004d4d]" : "border-slate-300 dark:border-slate-800"
+                } bg-white dark:bg-[#111726]`}
               >
                 <button
                   onClick={() => setOpenFaq(isOpen ? null : idx)}
-                  className="w-full p-5 text-left flex items-center justify-between font-bold text-sm text-slate-900 dark:text-white hover:text-[#004d4d] dark:hover:text-cyan-400 focus:outline-none transition-colors"
+                  className="w-full p-5 text-left flex items-center justify-between font-bold text-sm"
                 >
-                  <span className="text-slate-900 dark:text-slate-50 font-bold">{faq.q}</span>
-                  <ChevronDown className={`w-4 h-4 shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180 text-[#004d4d] dark:text-cyan-400" : "text-slate-500 dark:text-slate-400"}`} />
+                  <span>{faq.q}</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
                 </button>
                 {isOpen && (
-                  <div className="px-5 pb-5 text-xs font-medium text-slate-700 dark:text-slate-300 leading-relaxed border-t border-slate-200 dark:border-slate-800/80 pt-3 bg-slate-50/50 dark:bg-[#090d16]/40">
+                  <div className="px-5 pb-5 text-xs text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-800 pt-3">
                     {faq.a}
                   </div>
                 )}
@@ -553,7 +403,6 @@ export default function ContactPage() {
           })}
         </GSAPReveal>
       </section>
-
     </div>
   );
 }

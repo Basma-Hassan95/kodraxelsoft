@@ -116,7 +116,7 @@ export default function AdminMediaPage() {
           type="button"
           onClick={() => void refreshAll()}
           disabled={loading}
-          className="px-4 py-2.5 rounded-xl bg-[#004d4d] hover:bg-[#006666] text-white font-bold text-xs shadow-md flex items-center gap-2 disabled:opacity-60"
+          className="px-4 py-2.5 rounded-xl bg-[#226263] hover:bg-[#1a4f50] text-white font-bold text-xs shadow-md flex items-center gap-2 disabled:opacity-60"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           Refresh from DB
@@ -208,7 +208,7 @@ export default function AdminMediaPage() {
           <button
             type="submit"
             disabled={saving || uploading}
-            className="px-4 py-2 rounded-xl bg-[#004d4d] hover:bg-[#006666] text-white font-bold text-xs transition-colors shadow-md flex items-center justify-center gap-2 h-9 disabled:opacity-60"
+            className="px-4 py-2 rounded-xl bg-[#226263] hover:bg-[#1a4f50] text-white font-bold text-xs transition-colors shadow-md flex items-center justify-center gap-2 h-9 disabled:opacity-60"
           >
             <Plus className="w-4 h-4" />
             <span>{saving ? "Saving..." : "Add Asset"}</span>

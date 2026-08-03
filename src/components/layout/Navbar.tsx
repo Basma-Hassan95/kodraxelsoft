@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Logo } from "@/components/ui/Logo";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Button } from "@/components/ui/Button";
-import { Menu, X, ArrowRight, Layers } from "lucide-react";
+import { Menu, X, ArrowRight } from "lucide-react";
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
@@ -27,15 +27,14 @@ export const Navbar: React.FC = () => {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Services", href: "/services" },
-    { name: "Pricing", href: "/pricing" },
     { name: "About", href: "/about" },
+    { name: "Blog", href: "/blog" },
+    { name: "Services", href: "/services" },
     { name: "Portfolio", href: "/portfolio" },
     { name: "Process", href: "/process" },
     { name: "Careers", href: "/careers" },
-    { name: "Reviews", href: "/reviews" },
-    { name: "Blog", href: "/blog" },
-    { name: "Contact", href: "/contact" }
+    { name: "Pricing", href: "/pricing" },
+    { name: "Contact", href: "/contact" },
   ];
 
   return (
@@ -54,16 +53,16 @@ export const Navbar: React.FC = () => {
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-1 bg-slate-200/80 dark:bg-[#111726]/90 p-1.5 rounded-full border border-slate-300 dark:border-slate-800/80 backdrop-blur-xl shadow-sm">
+        <nav className="hidden xl:flex items-center gap-0.5 bg-slate-200/80 dark:bg-[#111726]/90 p-1.5 rounded-full border border-slate-300 dark:border-slate-800/80 backdrop-blur-xl shadow-sm">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-3.5 py-1.5 rounded-full text-xs transition-all duration-300 ${
+                className={`relative px-2.5 py-1.5 rounded-full text-[11px] transition-all duration-300 ${
                   isActive
-                    ? "text-white bg-[#004d4d] font-bold shadow-md border border-[#006666]/40"
+                    ? "text-white bg-[#226263] font-bold shadow-md border border-[#226263]/40"
                     : "text-slate-800 dark:text-slate-200 font-semibold hover:text-[#004d4d] dark:hover:text-[#20b2aa] hover:bg-slate-300/50 dark:hover:bg-slate-800/70"
                 }`}
               >
@@ -74,7 +73,7 @@ export const Navbar: React.FC = () => {
         </nav>
 
         {/* Action CTAs & Theme Toggle */}
-        <div className="hidden lg:flex items-center gap-3">
+        <div className="hidden xl:flex items-center gap-3">
           <ThemeToggle />
           <Button
             variant="teal-gradient"
@@ -86,8 +85,8 @@ export const Navbar: React.FC = () => {
           </Button>
         </div>
 
-        {/* Mobile Right Bar */}
-        <div className="flex lg:hidden items-center gap-2">
+        {/* Mobile / tablet Right Bar */}
+        <div className="flex xl:hidden items-center gap-2">
           <ThemeToggle />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -101,7 +100,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-[#090d16]/95 backdrop-blur-2xl border-b border-slate-200 dark:border-slate-800 p-6 shadow-2xl animate-fadeIn">
+        <div className="xl:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-[#090d16]/95 backdrop-blur-2xl border-b border-slate-200 dark:border-slate-800 p-6 shadow-2xl animate-fadeIn">
           <div className="flex flex-col gap-3">
             {navLinks.map((link) => (
               <Link

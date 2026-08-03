@@ -93,7 +93,7 @@ export default function AdminLeadsPage() {
           <button
             type="button"
             onClick={handleExportCSV}
-            className="px-4 py-2.5 rounded-xl bg-[#004d4d] hover:bg-[#006666] text-white font-bold text-xs shadow-md transition-colors flex items-center gap-2"
+            className="px-4 py-2.5 rounded-xl bg-[#226263] hover:bg-[#1a4f50] text-white font-bold text-xs shadow-md transition-colors flex items-center gap-2"
           >
             <Download className="w-4 h-4" />
             <span>Export Leads (CSV)</span>

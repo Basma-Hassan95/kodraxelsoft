@@ -43,7 +43,7 @@ export default function PortfolioPage() {
               onClick={() => setSelectedCategory(cat)}
               className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-300 ${
                 selectedCategory === cat
-                  ? "bg-[#004d4d] text-white shadow-md border border-[#006666]/40"
+                  ? "bg-[#226263] text-white shadow-md border border-[#226263]/40"
                   : "bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700"
               }`}
             >

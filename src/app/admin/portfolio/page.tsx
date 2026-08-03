@@ -363,7 +363,7 @@ export default function AdminPortfolioPage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2.5 rounded-xl bg-[#004d4d] hover:bg-[#006666] text-white font-bold text-xs shadow-md disabled:opacity-60"
+              className="px-5 py-2.5 rounded-xl bg-[#226263] hover:bg-[#1a4f50] text-white font-bold text-xs shadow-md disabled:opacity-60"
             >
               {saving
                 ? "Saving to Supabase..."

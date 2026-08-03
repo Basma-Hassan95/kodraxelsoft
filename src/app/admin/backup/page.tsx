@@ -76,7 +76,7 @@ export default function AdminBackupPage() {
 
         <button
           onClick={handleDownloadFullBackup}
-          className="px-6 py-3.5 rounded-xl bg-[#004d4d] hover:bg-[#006666] text-white font-bold text-xs shadow-xl transition-all flex items-center gap-2"
+          className="px-6 py-3.5 rounded-xl bg-[#226263] hover:bg-[#1a4f50] text-white font-bold text-xs shadow-xl transition-all flex items-center gap-2"
         >
           <Download className="w-4.5 h-4.5" />
           <span>Download 1-Click Site Backup (.JSON)</span>

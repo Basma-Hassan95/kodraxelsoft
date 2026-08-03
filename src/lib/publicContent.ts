@@ -121,11 +121,14 @@ export interface PublicOrderMetadata {
   quoted_price?: string;
   compare_at_price?: string;
   discount_percent?: string;
+  platform?: string;
+  color_theme?: string;
 }
 
 export async function submitPublicOrder(payload: {
   client_name: string;
   client_email: string;
+  client_phone?: string;
   client_company?: string;
   project_type?: string;
   budget?: string;

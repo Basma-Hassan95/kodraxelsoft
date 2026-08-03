@@ -129,7 +129,7 @@ export async function loadAdminMetaAds(): Promise<MetaAd[]> {
   return ads;
 }
 
-/** Public website: only active ads from API. Empty DB = empty UI. */
+/** Public website: only active ads from API. Empty DB = empty UI (no local fallback). */
 export async function loadPublicMetaAds(): Promise<MetaAd[]> {
   clearStaleLocalMetaAds();
   try {
@@ -143,9 +143,9 @@ export async function loadPublicMetaAds(): Promise<MetaAd[]> {
       return ads.filter((a: MetaAd) => a.status === "active");
     }
   } catch {
-    /* offline */
+    /* API unavailable — do not show stale local ads on the public site */
   }
-  return getActiveMetaAds();
+  return [];
 }
 
 /**

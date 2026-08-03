@@ -17,16 +17,16 @@ import {
 const containerVariants: Variants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.15 },
+    transition: { staggerChildren: 0.05 },
   },
 };
 
 const cardVariant: Variants = {
-  hidden: { opacity: 0, y: 50 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: "easeOut" },
+    transition: { duration: 0.35, ease: "easeOut" },
   },
 };
 
@@ -42,7 +42,8 @@ export const CaseStudiesStackedCarousel: React.FC<
 
   const { ref: cardRef, inView: cardInView } = useInView({
     triggerOnce: true,
-    threshold: 0.15,
+    threshold: 0.05,
+    rootMargin: "0px 0px -10% 0px",
   });
 
   const cardsCount = projects.length;
@@ -51,7 +52,7 @@ export const CaseStudiesStackedCarousel: React.FC<
     if (cardsCount < 1) return;
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % cardsCount);
-    }, 5000);
+    }, 3500);
     return () => clearInterval(interval);
   }, [cardsCount]);
 
@@ -95,7 +96,7 @@ export const CaseStudiesStackedCarousel: React.FC<
               className="absolute rounded-3xl bg-white dark:bg-[#111726] border border-slate-300 dark:border-slate-800 shadow-2xl overflow-hidden w-full max-w-[900px] cursor-pointer"
               style={{ height: "460px", zIndex }}
               animate={{ scale, y: translateY, opacity }}
-              transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+              transition={{ duration: 0.35, ease: [0.25, 1, 0.5, 1] }}
             >
               <div className="flex items-center justify-between px-6 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-[#090d16]">
                 <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 text-xs font-semibold uppercase tracking-wider">

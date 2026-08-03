@@ -7,8 +7,8 @@ export const pricingData: PricingPlan[] = [
     subtitle: "For MVPs & early-stage startups",
     description:
       "A fixed-scope engagement to design, build, and ship a production-ready web application fast.",
-    price: "$8,500",
-    compareAtPrice: "$11,000",
+    price: "8,500",
+    compareAtPrice: "11,000",
     discountPercent: 22,
     discountLabel: "Early Bird",
     features: [
@@ -33,8 +33,8 @@ export const pricingData: PricingPlan[] = [
     subtitle: "For scaling product teams",
     description:
       "Full-stack architecture with custom integrations, animations, and a dedicated engineering pod.",
-    price: "$22,000",
-    compareAtPrice: "$28,000",
+    price: "22,000",
+    compareAtPrice: "28,000",
     discountPercent: 21,
     discountLabel: "Most Popular Deal",
     features: [

@@ -6,6 +6,7 @@ import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
 import { usePublicPricing } from "@/hooks/usePublicCms";
+import { stripCurrencySymbol } from "@/lib/cmsMappers";
 import {
   ArrowRight,
   CheckCircle2,
@@ -64,7 +65,7 @@ export default function PricingPage() {
                   <div
                     className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                       plan.isFeatured
-                        ? "bg-[#004d4d] text-white dark:bg-cyan-500 dark:text-slate-950"
+                        ? "bg-[#226263] text-white dark:bg-[#226263] dark:text-white"
                         : "bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200"
                     }`}
                   >
@@ -86,11 +87,11 @@ export default function PricingPage() {
                 <div className="mt-5 pb-5 border-b border-slate-200 dark:border-slate-800">
                   <div className="flex items-end gap-2 flex-wrap">
                     <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
-                      {plan.price}
+                      {stripCurrencySymbol(plan.price)}
                     </span>
                     {plan.compareAtPrice && (
                       <span className="text-sm font-semibold text-slate-400 line-through decoration-2">
-                        {plan.compareAtPrice}
+                        {stripCurrencySymbol(plan.compareAtPrice)}
                       </span>
                     )}
                   </div>
@@ -133,12 +134,15 @@ export default function PricingPage() {
                   onClick={() => {
                     const params = new URLSearchParams({
                       plan: plan.title,
-                      price: plan.price,
+                      price: stripCurrencySymbol(plan.price),
                       serviceName: `${plan.title} Pricing Plan`,
                     });
                     if (plan.serviceSlug) params.set("service", plan.serviceSlug);
                     if (plan.compareAtPrice) {
-                      params.set("compareAt", plan.compareAtPrice);
+                      params.set(
+                        "compareAt",
+                        stripCurrencySymbol(plan.compareAtPrice)
+                      );
                     }
                     if (plan.discountPercent > 0) {
                       params.set("discount", String(plan.discountPercent));

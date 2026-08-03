@@ -12,7 +12,6 @@ import {
   DOMAIN_HOSTING_OPTIONS,
   INTEGRATION_OPTIONS,
   TIMELINE_OPTIONS,
-  formatProjectBriefDetails,
   labelOf,
   type ProjectBriefAnswers,
 } from "@/lib/contactBriefOptions";
@@ -45,9 +44,7 @@ function HomeContactFields() {
     if (!(name && email && phone)) return;
     setSubmitting(true);
     setError("");
-    const details = [description.trim(), formatProjectBriefDetails(brief)]
-      .filter(Boolean)
-      .join("\n\n");
+    const details = description.trim();
 
     try {
       const { submitPublicOrder } = await import("@/lib/publicContent");

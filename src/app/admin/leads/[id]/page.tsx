@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { GlowCard } from "@/components/ui/GlowCard";
@@ -21,6 +21,7 @@ import {
   Clock,
   ExternalLink,
   Globe,
+  MessageSquareText,
 } from "lucide-react";
 
 const STATUSES: LeadInquiry["status"][] = [
@@ -93,6 +94,53 @@ function hasProjectBrief(m: LeadInquiry["metadata"]) {
   );
 }
 
+/** Remove duplicated numbered brief dump from details when metadata already has it */
+function extractProductGoal(details: string, briefPresent: boolean): string {
+  const raw = (details || "").trim();
+  if (!raw) return "";
+  if (!briefPresent) return raw;
+
+  const cut = raw.search(/\n\s*1\.\s*Design ready:/i);
+  if (cut >= 0) return raw.slice(0, cut).trim();
+
+  const lines = raw.split("\n").filter((line) => {
+    const t = line.trim();
+    if (/^\d+\.\s/.test(t)) return false;
+    if (/^Reference website:/i.test(t)) return false;
+    if (/^Additional specs:/i.test(t)) return false;
+    if (/^UI\/UX:/i.test(t)) return false;
+    if (/^Color theme:/i.test(t)) return false;
+    return true;
+  });
+  return lines.join("\n").trim();
+}
+
+function BriefRow({
+  step,
+  question,
+  answer,
+}: {
+  step: number | string;
+  question: string;
+  answer: React.ReactNode;
+}) {
+  return (
+    <div className="flex gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-[#090d16]">
+      <div className="shrink-0 w-8 h-8 rounded-lg bg-[#004d4d] text-white text-[11px] font-extrabold flex items-center justify-center">
+        {step}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+          {question}
+        </p>
+        <div className="mt-1 text-sm font-semibold text-slate-900 dark:text-white leading-snug break-words">
+          {answer || <span className="text-slate-400 font-normal">Not answered</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminLeadDetailPage() {
   const params = useParams();
   const id = String(params?.id || "");
@@ -143,6 +191,13 @@ export default function AdminLeadDetailPage() {
     }
   };
 
+  const m = lead?.metadata;
+  const briefOk = hasProjectBrief(m);
+  const productGoal = useMemo(
+    () => (lead ? extractProductGoal(lead.projectDetails, briefOk) : ""),
+    [lead, briefOk]
+  );
+
   if (loading) {
     return (
       <div className="text-sm text-cyan-500 font-bold py-20 text-center">
@@ -170,7 +225,6 @@ export default function AdminLeadDetailPage() {
   const source = sourceSummary(lead);
   const serviceSlug = lead.metadata?.service_slug;
   const serviceHref = serviceSlug ? `/services/${serviceSlug}` : "/services";
-  const m = lead.metadata;
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -188,9 +242,9 @@ export default function AdminLeadDetailPage() {
           <p className="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
             <Briefcase className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
             <span>
-              Project type:{" "}
+              Project:{" "}
               <strong className="text-slate-700 dark:text-slate-200">
-                {lead.projectType || "Not specified"}
+                {lead.projectType || "General inquiry"}
               </strong>
             </span>
           </p>
@@ -237,59 +291,45 @@ export default function AdminLeadDetailPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <GlowCard className="p-5 lg:col-span-2 space-y-5">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-cyan-500 flex items-center gap-2">
-            <User className="w-4 h-4" /> Client contact
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="Full name">{lead.clientName}</Field>
-            <Field label="Email">
+      {/* 1. Contact */}
+      <GlowCard className="p-5 space-y-5">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-cyan-500 flex items-center gap-2">
+          <User className="w-4 h-4" /> Client contact
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="Full name">{lead.clientName}</Field>
+          <Field label="Email">
+            <a
+              href={`mailto:${lead.clientEmail}`}
+              className="text-cyan-500 hover:underline inline-flex items-center gap-1"
+            >
+              <Mail className="w-3.5 h-3.5" /> {lead.clientEmail}
+            </a>
+          </Field>
+          <Field label="Phone / WhatsApp">
+            {lead.clientPhone ? (
               <a
-                href={`mailto:${lead.clientEmail}`}
+                href={`tel:${lead.clientPhone.replace(/\s/g, "")}`}
                 className="text-cyan-500 hover:underline inline-flex items-center gap-1"
               >
-                <Mail className="w-3.5 h-3.5" /> {lead.clientEmail}
+                <Phone className="w-3.5 h-3.5" /> {lead.clientPhone}
               </a>
-            </Field>
-            <Field label="Phone / WhatsApp">
-              {lead.clientPhone ? (
-                <a
-                  href={`tel:${lead.clientPhone.replace(/\s/g, "")}`}
-                  className="text-cyan-500 hover:underline inline-flex items-center gap-1"
-                >
-                  <Phone className="w-3.5 h-3.5" /> {lead.clientPhone}
-                </a>
-              ) : (
-                "Not provided"
-              )}
-            </Field>
-            <Field label="Company">
-              <span className="inline-flex items-center gap-1">
-                <Building className="w-3.5 h-3.5 shrink-0" />
-                {lead.clientCompany || "Not provided"}
-              </span>
-            </Field>
-            <Field label="Budget / Quoted price">
-              <span className="inline-flex items-center gap-1 text-emerald-500">
-                <Wallet className="w-3.5 h-3.5" />
-                {lead.metadata?.quoted_price ||
-                  lead.selectedBudget ||
-                  "Not specified"}
-              </span>
-            </Field>
-          </div>
-        </GlowCard>
-
-        <GlowCard className="p-5 space-y-4">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-cyan-500">
-            Inquiry meta
-          </h2>
-          <Field label="Status">
-            <span
-              className={`inline-flex px-2.5 py-0.5 rounded-full border text-[11px] font-bold ${statusClass(lead.status)}`}
-            >
-              {lead.status}
+            ) : (
+              "Not provided"
+            )}
+          </Field>
+          <Field label="Company">
+            <span className="inline-flex items-center gap-1">
+              <Building className="w-3.5 h-3.5 shrink-0" />
+              {lead.clientCompany || "Not provided"}
+            </span>
+          </Field>
+          <Field label="Budget / quote">
+            <span className="inline-flex items-center gap-1 text-emerald-500">
+              <Wallet className="w-3.5 h-3.5" />
+              {lead.metadata?.quoted_price ||
+                lead.selectedBudget ||
+                "Not specified"}
             </span>
           </Field>
           <Field label="Submitted">
@@ -298,102 +338,99 @@ export default function AdminLeadDetailPage() {
               {lead.createdAt}
             </span>
           </Field>
-          <Field label="Lead ID">
-            <span className="font-mono text-[11px] text-slate-500">{lead.id}</span>
-          </Field>
-          <Field label="Source channel">
-            {lead.metadata?.source?.replace(/_/g, " ") || "contact page"}
-          </Field>
-        </GlowCard>
-      </div>
-
-      <GlowCard className="p-5 space-y-5">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-cyan-500 flex items-center gap-2">
-          <Briefcase className="w-4 h-4" /> Selected service / plan
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Architecture / project type">{lead.projectType}</Field>
-          <Field label="Service name">
-            {lead.metadata?.service_name || "—"}
-          </Field>
-          <Field label="Service slug">
-            {lead.metadata?.service_slug ? (
-              <Link
-                href={`/services/${lead.metadata.service_slug}`}
-                target="_blank"
-                className="text-cyan-500 hover:underline font-mono text-xs"
-              >
-                {lead.metadata.service_slug}
-              </Link>
-            ) : (
-              "—"
-            )}
-          </Field>
-          <Field label="Pricing plan">
-            {lead.metadata?.pricing_plan || "—"}
-          </Field>
-          <Field label="Quoted price">
-            {lead.metadata?.quoted_price || lead.selectedBudget || "—"}
-          </Field>
         </div>
       </GlowCard>
 
-      {hasProjectBrief(m) && (
-        <GlowCard className="p-5 space-y-5">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-cyan-500 flex items-center gap-2">
-            <ClipboardList className="w-4 h-4" /> Project brief answers
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="1. Design ready?">
-              {m?.design_ready_label || m?.design_source || "—"}
-            </Field>
-            <Field label="2. Domain & hosting">
-              {m?.domain_hosting_label || m?.domain_hosting || "—"}
-            </Field>
-            <Field label="3. Database / APIs">
-              {m?.integrations_label || m?.integrations || "—"}
-            </Field>
-            <Field label="4. Aesthetic / theme">
-              {m?.color_theme || "—"}
-            </Field>
-            <Field label="5. Launch timeline">
-              {m?.timeline_label || m?.timeline || "—"}
-            </Field>
-            <Field label="Reference website">
-              {m?.reference_website ? (
-                <a
-                  href={m.reference_website}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-cyan-500 hover:underline inline-flex items-center gap-1 break-all"
-                >
-                  <Globe className="w-3.5 h-3.5 shrink-0" />
-                  {m.reference_website}
-                </a>
-              ) : (
-                "—"
-              )}
-            </Field>
-          </div>
-          {m?.additional_specs && (
-            <Field label="6. Additional specifications">
-              <p className="whitespace-pre-wrap font-medium text-slate-700 dark:text-slate-300">
-                {m.additional_specs}
-              </p>
-            </Field>
-          )}
-        </GlowCard>
-      )}
-
+      {/* 2. What they want */}
       <GlowCard className="p-5 space-y-3">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-cyan-500">
-          Full message / scope brief
+        <h2 className="text-xs font-bold uppercase tracking-wider text-cyan-500 flex items-center gap-2">
+          <MessageSquareText className="w-4 h-4" /> What they want to build
         </h2>
-        <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
-          {lead.projectDetails ||
-            "Client requested a technical discovery call for architecture roadmap."}
+        <p className="text-sm text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed">
+          {productGoal || "No product description provided."}
         </p>
+        {(lead.metadata?.service_name || lead.metadata?.pricing_plan) && (
+          <div className="pt-3 mt-1 border-t border-slate-200 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {lead.metadata?.service_name && (
+              <Field label="Service">{lead.metadata.service_name}</Field>
+            )}
+            {lead.metadata?.pricing_plan && (
+              <Field label="Pricing plan">{lead.metadata.pricing_plan}</Field>
+            )}
+          </div>
+        )}
       </GlowCard>
+
+      {/* 3. Clear project brief */}
+      {briefOk ? (
+        <GlowCard className="p-5 space-y-4">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-cyan-500 flex items-center gap-2">
+            <ClipboardList className="w-4 h-4" /> Project brief (form answers)
+          </h2>
+          <div className="space-y-2.5">
+            <BriefRow
+              step={1}
+              question="Do you have a design ready?"
+              answer={m?.design_ready_label || m?.design_source}
+            />
+            <BriefRow
+              step={2}
+              question="Domain & hosting setup?"
+              answer={m?.domain_hosting_label || m?.domain_hosting}
+            />
+            <BriefRow
+              step={3}
+              question="Custom database or APIs?"
+              answer={m?.integrations_label || m?.integrations}
+            />
+            <BriefRow
+              step={4}
+              question="Preferred aesthetic / theme?"
+              answer={m?.color_theme}
+            />
+            <BriefRow
+              step={5}
+              question="Target launch timeline?"
+              answer={m?.timeline_label || m?.timeline}
+            />
+            <BriefRow
+              step={6}
+              question="Additional specifications?"
+              answer={
+                m?.additional_specs ? (
+                  <span className="font-medium whitespace-pre-wrap">
+                    {m.additional_specs}
+                  </span>
+                ) : (
+                  "None"
+                )
+              }
+            />
+            {m?.reference_website && (
+              <BriefRow
+                step="R"
+                question="Reference website"
+                answer={
+                  <a
+                    href={m.reference_website}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-cyan-500 hover:underline inline-flex items-center gap-1 break-all"
+                  >
+                    <Globe className="w-3.5 h-3.5 shrink-0" />
+                    {m.reference_website}
+                  </a>
+                }
+              />
+            )}
+          </div>
+        </GlowCard>
+      ) : null}
+
+      <p className="text-[10px] text-slate-400 font-mono">
+        Lead ID: {lead.id} · Status: {lead.status} · Source:{" "}
+        {lead.metadata?.source?.replace(/_/g, " ") || "contact page"}
+      </p>
     </div>
   );
 }

@@ -6,7 +6,19 @@ import { motion } from "framer-motion";
 import { usePublicServices } from "@/hooks/usePublicCms";
 import { serviceBackgroundImage } from "@/lib/serviceImages";
 import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+
+const ctaClassName =
+  "inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-[#226263] hover:bg-[#1a4f50] text-white shadow-md border border-[#226263]/50 transition-colors";
+
+function activateOnKey(
+  e: React.KeyboardEvent,
+  activate: () => void
+) {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    activate();
+  }
+}
 
 export const ServicesAccordion: React.FC = () => {
   const services = usePublicServices();
@@ -22,15 +34,19 @@ export const ServicesAccordion: React.FC = () => {
           const slug = service.slug || service.id;
           const img = serviceBackgroundImage(service);
           return (
-            <motion.button
+            <motion.div
               key={service.id}
-              type="button"
+              role="button"
+              tabIndex={0}
+              aria-expanded={isOpen}
+              aria-label={service.title}
               onMouseEnter={() => setActive(index)}
               onFocus={() => setActive(index)}
               onClick={() => setActive(index)}
+              onKeyDown={(e) => activateOnKey(e, () => setActive(index))}
               animate={{ flexGrow: isOpen ? 4.2 : 0.7 }}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="relative min-w-0 overflow-hidden rounded-2xl border border-slate-700/60 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+              className="relative min-w-0 overflow-hidden rounded-2xl border border-slate-700/60 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
               style={{ flexBasis: 0 }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -93,19 +109,15 @@ export const ServicesAccordion: React.FC = () => {
                     <Link
                       href={`/services/${slug}`}
                       onClick={(e) => e.stopPropagation()}
+                      className={ctaClassName}
                     >
-                      <Button
-                        variant="teal-gradient"
-                        size="sm"
-                        icon={<ArrowRight className="w-3.5 h-3.5" />}
-                      >
-                        View Service
-                      </Button>
+                      View Service
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
                 </motion.div>
               )}
-            </motion.button>
+            </motion.div>
           );
         })}
       </div>
@@ -116,11 +128,15 @@ export const ServicesAccordion: React.FC = () => {
           const img = serviceBackgroundImage(service);
           const isOpen = active === index;
           return (
-            <button
+            <div
               key={service.id}
-              type="button"
+              role="button"
+              tabIndex={0}
+              aria-expanded={isOpen}
+              aria-label={service.title}
               onClick={() => setActive(index)}
-              className="relative w-full overflow-hidden rounded-2xl border border-slate-700/60 text-left"
+              onKeyDown={(e) => activateOnKey(e, () => setActive(index))}
+              className="relative w-full overflow-hidden rounded-2xl border border-slate-700/60 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
             >
               <div
                 className={`relative ${isOpen ? "h-64" : "h-16"} transition-all duration-500`}
@@ -146,19 +162,18 @@ export const ServicesAccordion: React.FC = () => {
                     <p className="mt-2 text-xs text-slate-200 line-clamp-3">
                       {service.description}
                     </p>
-                    <Link href={`/services/${slug}`} className="mt-3 inline-block">
-                      <Button
-                        variant="teal-gradient"
-                        size="sm"
-                        icon={<ArrowRight className="w-3.5 h-3.5" />}
-                      >
-                        View Service
-                      </Button>
+                    <Link
+                      href={`/services/${slug}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className={`mt-3 ${ctaClassName}`}
+                    >
+                      View Service
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
                 )}
               </div>
-            </button>
+            </div>
           );
         })}
       </div>

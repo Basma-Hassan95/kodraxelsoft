@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -65,7 +66,6 @@ export const SocialCampaignsShowcase: React.FC = () => {
     };
   }, []);
 
-  // Hide entirely until loaded, and when there are no ads
   if (!loaded || ads.length === 0) {
     return null;
   }
@@ -82,81 +82,81 @@ export const SocialCampaignsShowcase: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {ads.map((ad, idx) => (
           <GSAPReveal key={ad.id} direction="up" delay={idx * 0.1}>
-            <GlowCard className="h-full flex flex-col justify-between p-6 group">
-              <div>
-                <div className="flex items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-200 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
+            <Link href={`/ads/${ad.id}`} className="block h-full group">
+              <GlowCard className="h-full flex flex-col justify-between p-6 transition-transform duration-300 group-hover:-translate-y-1">
+                <div>
+                  <div className="flex items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-200 dark:border-slate-800">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center border ${channelStyle(ad.channel)}`}
+                      >
+                        <ChannelIcon channel={ad.channel} className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1">
+                          <span>Kodraxelsoft</span>
+                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                        </div>
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                          {ad.channel} · {ad.badge || "Sponsored Campaign"}
+                        </div>
+                      </div>
+                    </div>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                      Live Ad
+                    </span>
+                  </div>
+
+                  <div className="relative w-full h-44 rounded-xl overflow-hidden mb-5 border border-slate-300 dark:border-slate-800 bg-[#0f172a] dark:bg-[#0a0f1d] group-hover:scale-[1.02] transition-transform duration-500">
+                    {ad.image_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={ad.image_url}
+                        alt={ad.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : null}
                     <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center border ${channelStyle(ad.channel)}`}
+                      className={`absolute inset-0 p-4 flex flex-col justify-between text-white ${
+                        ad.image_url
+                          ? "bg-gradient-to-t from-black/80 via-black/40 to-black/20"
+                          : ""
+                      }`}
                     >
-                      <ChannelIcon channel={ad.channel} className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1">
-                        <span>Kodraxelsoft</span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                      <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-slate-900/90 border border-slate-700">
+                          {ad.badge || "Sponsored"}
+                        </span>
+                        <Sparkles className="w-4 h-4 text-cyan-400" />
                       </div>
-                      <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                        {ad.channel} ΓÇó {ad.badge || "Sponsored Campaign"}
+                      <div>
+                        <div className="text-xs font-extrabold tracking-tight text-white drop-shadow-md line-clamp-2">
+                          {ad.title}
+                        </div>
+                        <div className="text-[10px] text-cyan-400 mt-1 font-mono">
+                          CMS Managed · Live Campaign
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
-                    Live Ad
-                  </span>
+
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4 line-clamp-3">
+                    {ad.description}
+                  </p>
                 </div>
 
-                <div className="relative w-full h-44 rounded-xl overflow-hidden mb-5 border border-slate-300 dark:border-slate-800 bg-[#0f172a] dark:bg-[#0a0f1d] group-hover:scale-[1.02] transition-transform duration-500">
-                  {ad.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={ad.image_url}
-                      alt={ad.title}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  ) : null}
-                  <div
-                    className={`absolute inset-0 p-4 flex flex-col justify-between text-white ${
-                      ad.image_url ? "bg-gradient-to-t from-black/80 via-black/40 to-black/20" : ""
-                    }`}
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
+                  <Button
+                    variant="teal-gradient"
+                    size="sm"
+                    icon={<ArrowRight className="w-3.5 h-3.5" />}
+                    className="w-full justify-center text-xs pointer-events-none"
                   >
-                    <div className="flex justify-between items-start">
-                      <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-slate-900/90 border border-slate-700">
-                        {ad.badge || "Sponsored"}
-                      </span>
-                      <Sparkles className="w-4 h-4 text-cyan-400" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-extrabold tracking-tight text-white drop-shadow-md line-clamp-2">
-                        {ad.title}
-                      </div>
-                      <div className="text-[10px] text-cyan-400 mt-1 font-mono">
-                        CMS Managed ΓÇó Live Campaign
-                      </div>
-                    </div>
-                  </div>
+                    {ad.cta_text || "View Ad"}
+                  </Button>
                 </div>
-
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                  {ad.description}
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
-                <Button
-                  variant="teal-gradient"
-                  size="sm"
-                  icon={<ArrowRight className="w-3.5 h-3.5" />}
-                  onClick={() => {
-                    if (ad.link.startsWith("http")) window.open(ad.link, "_blank");
-                    else window.location.href = ad.link;
-                  }}
-                  className="w-full justify-center text-xs"
-                >
-                  {ad.cta_text || "Learn More"}
-                </Button>
-              </div>
-            </GlowCard>
+              </GlowCard>
+            </Link>
           </GSAPReveal>
         ))}
       </div>

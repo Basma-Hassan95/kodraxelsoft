@@ -4,7 +4,7 @@ import { settingsFromApi } from "@/lib/cmsMappers";
 
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   companyName: "Kodraxelsoft Inc.",
-  contactEmail: "hello@kodraxelsoft.com",
+  contactEmail: "kodraxelsoft@gmail.com",
   contactPhone: "+1 (415) 890-4221",
   address: "Market Street, Suite 1400, San Francisco, CA",
   githubUrl: "https://github.com",

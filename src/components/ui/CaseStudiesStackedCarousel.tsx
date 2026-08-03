@@ -17,16 +17,16 @@ import {
 const containerVariants: Variants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.05 },
+    transition: { staggerChildren: 0.04, delayChildren: 0 },
   },
 };
 
 const cardVariant: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 14 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.35, ease: "easeOut" },
+    transition: { duration: 0.28, ease: "easeOut" },
   },
 };
 
@@ -40,10 +40,12 @@ export const CaseStudiesStackedCarousel: React.FC<
   const [activeIndex, setActiveIndex] = useState(0);
   const [hovered, setHovered] = useState<number | null>(null);
 
-  const { ref: cardRef, inView: cardInView } = useInView({
+  // Ref on shared wrapper so mobile + desktop both detect in-view
+  const { ref: sectionRef, inView: cardInView } = useInView({
     triggerOnce: true,
-    threshold: 0.05,
-    rootMargin: "0px 0px -10% 0px",
+    threshold: 0,
+    rootMargin: "180px 0px",
+    fallbackInView: true,
   });
 
   const cardsCount = projects.length;
@@ -63,15 +65,15 @@ export const CaseStudiesStackedCarousel: React.FC<
   if (!projects.length) return null;
 
   const active = projects[activeIndex] || projects[0];
+  const show = cardInView;
 
   return (
-    <div className="w-full relative py-4 isolate z-10">
+    <div ref={sectionRef} className="w-full relative py-4 isolate z-10">
       {/* Desktop & Tablet stacked carousel */}
       <motion.div
-        ref={cardRef}
         variants={containerVariants}
         initial="hidden"
-        animate={cardInView ? "visible" : "hidden"}
+        animate={show ? "visible" : "hidden"}
         className="hidden sm:flex relative items-center justify-center h-[560px] sm:h-[520px]"
       >
         {projects.map((card, i) => {
@@ -96,7 +98,7 @@ export const CaseStudiesStackedCarousel: React.FC<
               className="absolute rounded-3xl bg-white dark:bg-[#111726] border border-slate-300 dark:border-slate-800 shadow-2xl overflow-hidden w-full max-w-[900px] cursor-pointer"
               style={{ height: "460px", zIndex }}
               animate={{ scale, y: translateY, opacity }}
-              transition={{ duration: 0.35, ease: [0.25, 1, 0.5, 1] }}
+              transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
             >
               <div className="flex items-center justify-between px-6 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-[#090d16]">
                 <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 text-xs font-semibold uppercase tracking-wider">
@@ -128,6 +130,7 @@ export const CaseStudiesStackedCarousel: React.FC<
                       src={card.image}
                       alt={card.title}
                       className="absolute inset-0 w-full h-full object-cover"
+                      loading="eager"
                     />
                   ) : (
                     <div className="absolute inset-0 bg-gradient-to-br from-[#004d4d] to-slate-900" />
@@ -208,10 +211,10 @@ export const CaseStudiesStackedCarousel: React.FC<
           <motion.h4
             key={active.id}
             className="inline-block text-sm font-semibold text-[#004d4d] dark:text-cyan-400 bg-white dark:bg-[#0B0F17] px-5 py-2 rounded-full border border-slate-300 dark:border-slate-800 shadow-md mb-6"
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.4 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
           >
             Active: {active.title}
           </motion.h4>
@@ -237,7 +240,7 @@ export const CaseStudiesStackedCarousel: React.FC<
       <motion.div
         variants={containerVariants}
         initial="hidden"
-        animate={cardInView ? "visible" : "hidden"}
+        animate={show ? "visible" : "hidden"}
         className="sm:hidden space-y-6"
       >
         {projects.map((card, i) => (
@@ -263,6 +266,7 @@ export const CaseStudiesStackedCarousel: React.FC<
                   src={card.image}
                   alt={card.title}
                   className="w-full h-full object-cover"
+                  loading="eager"
                 />
               )}
             </div>

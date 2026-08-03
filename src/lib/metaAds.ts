@@ -148,6 +148,20 @@ export async function loadPublicMetaAds(): Promise<MetaAd[]> {
   return [];
 }
 
+/** Load one active public ad by id (for /ads/[id] page). */
+export async function loadPublicMetaAdById(id: string): Promise<MetaAd | null> {
+  if (!id) return null;
+  const list = await loadPublicMetaAds();
+  const fromList = list.find((a) => a.id === id);
+  if (fromList) return fromList;
+
+  // Fallback: try cache (same-origin browse after homepage loaded ads)
+  const cached = readCache().find(
+    (a) => a.id === id && a.status === "active"
+  );
+  return cached || null;
+}
+
 /**
  * Create or update a meta ad in Supabase.
  * UUID id → PUT update. Anything else → POST create.

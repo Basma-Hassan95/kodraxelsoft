@@ -69,7 +69,13 @@ type ApiEnvelope<T> = {
 function redirectToLogin() {
   if (typeof window === "undefined") return;
   clearLegacyTokenStorage();
-  if (!window.location.pathname.startsWith("/admin/login")) {
+  const path = window.location.pathname;
+  const onAuthGate =
+    path === "/admin" ||
+    path === "/admin/" ||
+    path === "/admin/login" ||
+    path.startsWith("/admin/login/");
+  if (!onAuthGate) {
     window.location.href = "/admin/login";
   }
 }
@@ -206,15 +212,23 @@ export async function apiMe() {
       cache: "no-store",
     });
     const json = await res.json().catch(() => ({}));
-    if (!res.ok) {
+    if (!res.ok || json?.success === false) {
       redirectToLogin();
       throw new Error(json.message || "Not authenticated");
     }
-    return json.data as { id: string; name: string; email: string };
+    const data = json.data as { id?: string; name?: string; email?: string } | null;
+    if (!data?.id || !data?.email) {
+      redirectToLogin();
+      throw new Error("Invalid session");
+    }
+    return data as { id: string; name: string; email: string };
   }
   const { data } = await cmsFetch<{ id: string; name: string; email: string }>(
     "/auth/me"
   );
+  if (!data?.id || !data?.email) {
+    throw new Error("Invalid session");
+  }
   return data;
 }
 

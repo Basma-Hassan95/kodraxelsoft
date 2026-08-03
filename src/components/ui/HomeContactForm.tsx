@@ -4,24 +4,20 @@ import React, { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
+import { ContactProjectBrief } from "@/components/ui/ContactProjectBrief";
+import {
+  AESTHETIC_OPTIONS,
+  DEFAULT_PROJECT_BRIEF,
+  DESIGN_OPTIONS,
+  DOMAIN_HOSTING_OPTIONS,
+  INTEGRATION_OPTIONS,
+  TIMELINE_OPTIONS,
+  formatProjectBriefDetails,
+  labelOf,
+  type ProjectBriefAnswers,
+} from "@/lib/contactBriefOptions";
 import confetti from "canvas-confetti";
 import { CheckCircle2, Send, ShieldCheck } from "lucide-react";
-
-const PLATFORMS = [
-  "Next.js / React",
-  "WordPress",
-  "Mobile App (iOS / Android)",
-  "Custom SaaS",
-  "Other",
-];
-
-const THEMES = [
-  { id: "teal", label: "Teal / Cyan", swatch: "#004d4d" },
-  { id: "navy", label: "Navy Blue", swatch: "#0a2a4a" },
-  { id: "dark", label: "Dark Premium", swatch: "#0f172a" },
-  { id: "light", label: "Clean Light", swatch: "#e2e8f0" },
-  { id: "custom", label: "Custom Brand Colors", swatch: "#f59e0b" },
-];
 
 function HomeContactFields() {
   const searchParams = useSearchParams();
@@ -39,8 +35,7 @@ function HomeContactFields() {
     if (serviceName) return `I'm interested in: ${serviceName}. `;
     return "";
   });
-  const [platform, setPlatform] = useState(PLATFORMS[0]);
-  const [theme, setTheme] = useState(THEMES[0].id);
+  const [brief, setBrief] = useState<ProjectBriefAnswers>(DEFAULT_PROJECT_BRIEF);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -50,14 +45,9 @@ function HomeContactFields() {
     if (!(name && email && phone)) return;
     setSubmitting(true);
     setError("");
-    const themeLabel = THEMES.find((t) => t.id === theme)?.label || theme;
-    const details = [
-      description.trim(),
-      `Platform: ${platform}`,
-      `Color theme: ${themeLabel}`,
-    ]
+    const details = [description.trim(), formatProjectBriefDetails(brief)]
       .filter(Boolean)
-      .join("\n");
+      .join("\n\n");
 
     try {
       const { submitPublicOrder } = await import("@/lib/publicContent");
@@ -65,7 +55,7 @@ function HomeContactFields() {
         client_name: name.trim(),
         client_email: email.trim(),
         client_phone: phone.trim(),
-        project_type: platform,
+        project_type: serviceName || pricingPlan || "General inquiry",
         budget: quotedPrice || undefined,
         details,
         metadata: {
@@ -77,8 +67,17 @@ function HomeContactFields() {
           service_name: serviceName || undefined,
           pricing_plan: pricingPlan || undefined,
           quoted_price: quotedPrice || undefined,
-          platform,
-          color_theme: themeLabel,
+          design_source: brief.designReady,
+          color_theme: labelOf(AESTHETIC_OPTIONS, brief.aesthetic),
+          reference_website: brief.referenceWebsite.trim() || undefined,
+          domain_hosting: brief.domainHosting,
+          integrations: brief.integrations,
+          timeline: brief.timeline,
+          additional_specs: brief.additionalSpecs.trim() || undefined,
+          design_ready_label: labelOf(DESIGN_OPTIONS, brief.designReady),
+          domain_hosting_label: labelOf(DOMAIN_HOSTING_OPTIONS, brief.domainHosting),
+          integrations_label: labelOf(INTEGRATION_OPTIONS, brief.integrations),
+          timeline_label: labelOf(TIMELINE_OPTIONS, brief.timeline),
         },
       });
       setSubmitted(true);
@@ -144,49 +143,7 @@ function HomeContactFields() {
         />
       </div>
 
-      <div>
-        <label className="block text-xs font-semibold mb-2">Build on which platform? *</label>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {PLATFORMS.map((p) => (
-            <button
-              key={p}
-              type="button"
-              onClick={() => setPlatform(p)}
-              className={`p-2.5 rounded-xl border text-[11px] font-semibold text-center transition-all ${
-                platform === p
-                  ? "border-[#004d4d] bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400"
-                  : "border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-300"
-              }`}
-            >
-              {p}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-xs font-semibold mb-2">Color theme preference *</label>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {THEMES.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => setTheme(t.id)}
-              className={`p-2.5 rounded-xl border text-[11px] font-semibold flex items-center gap-2 transition-all ${
-                theme === t.id
-                  ? "border-[#004d4d] bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400"
-                  : "border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-300"
-              }`}
-            >
-              <span
-                className="w-4 h-4 rounded-full border border-white/40 shrink-0"
-                style={{ background: t.swatch }}
-              />
-              {t.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ContactProjectBrief value={brief} onChange={setBrief} />
 
       {error && (
         <div className="px-3 py-2 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-semibold">
@@ -202,7 +159,7 @@ function HomeContactFields() {
         icon={<Send className="w-4 h-4" />}
         className="w-full justify-center"
       >
-        {submitting ? "Sending…" : "Send Inquiry"}
+        {submitting ? "Sending…" : "Submit Project Request"}
       </Button>
 
       <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500">

@@ -4,22 +4,21 @@ import { ApiError } from '../utils/ApiError.js';
 import { slugify, logActivity } from '../utils/helpers.js';
 
 export const heroService = {
+  /** Public carousel: all active hero slides, oldest-first for stable order */
   async getActive() {
     const { data, error } = await supabase
       .from('hero_banners')
       .select('*')
       .eq('is_active', true)
-      .order('updated_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .order('created_at', { ascending: true });
     if (error) throw new ApiError(500, error.message);
-    return data;
+    return data || [];
   },
 
   async list(query, opts) {
     return new CrudService('hero_banners', {
       entityName: 'hero_banner',
-      defaultOrder: { column: 'updated_at', ascending: false },
+      defaultOrder: { column: 'created_at', ascending: true },
     }).list(query, opts);
   },
 
@@ -28,20 +27,11 @@ export const heroService = {
   },
 
   async create(payload) {
-    if (payload.is_active) {
-      await supabase.from('hero_banners').update({ is_active: false }).eq('is_active', true);
-    }
+    // Multiple active slides allowed (homepage carousel)
     return new CrudService('hero_banners', { entityName: 'hero_banner' }).create(payload);
   },
 
   async update(id, payload) {
-    if (payload.is_active) {
-      await supabase
-        .from('hero_banners')
-        .update({ is_active: false })
-        .eq('is_active', true)
-        .neq('id', id);
-    }
     return new CrudService('hero_banners', { entityName: 'hero_banner' }).update(id, payload);
   },
 
@@ -51,9 +41,9 @@ export const heroService = {
 
   async upsertActive(payload) {
     const active = await this.getActive();
-    if (active) {
-      const updated = await this.update(active.id, { ...payload, is_active: true });
-      return updated;
+    const first = Array.isArray(active) ? active[0] : active;
+    if (first) {
+      return this.update(first.id, { ...payload, is_active: true });
     }
     return this.create({ ...payload, is_active: true });
   },

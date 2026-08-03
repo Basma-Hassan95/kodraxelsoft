@@ -21,8 +21,10 @@ import {
   PenTool,
   Folder,
   LayoutDashboard,
+  Menu,
 } from "lucide-react";
 import { useAdminData } from "@/context/AdminDataContext";
+import { useAdminNav } from "@/components/admin/AdminNavContext";
 import { cmsFetch } from "@/lib/cmsApi";
 import {
   clearAllAdminNotifications,
@@ -94,6 +96,7 @@ const VISITOR_BASELINE_KEY = "kodraxelsoft_admin_visitor_baseline";
 
 export const AdminHeader: React.FC = () => {
   const router = useRouter();
+  const { toggleMobile } = useAdminNav();
   const {
     leads,
     services,
@@ -331,12 +334,22 @@ export const AdminHeader: React.FC = () => {
   };
 
   return (
-    <header className="h-16 bg-white dark:bg-[#090d16] border-b border-slate-300/80 dark:border-slate-800/80 px-6 flex items-center justify-between z-30 shrink-0 select-none relative">
-      <div className="relative max-w-md w-full" ref={searchRef}>
+    <header className="h-14 sm:h-16 bg-white dark:bg-[#090d16] border-b border-slate-300/80 dark:border-slate-800/80 px-3 sm:px-6 flex items-center justify-between gap-2 z-30 shrink-0 select-none relative sticky top-0">
+      <div className="flex items-center gap-2 min-w-0 flex-1">
+        <button
+          type="button"
+          onClick={toggleMobile}
+          className="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-cyan-400 transition-colors shrink-0"
+          aria-label="Open admin menu"
+        >
+          <Menu className="w-4 h-4" />
+        </button>
+
+        <div className="relative max-w-md w-full min-w-0" ref={searchRef}>
         <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 z-10" />
         <input
           type="search"
-          placeholder="Search leads, services, blog, careers, pages..."
+          placeholder="Search CMS…"
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
@@ -371,7 +384,7 @@ export const AdminHeader: React.FC = () => {
         )}
 
         {showSearch && searchQuery.trim().length > 0 && (
-          <div className="absolute left-0 right-0 mt-2 rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#111726] shadow-2xl z-50 overflow-hidden">
+          <div className="absolute left-0 right-0 mt-2 rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#111726] shadow-2xl z-50 overflow-hidden min-w-[min(100vw-1.5rem,20rem)]">
             <div className="px-3 py-2 border-b border-slate-200 dark:border-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-400">
               {searchResults.length
                 ? `${searchResults.length} result${searchResults.length === 1 ? "" : "s"}`
@@ -410,11 +423,12 @@ export const AdminHeader: React.FC = () => {
             </div>
           </div>
         )}
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
         <div
-          className={`hidden sm:flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold border ${
+          className={`hidden md:flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold border ${
             apiConnected
               ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
               : "bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400"
@@ -425,7 +439,7 @@ export const AdminHeader: React.FC = () => {
               apiConnected ? "bg-emerald-500" : "bg-amber-500"
             }`}
           />
-          <span>{apiConnected ? "Supabase CMS Connected" : "API Offline / Login needed"}</span>
+          <span>{apiConnected ? "CMS Connected" : "API Offline"}</span>
         </div>
 
         <div className="relative" ref={dropdownRef}>
@@ -451,7 +465,7 @@ export const AdminHeader: React.FC = () => {
           </button>
 
           {showNotifications && (
-            <div className="absolute right-0 mt-2 w-80 sm:w-[26rem] rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#111726] shadow-2xl p-4 space-y-3 z-50 animate-in fade-in zoom-in-95 duration-200">
+            <div className="absolute right-0 mt-2 w-[min(100vw-1.5rem,26rem)] rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#111726] shadow-2xl p-4 space-y-3 z-50 animate-in fade-in zoom-in-95 duration-200">
               <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 gap-2">
                 <div className="flex items-center gap-2 min-w-0">
                   <Bell className="w-4 h-4 text-[#004d4d] dark:text-cyan-400 shrink-0" />
@@ -468,7 +482,7 @@ export const AdminHeader: React.FC = () => {
                       className="text-[11px] font-semibold text-cyan-500 hover:underline flex items-center gap-1"
                     >
                       <Check className="w-3 h-3" />
-                      <span>Read all</span>
+                      <span className="hidden sm:inline">Read all</span>
                     </button>
                   )}
                   {notifications.length > 0 && (
@@ -479,13 +493,13 @@ export const AdminHeader: React.FC = () => {
                       title="Remove all notifications"
                     >
                       <Trash2 className="w-3 h-3" />
-                      <span>Clear</span>
+                      <span className="hidden sm:inline">Clear</span>
                     </button>
                   )}
                 </div>
               </div>
 
-              <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-[min(24rem,60vh)] overflow-y-auto pr-1">
                 {notifications.length === 0 ? (
                   <div className="px-3 py-8 text-center text-xs text-slate-500">
                     No notifications yet.
@@ -559,7 +573,7 @@ export const AdminHeader: React.FC = () => {
           )}
         </div>
 
-        <div className="flex items-center gap-3 pl-3 border-l border-slate-300 dark:border-slate-800">
+        <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-3 border-l border-slate-300 dark:border-slate-800">
           <div className="w-8 h-8 rounded-xl bg-[#004d4d] text-white font-bold text-xs flex items-center justify-center border border-cyan-400/40 shadow-sm uppercase">
             {adminName.trim() ? (
               adminName.trim().charAt(0)
@@ -567,8 +581,8 @@ export const AdminHeader: React.FC = () => {
               <User className="w-4 h-4" />
             )}
           </div>
-          <div className="hidden md:block text-left">
-            <div className="text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight truncate max-w-[140px]">
+          <div className="hidden sm:block text-left">
+            <div className="text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight truncate max-w-[100px] md:max-w-[140px]">
               {adminName}
             </div>
             <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1">

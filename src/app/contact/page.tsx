@@ -6,6 +6,18 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
+import { ContactProjectBrief } from "@/components/ui/ContactProjectBrief";
+import {
+  AESTHETIC_OPTIONS,
+  DEFAULT_PROJECT_BRIEF,
+  DESIGN_OPTIONS,
+  DOMAIN_HOSTING_OPTIONS,
+  INTEGRATION_OPTIONS,
+  TIMELINE_OPTIONS,
+  formatProjectBriefDetails,
+  labelOf,
+  type ProjectBriefAnswers,
+} from "@/lib/contactBriefOptions";
 import confetti from "canvas-confetti";
 import {
   Mail,
@@ -20,22 +32,6 @@ import {
   Briefcase,
 } from "lucide-react";
 import { DEFAULT_SITE_SETTINGS } from "@/lib/siteSettings";
-
-const PLATFORMS = [
-  "Next.js / React",
-  "WordPress",
-  "Mobile App (iOS / Android)",
-  "Custom SaaS",
-  "Other",
-];
-
-const THEMES = [
-  { id: "teal", label: "Teal / Cyan", swatch: "#004d4d" },
-  { id: "navy", label: "Navy Blue", swatch: "#0a2a4a" },
-  { id: "dark", label: "Dark Premium", swatch: "#0f172a" },
-  { id: "light", label: "Clean Light", swatch: "#e2e8f0" },
-  { id: "custom", label: "Custom Brand Colors", swatch: "#f59e0b" },
-];
 
 const inputClass =
   "w-full px-4 py-2.5 rounded-xl text-sm border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40";
@@ -60,8 +56,7 @@ function ContactFormContent() {
     if (serviceName) return `I'm interested in: ${serviceName}. `;
     return "";
   });
-  const [platform, setPlatform] = useState(PLATFORMS[0]);
-  const [theme, setTheme] = useState(THEMES[0].id);
+  const [brief, setBrief] = useState<ProjectBriefAnswers>(DEFAULT_PROJECT_BRIEF);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -71,14 +66,9 @@ function ContactFormContent() {
     if (!(name && email && phone)) return;
     setSubmitting(true);
     setError("");
-    const themeLabel = THEMES.find((t) => t.id === theme)?.label || theme;
-    const details = [
-      description.trim(),
-      `Platform: ${platform}`,
-      `Color theme: ${themeLabel}`,
-    ]
+    const details = [description.trim(), formatProjectBriefDetails(brief)]
       .filter(Boolean)
-      .join("\n");
+      .join("\n\n");
 
     try {
       const { submitPublicOrder } = await import("@/lib/publicContent");
@@ -86,7 +76,7 @@ function ContactFormContent() {
         client_name: name.trim(),
         client_email: email.trim(),
         client_phone: phone.trim(),
-        project_type: platform,
+        project_type: serviceName || pricingPlan || "General inquiry",
         budget: hasExactQuote ? quotedPrice.trim() : undefined,
         details,
         metadata: {
@@ -101,8 +91,20 @@ function ContactFormContent() {
           quoted_price: hasExactQuote ? quotedPrice.trim() : undefined,
           compare_at_price: compareAtPrice || undefined,
           discount_percent: discountPercent || undefined,
-          platform,
-          color_theme: themeLabel,
+          design_source: brief.designReady,
+          color_theme: labelOf(AESTHETIC_OPTIONS, brief.aesthetic),
+          reference_website: brief.referenceWebsite.trim() || undefined,
+          domain_hosting: brief.domainHosting,
+          integrations: brief.integrations,
+          timeline: brief.timeline,
+          additional_specs: brief.additionalSpecs.trim() || undefined,
+          design_ready_label: labelOf(DESIGN_OPTIONS, brief.designReady),
+          domain_hosting_label: labelOf(
+            DOMAIN_HOSTING_OPTIONS,
+            brief.domainHosting
+          ),
+          integrations_label: labelOf(INTEGRATION_OPTIONS, brief.integrations),
+          timeline_label: labelOf(TIMELINE_OPTIONS, brief.timeline),
         },
       });
       setSubmitted(true);
@@ -127,12 +129,20 @@ function ContactFormContent() {
           Thank you, <strong>{name}</strong>
           {hasExactQuote ? (
             <>
-              . Quote noted: <strong className="text-[#004d4d] dark:text-cyan-400">{quotedPrice}</strong>
+              . Quote noted:{" "}
+              <strong className="text-[#004d4d] dark:text-cyan-400">
+                {quotedPrice}
+              </strong>
             </>
           ) : null}
-          . We will contact you at <strong>{email}</strong> / <strong>{phone}</strong> within 24 hours.
+          . We will contact you at <strong>{email}</strong> /{" "}
+          <strong>{phone}</strong> within 24 hours.
         </p>
-        <Button variant="teal-gradient" size="md" onClick={() => setSubmitted(false)}>
+        <Button
+          variant="teal-gradient"
+          size="md"
+          onClick={() => setSubmitted(false)}
+        >
           Submit Another Inquiry
         </Button>
       </div>
@@ -169,17 +179,38 @@ function ContactFormContent() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold mb-1">Full Name *</label>
-            <input required value={name} onChange={(e) => setName(e.target.value)} className={inputClass} placeholder="Your name" />
+            <input
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={inputClass}
+              placeholder="Your name"
+            />
           </div>
           <div>
             <label className="block text-xs font-semibold mb-1">Email *</label>
-            <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} placeholder="you@company.com" />
+            <input
+              required
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={inputClass}
+              placeholder="you@company.com"
+            />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold mb-1">Phone / WhatsApp *</label>
-          <input required value={phone} onChange={(e) => setPhone(e.target.value)} className={inputClass} placeholder="+92 300 0000000" />
+          <label className="block text-xs font-semibold mb-1">
+            Phone / WhatsApp *
+          </label>
+          <input
+            required
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className={inputClass}
+            placeholder="+92 300 0000000"
+          />
         </div>
 
         <div>
@@ -196,46 +227,7 @@ function ContactFormContent() {
           />
         </div>
 
-        <div>
-          <label className="block text-xs font-semibold mb-2">Build on which platform? *</label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {PLATFORMS.map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setPlatform(p)}
-                className={`p-2.5 rounded-xl border text-[11px] font-semibold ${
-                  platform === p
-                    ? "border-[#004d4d] bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400"
-                    : "border-slate-300 dark:border-slate-800"
-                }`}
-              >
-                {p}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold mb-2">Color theme preference *</label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {THEMES.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setTheme(t.id)}
-                className={`p-2.5 rounded-xl border text-[11px] font-semibold flex items-center gap-2 ${
-                  theme === t.id
-                    ? "border-[#004d4d] bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400"
-                    : "border-slate-300 dark:border-slate-800"
-                }`}
-              >
-                <span className="w-4 h-4 rounded-full border border-white/40" style={{ background: t.swatch }} />
-                {t.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <ContactProjectBrief value={brief} onChange={setBrief} />
 
         {error && (
           <div className="px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-semibold">
@@ -243,8 +235,15 @@ function ContactFormContent() {
           </div>
         )}
 
-        <Button type="submit" variant="teal-gradient" size="lg" disabled={submitting} icon={<Send className="w-5 h-5" />} className="w-full justify-center">
-          {submitting ? "Sending…" : "Submit Inquiry"}
+        <Button
+          type="submit"
+          variant="teal-gradient"
+          size="lg"
+          disabled={submitting}
+          icon={<Send className="w-5 h-5" />}
+          className="w-full justify-center"
+        >
+          {submitting ? "Sending…" : "Submit Project Request"}
         </Button>
 
         <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500">
@@ -292,7 +291,7 @@ export default function ContactPage() {
     },
     {
       q: "How do we get started after submitting this form?",
-      a: "Within 24 hours, our team will schedule a discovery call to review your requirements, platform, and color theme preferences.",
+      a: "Within 24 hours, our team will schedule a discovery call to review your requirements and project brief.",
     },
   ];
 
@@ -301,7 +300,7 @@ export default function ContactPage() {
       <SectionHeader
         badgeText="Start a Conversation"
         title="Project Inquiry Form"
-        subtitle="Tell us your name, contact, what you want to build, platform, and color theme."
+        subtitle="Tell us your contact details and answer a short project brief so we can quote accurately."
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
@@ -329,7 +328,11 @@ export default function ContactPage() {
                 className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800"
                 aria-label="Toggle Sound"
               >
-                {isContactMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-cyan-400" />}
+                {isContactMuted ? (
+                  <VolumeX className="w-3.5 h-3.5" />
+                ) : (
+                  <Volume2 className="w-3.5 h-3.5 text-cyan-400" />
+                )}
               </button>
             </div>
             <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950">
@@ -345,7 +348,9 @@ export default function ContactPage() {
           </GlowCard>
 
           <GlowCard className="p-6">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Direct Contact</h3>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
+              Direct Contact
+            </h3>
             <div className="space-y-4 text-xs">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 flex items-center justify-center shrink-0">
@@ -353,8 +358,11 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <div className="text-slate-500">Email</div>
-                  <a href={`mailto:${settings.contactEmail}`} className="font-bold text-slate-900 dark:text-slate-100">
-                    {settings.contactEmail}
+                  <a
+                    href="mailto:kodraxelsoft@gmail.com"
+                    className="font-bold text-slate-900 dark:text-slate-100"
+                  >
+                    kodraxelsoft@gmail.com
                   </a>
                 </div>
               </div>
@@ -364,7 +372,10 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <div className="text-slate-500">Phone</div>
-                  <a href={`tel:${settings.contactPhone.replace(/\s/g, "")}`} className="font-bold text-slate-900 dark:text-slate-100">
+                  <a
+                    href={`tel:${settings.contactPhone.replace(/\s/g, "")}`}
+                    className="font-bold text-slate-900 dark:text-slate-100"
+                  >
                     {settings.contactPhone}
                   </a>
                 </div>
@@ -375,7 +386,11 @@ export default function ContactPage() {
       </div>
 
       <section className="pt-12">
-        <SectionHeader badgeText="FAQ" title="Frequently Asked" gradientTitle="Questions" />
+        <SectionHeader
+          badgeText="FAQ"
+          title="Frequently Asked"
+          gradientTitle="Questions"
+        />
         <GSAPReveal stagger={0.06} className="max-w-3xl mx-auto space-y-4">
           {faqs.map((faq, idx) => {
             const isOpen = openFaq === idx;
@@ -383,7 +398,9 @@ export default function ContactPage() {
               <div
                 key={idx}
                 className={`rounded-2xl border overflow-hidden ${
-                  isOpen ? "border-[#004d4d]" : "border-slate-300 dark:border-slate-800"
+                  isOpen
+                    ? "border-[#004d4d]"
+                    : "border-slate-300 dark:border-slate-800"
                 } bg-white dark:bg-[#111726]`}
               >
                 <button
@@ -391,7 +408,11 @@ export default function ContactPage() {
                   className="w-full p-5 text-left flex items-center justify-between font-bold text-sm"
                 >
                   <span>{faq.q}</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
                 {isOpen && (
                   <div className="px-5 pb-5 text-xs text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-800 pt-3">

@@ -28,8 +28,8 @@ const emptyForm = {
   title: "",
   description: "",
   image_url: "",
-  cta_text: "Learn More",
-  link: "/contact",
+  cta_text: "View Ad",
+  link: "",
   status: "active" as AdStatus,
   channel: "Meta / Facebook" as AdChannel,
   badge: "Sponsored Campaign",
@@ -78,7 +78,7 @@ export default function AdminMetaAdsPage() {
       description: ad.description,
       image_url: ad.image_url || "",
       cta_text: ad.cta_text || "Learn More",
-      link: ad.link || "/contact",
+      link: ad.link || "",
       status: ad.status || "active",
       channel: ad.channel || "Meta / Facebook",
       badge: ad.badge || "Sponsored Campaign",
@@ -103,8 +103,8 @@ export default function AdminMetaAdsPage() {
       title: form.title.trim(),
       description: form.description.trim(),
       image_url: form.image_url.trim(),
-      cta_text: form.cta_text.trim() || "Learn More",
-      link: form.link.trim() || "/contact",
+      cta_text: form.cta_text.trim() || "View Ad",
+      link: form.link.trim(),
       status: form.status,
       channel: form.channel,
       badge: form.badge.trim() || "Sponsored Campaign",
@@ -122,7 +122,6 @@ export default function AdminMetaAdsPage() {
       resetForm();
       setSavedFlash(true);
       setTimeout(() => setSavedFlash(false), 2000);
-      // Confirm against DB (don't block UI)
       void refresh({ silent: true });
     } catch (err) {
       setError(
@@ -306,14 +305,17 @@ export default function AdminMetaAdsPage() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
-                <Link2 className="w-3.5 h-3.5" /> CTA Link
+                <Link2 className="w-3.5 h-3.5" /> CTA Link (optional)
               </label>
               <input
                 value={form.link}
                 onChange={(e) => setForm({ ...form, link: e.target.value })}
-                placeholder="/contact or https://..."
+                placeholder="/contact or https://facebook.com/..."
                 className="w-full px-3 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
               />
+              <p className="text-[10px] text-slate-500 mt-1">
+                Homepage cards always open /ads/[id]. This link is the button destination on that ad page.
+              </p>
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
@@ -407,6 +409,14 @@ export default function AdminMetaAdsPage() {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
+                <a
+                  href={`/ads/${ad.id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-3 py-2 rounded-xl text-xs font-bold border border-cyan-500/30 text-cyan-500 hover:bg-cyan-500/10 flex items-center gap-1.5"
+                >
+                  <Link2 className="w-3.5 h-3.5" /> Open Ad
+                </a>
                 <button
                   type="button"
                   onClick={() => void handleToggle(ad)}

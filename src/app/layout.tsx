@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
-import { GSAPRouteRefresh } from "@/components/ui/GSAPRouteRefresh";
-import { SmoothScroll } from "@/components/ui/SmoothScroll";
-import { IntroVideoSplash } from "@/components/ui/IntroVideoSplash";
-import { VisitTracker } from "@/components/ui/VisitTracker";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { getSiteSettings } from "@/lib/siteSettings";
 
 const geistSans = Geist({
@@ -70,8 +65,10 @@ export default async function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <head>
-        <script
+      <body className="min-h-full flex flex-col bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 selection:bg-cyan-500 selection:text-white">
+        <Script
+          id="kodraxelsoft-theme-init"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
@@ -87,22 +84,8 @@ export default async function RootLayout({
             `,
           }}
         />
-      </head>
-      <body className="min-h-full flex flex-col bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 selection:bg-cyan-500 selection:text-white">
         <ThemeProvider>
-          <IntroVideoSplash />
-          <VisitTracker />
-
-          <SmoothScroll>
-            <GSAPRouteRefresh />
-            <Navbar />
-            <main className="flex-grow pt-24">{children}</main>
-            <Footer settings={settings} />
-            <WhatsAppButton
-              phone={settings.contactPhone}
-              companyName={settings.companyName}
-            />
-          </SmoothScroll>
+          <SiteChrome settings={settings}>{children}</SiteChrome>
         </ThemeProvider>
       </body>
     </html>

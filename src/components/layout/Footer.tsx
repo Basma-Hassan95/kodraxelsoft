@@ -74,9 +74,6 @@ export const Footer: React.FC<FooterProps> = ({
                 <Link href="/about" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">About Studio</Link>
               </li>
               <li>
-                <Link href="/portfolio" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">Case Studies</Link>
-              </li>
-              <li>
                 <Link href="/process" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">Agile Process</Link>
               </li>
             </ul>
@@ -97,18 +94,13 @@ export const Footer: React.FC<FooterProps> = ({
                 <Link href="/blog" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">Engineering Blog</Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">Lead Contact</Link>
+                <Link href="/contact" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">Contact Us</Link>
               </li>
               <li>
                 <Link href="/reviews" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
                   Leave a Review
                 </Link>
               </li>
-              {settings.address && (
-                <li>
-                  <span className="text-slate-400 dark:text-slate-500">{settings.address}</span>
-                </li>
-              )}
             </ul>
           </div>
 

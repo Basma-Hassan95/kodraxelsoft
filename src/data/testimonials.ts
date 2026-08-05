@@ -4,27 +4,27 @@ import type { TestimonialItem } from "@/types/admin";
 export const testimonialsData: TestimonialItem[] = [
   {
     id: "seed-1",
-    clientName: "Marcus Thorne",
-    role: "VP of Engineering",
-    company: "Velox Global Capital",
+    clientName: "Sarah M.",
+    role: "Operations Manager",
+    company: "",
     review:
-      "Kodraxelsoft engineered our high-frequency trading portal in 5 weeks. UI rendering latency dropped by 85%.",
+      "Kodraxelsoft built us an automated system that saves our staff over 15 hours every single week. Best investment we've made.",
     rating: 5,
     avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80",
     isApproved: true,
     isEnabled: true,
   },
   {
     id: "seed-2",
-    clientName: "Priya Nair",
-    role: "Chief Product Officer",
-    company: "Northstar Health",
+    clientName: "David K.",
+    role: "Business Founder",
+    company: "",
     review:
-      "Their AI intake workflow cut patient wait times in half. Clean delivery, clear milestones, zero drama.",
+      "They spoke plain English and explained everything clearly. Our new web platform works perfectly and customer sales went up by 30%.",
     rating: 5,
     avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
     isApproved: true,
     isEnabled: true,
   },
@@ -34,7 +34,7 @@ export const testimonialsData: TestimonialItem[] = [
     role: "Founder",
     company: "Lumen Retail",
     review:
-      "The headless storefront they shipped feels premium and fast. Conversion jumped within the first sprint.",
+      "Our new site feels clean and fast. Customers find what they need quicker — and we spend less time explaining our tools to the team.",
     rating: 5,
     avatar:
       "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",

@@ -5,7 +5,12 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
+<<<<<<< Updated upstream
 import { usePublicPricing } from "@/hooks/usePublicCms";
+=======
+import { pricingData } from "@/data/pricing";
+import { stripCurrencySymbol } from "@/lib/cmsMappers";
+>>>>>>> Stashed changes
 import {
   ArrowRight,
   CheckCircle2,
@@ -16,36 +21,37 @@ import {
 } from "lucide-react";
 
 export default function PricingPage() {
-  const plans = usePublicPricing();
+  const plans = pricingData.filter((p) => p.isActive);
 
   const faqs = [
     {
-      q: "Are these fixed-price packages or estimates?",
-      a: "Every plan is a fixed-scope quote based on the features listed. Custom requirements are always scoped separately before we begin.",
+      q: "Are these fixed prices or just estimates?",
+      a: "Every package is a fixed-price quote based on the features listed. We confirm your requirements before starting so you know the total cost upfront.",
     },
     {
-      q: "Can I switch plans mid-project?",
-      a: "Yes — most clients start with Starter or Growth and upgrade as scope expands. We simply re-baseline the contract and timeline.",
+      q: "Can I upgrade my package later?",
+      a: "Yes. Many clients start with a Landing Page or Business Site and later move to WordPress or Shopify as their business grows. We update the plan without disrupting live work.",
     },
     {
-      q: "Do discounts apply to ongoing retainers too?",
-      a: "Discounted pricing applies to the initial build. Ongoing maintenance & SLA retainers are quoted separately after launch.",
+      q: "What happens after I select a package?",
+      a: "You are taken to the contact form with your selected package and price filled in. Our team replies within 24 hours to confirm scope and kick off the project.",
     },
   ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 py-12">
       <SectionHeader
-        badgeText="Transparent Pricing"
-        title="Plans Built for Every Stage of"
-        gradientTitle="Product Growth"
-        subtitle="Fixed-scope engagements with transparent pricing — no hidden retainers, no surprise change orders. Pick a plan or request a custom enterprise quote."
+        badgeText="Clear Pricing"
+        title="Clear Plans for Every Stage of"
+        gradientTitle="Growth"
+        subtitle="Pick a plan — the exact price carries into your contact inquiry. Fixed-scope projects with clear pricing—no hidden retainers, no surprise change fees. Choose a plan below or request a custom business quote."
       />
 
       <GSAPReveal
         stagger={0.1}
-        className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch"
       >
+<<<<<<< Updated upstream
         {plans
           .filter((p) => p.isActive)
           .map((plan) => {
@@ -111,21 +117,40 @@ export default function PricingPage() {
                 {plan.description && (
                   <p className="mt-5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     {plan.description}
+=======
+        {plans.map((plan) => {
+          const hasDiscount =
+            Boolean(plan.compareAtPrice) || plan.discountPercent > 0;
+          return (
+            <GlowCard
+              key={plan.id}
+              className="h-full flex flex-col"
+            >
+              <div className="space-y-1">
+                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
+                  {plan.title}
+                </h3>
+                {plan.subtitle && (
+                  <p className="text-xs font-semibold text-[#004d4d] dark:text-cyan-400 uppercase tracking-wide">
+                    {plan.subtitle}
+>>>>>>> Stashed changes
                   </p>
                 )}
+              </div>
 
-                <ul className="mt-6 space-y-2.5 flex-1">
-                  {plan.features.map((feat, idx) => (
-                    <li
-                      key={idx}
-                      className="flex items-start gap-2.5 text-xs font-medium text-slate-700 dark:text-slate-300"
-                    >
-                      <CheckCircle2 className="w-4 h-4 text-[#004d4d] dark:text-cyan-400 shrink-0 mt-0.5" />
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
+              <div className="mt-5 pb-5 border-b border-slate-200 dark:border-slate-800">
+                <div className="flex items-end gap-2 flex-wrap">
+                  <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
+                    {plan.price}
+                  </span>
+                  {plan.compareAtPrice && (
+                    <span className="text-sm font-semibold text-slate-400 line-through decoration-2">
+                      {stripCurrencySymbol(plan.compareAtPrice)}
+                    </span>
+                  )}
+                </div>
 
+<<<<<<< Updated upstream
                 <Button
                   variant={plan.isFeatured ? "teal-gradient" : "outline"}
                   size="md"
@@ -152,6 +177,68 @@ export default function PricingPage() {
               </GlowCard>
             );
           })}
+=======
+                {hasDiscount && (
+                  <div className="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold">
+                    <Tag className="w-3 h-3" />
+                    <span>
+                      {plan.discountPercent > 0
+                        ? `Save ${plan.discountPercent}%`
+                        : "Discounted"}
+                      {plan.discountLabel ? ` · ${plan.discountLabel}` : ""}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {plan.description && (
+                <p className="mt-5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  {plan.description}
+                </p>
+              )}
+
+              <ul className="mt-6 space-y-2.5 flex-1">
+                {plan.features.map((feat, idx) => (
+                  <li
+                    key={idx}
+                    className="flex items-start gap-2.5 text-xs font-medium text-slate-700 dark:text-slate-300"
+                  >
+                    <CheckCircle2 className="w-4 h-4 text-[#004d4d] dark:text-cyan-400 shrink-0 mt-0.5" />
+                    <span>{feat}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Button
+                variant="teal-gradient"
+                size="md"
+                icon={<ArrowRight className="w-4 h-4" />}
+                onClick={() => {
+                  const params = new URLSearchParams({
+                    plan: plan.title,
+                    price: stripCurrencySymbol(plan.price),
+                    serviceName: `${plan.title} Pricing Plan`,
+                  });
+                  if (plan.serviceSlug) params.set("service", plan.serviceSlug);
+                  if (plan.compareAtPrice) {
+                    params.set(
+                      "compareAt",
+                      stripCurrencySymbol(plan.compareAtPrice)
+                    );
+                  }
+                  if (plan.discountPercent > 0) {
+                    params.set("discount", String(plan.discountPercent));
+                  }
+                  window.location.href = `/contact?${params.toString()}`;
+                }}
+                className="w-full justify-center mt-8"
+              >
+                {plan.ctaText || "Get Started"}
+              </Button>
+            </GlowCard>
+          );
+        })}
+>>>>>>> Stashed changes
       </GSAPReveal>
 
       <GSAPReveal direction="up">
@@ -162,10 +249,10 @@ export default function PricingPage() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                Need something more custom?
+                Need Something Custom for Your Business?
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Every engagement can be tailored — talk to our architects about a scoped, fixed-price quote.
+                Every project can be tailored to your specific needs. Talk to our experts for a clear, fixed-price quote.
               </p>
             </div>
           </div>
@@ -176,7 +263,7 @@ export default function PricingPage() {
             onClick={() => (window.location.href = "/contact?plan=custom")}
             className="shrink-0"
           >
-            Request Custom Quote
+            Request Custom Quote →
           </Button>
         </div>
       </GSAPReveal>
@@ -212,7 +299,9 @@ export default function PricingPage() {
 
       <div className="flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400">
         <ShieldCheck className="w-4 h-4 text-[#004d4d] dark:text-cyan-400" />
-        <span>All plans include NDA protection and a post-launch support window.</span>
+        <span>
+          All plans include strict privacy contracts (NDA) and a dedicated post-launch warranty window.
+        </span>
       </div>
     </div>
   );

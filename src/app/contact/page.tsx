@@ -353,8 +353,29 @@ function ContactFormContent() {
             <ShieldCheck className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
             <span>Strict NDA Protection & 24-Hour Technical Response SLA</span>
           </div>
+<<<<<<< Updated upstream
         </form>
       )}
+=======
+        )}
+
+        <Button
+          type="submit"
+          variant="teal-gradient"
+          size="lg"
+          disabled={submitting}
+          icon={<Send className="w-5 h-5" />}
+          className="w-full justify-center"
+        >
+          {submitting ? "Sending…" : "Submit Project Request"}
+        </Button>
+
+        <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500">
+          <ShieldCheck className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
+          Strict Privacy Protection (NDA) & Guaranteed Response Within 24 Hours
+        </div>
+      </form>
+>>>>>>> Stashed changes
     </GlowCard>
   );
 }
@@ -382,6 +403,7 @@ export default function ContactPage() {
 
   const faqs = [
     {
+<<<<<<< Updated upstream
       q: "Who handles our project technical execution?",
       a: "You work 1-on-1 exclusively with our senior principal architects. We do not use account managers or offshore sub-contractors."
     },
@@ -397,6 +419,23 @@ export default function ContactPage() {
       q: "How do we get started after submitting this lead form?",
       a: "Within 24 hours, our technical discovery team will schedule a 30-minute technical discovery call with our engineering leads to review your requirements."
     }
+=======
+      q: "Who will actually build and handle our software project?",
+      a: "You partner directly with our senior software experts. No junior developers, no middle managers, and no lost details along the way.",
+    },
+    {
+      q: "How long does a standard software project take to launch?",
+      a: "Most standard projects launch within 4 to 8 weeks, depending on complexity. We set a fixed timeline before we start so you can plan your launch with confidence.",
+    },
+    {
+      q: "Do you offer post-launch support and performance guarantees?",
+      a: "Yes! Every project includes a 30-day warranty after launch. We monitor system health, fix any minor issues, and keep your software running smoothly 24/7.",
+    },
+    {
+      q: "What happens immediately after I submit this inquiry form?",
+      a: "Within 24 hours, our senior team reviews your project brief and emails you to schedule a free 15-minute strategy call to discuss your goals and budget.",
+    },
+>>>>>>> Stashed changes
   ];
 
   return (
@@ -405,8 +444,14 @@ export default function ContactPage() {
       {/* Header */}
       <SectionHeader
         badgeText="Start a Conversation"
+<<<<<<< Updated upstream
         title="Direct Architectural Lead Form"
         subtitle="Ready to build? Fill out the project questionnaire below to connect directly with our principal architects within 24 hours."
+=======
+        title="Tell Us About Your"
+        gradientTitle="Project Idea"
+        subtitle="Share a few details about your business goals. Our team will review your request and get back to you with a clear roadmap within 24 hours."
+>>>>>>> Stashed changes
       />
 
       {/* Main Grid: Form + Contact Cards */}
@@ -455,16 +500,38 @@ export default function ContactPage() {
           </GlowCard>
 
           <GlowCard className="p-6">
+<<<<<<< Updated upstream
             <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Direct Contact Channels</h3>
+=======
+            <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#004d4d] dark:text-cyan-400 mb-3">
+              <Briefcase className="w-3.5 h-3.5" />
+              Studio Identity
+            </div>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+              Direct Contact Details
+            </h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Have a quick question or prefer reaching out directly? Connect with our team straight away.
+            </p>
+>>>>>>> Stashed changes
             <div className="space-y-4 text-xs">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 flex items-center justify-center shrink-0">
                   <Mail className="w-4 h-4" />
                 </div>
                 <div>
+<<<<<<< Updated upstream
                   <div className="text-slate-500 dark:text-slate-400">General & Client Inquiries</div>
                   <a href={`mailto:${settings.contactEmail}`} className="font-bold text-slate-900 dark:text-slate-100 hover:text-[#004d4d] dark:hover:text-cyan-400">
                     {settings.contactEmail}
+=======
+                  <div className="text-slate-500">Email Us</div>
+                  <a
+                    href="mailto:kodraxelsoft@gmail.com"
+                    className="font-bold text-slate-900 dark:text-slate-100"
+                  >
+                    kodraxelsoft@gmail.com
+>>>>>>> Stashed changes
                   </a>
                 </div>
               </div>
@@ -474,12 +541,21 @@ export default function ContactPage() {
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
+<<<<<<< Updated upstream
                   <div className="text-slate-500 dark:text-slate-400">Architect Direct Desk</div>
                   <a href={`tel:${settings.contactPhone.replace(/\s/g, "")}`} className="font-bold text-slate-900 dark:text-slate-100 hover:text-[#004d4d] dark:hover:text-cyan-400">
+=======
+                  <div className="text-slate-500">Call Us</div>
+                  <a
+                    href={`tel:${settings.contactPhone.replace(/\s/g, "")}`}
+                    className="font-bold text-slate-900 dark:text-slate-100"
+                  >
+>>>>>>> Stashed changes
                     {settings.contactPhone}
                   </a>
                 </div>
               </div>
+<<<<<<< Updated upstream
 
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 flex items-center justify-center shrink-0">
@@ -509,6 +585,11 @@ export default function ContactPage() {
                   <span>{settings.companyName.toUpperCase()}</span>
                 </div>
               </div>
+=======
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200 dark:border-slate-800">
+                Availability: Monday to Friday | Fast response guaranteed
+              </p>
+>>>>>>> Stashed changes
             </div>
           </GlowCard>
         </GSAPReveal>

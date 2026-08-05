@@ -10,10 +10,11 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   githubUrl: "https://github.com",
   linkedinUrl: "https://linkedin.com",
   twitterUrl: "https://twitter.com",
-  metaTitle: "Kodraxelsoft | Ultra-Premium Software Engineering & AI Studio",
+  metaTitle: "Kodraxelsoft | Custom Software & AI Tools for Growing Businesses",
   metaDescription:
-    "Elite software architecture laboratory specializing in Next.js web applications, custom AI model integration, and high-scale cloud infrastructure.",
-  keywords: "Next.js 16, AI Engineering, Web Architecture, Software Studio",
+    "We build simple digital tools, smart AI helpers, and custom websites that save you time and grow your sales. No confusing tech speak.",
+  keywords:
+    "custom software, AI tools, business websites, automation, Kodraxelsoft",
   ogImageUrl: "/logo.png",
 };
 

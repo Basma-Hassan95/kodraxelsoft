@@ -97,14 +97,14 @@ function LiveProjectCard({
             loop
             autoPlay
             playsInline
-            className="absolute inset-0 w-full h-full object-cover scale-105 transition-transform duration-700 group-hover:scale-110"
+            className="absolute inset-0 w-full h-full object-cover object-top scale-105 transition-transform duration-700 group-hover:scale-110"
           />
         ) : project.image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={project.image}
             alt={project.title}
-            className="absolute inset-0 w-full h-full object-cover scale-105 transition-transform duration-700 group-hover:scale-110"
+            className="absolute inset-0 w-full h-full object-cover object-top scale-105 transition-transform duration-700 group-hover:scale-110"
           />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-[#004d4d] via-slate-900 to-slate-950" />

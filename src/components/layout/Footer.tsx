@@ -40,7 +40,7 @@ export const Footer: React.FC<FooterProps> = ({
               <Logo size="md" />
             </Link>
             <p className="text-sm text-slate-600 dark:text-slate-400 max-w-sm leading-relaxed">
-              Ultra-premium corporate software engineering studio crafting next-gen Web Apps, AI Systems, and Cloud Architectures for enterprise leaders.
+              Kodraxelsoft builds fast, clean custom software and smart AI tools that save time and boost sales for growing businesses.
             </p>
             <div className="space-y-1 text-xs text-slate-600 dark:text-slate-400">
               {settings.contactEmail && (
@@ -144,7 +144,7 @@ export const Footer: React.FC<FooterProps> = ({
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
           <div>
-            © {new Date().getFullYear()} {company}. All rights reserved. Built with Next.js 16 & GSAP.
+            © {new Date().getFullYear()} {company}. All rights reserved.
           </div>
           <div className="flex items-center gap-6">
             {settings.githubUrl && (

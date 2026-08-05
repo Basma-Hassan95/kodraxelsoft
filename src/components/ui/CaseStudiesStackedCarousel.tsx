@@ -119,14 +119,19 @@ export const CaseStudiesStackedCarousel: React.FC<
                       loop
                       autoPlay
                       playsInline
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover object-top"
                     />
                   ) : card.image ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={card.image}
                       alt={card.title}
+<<<<<<< Updated upstream
                       className="absolute inset-0 w-full h-full object-cover"
+=======
+                      className="absolute inset-0 w-full h-full object-cover object-top"
+                      loading="eager"
+>>>>>>> Stashed changes
                     />
                   ) : (
                     <div className="absolute inset-0 bg-gradient-to-br from-[#004d4d] to-slate-900" />
@@ -191,7 +196,7 @@ export const CaseStudiesStackedCarousel: React.FC<
                         size="sm"
                         icon={<ArrowRight className="w-3.5 h-3.5" />}
                       >
-                        View Case Study
+                        Read Full Story
                       </Button>
                     </Link>
                   </div>
@@ -254,14 +259,19 @@ export const CaseStudiesStackedCarousel: React.FC<
                   loop
                   autoPlay
                   playsInline
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-top"
                 />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={card.image}
                   alt={card.title}
+<<<<<<< Updated upstream
                   className="w-full h-full object-cover"
+=======
+                  className="w-full h-full object-cover object-top"
+                  loading="eager"
+>>>>>>> Stashed changes
                 />
               )}
             </div>
@@ -284,7 +294,7 @@ export const CaseStudiesStackedCarousel: React.FC<
                     size="sm"
                     icon={<ArrowRight className="w-3.5 h-3.5" />}
                   >
-                    View Case Study
+                    Read Full Story
                   </Button>
                 </Link>
               </div>

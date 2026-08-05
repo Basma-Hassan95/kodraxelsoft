@@ -2,14 +2,13 @@
 
 import { useEffect, useState } from "react";
 import {
-  fetchPublicServices,
   fetchPublicProjects,
   fetchPublicBlog,
   fetchPublicCareers,
   fetchPublicTestimonials,
   fetchPublicPricing,
 } from "@/lib/publicContent";
-import { servicesData, type Service } from "@/data/services";
+import { servicesData } from "@/data/services";
 import { projectsData, type Project } from "@/data/projects";
 import { blogPosts, type BlogPost } from "@/data/blog";
 import type { CareerPosition, TestimonialItem, PricingPlan } from "@/types/admin";
@@ -17,11 +16,8 @@ import { testimonialsData } from "@/data/testimonials";
 import { pricingData } from "@/data/pricing";
 
 export function usePublicServices() {
-  const [services, setServices] = useState<Service[]>(servicesData);
-  useEffect(() => {
-    void fetchPublicServices().then(setServices);
-  }, []);
-  return services;
+  // Local catalog is source of truth for the marketing site services grid
+  return servicesData;
 }
 
 export function usePublicProjects() {

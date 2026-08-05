@@ -72,10 +72,10 @@ export const SocialCampaignsShowcase: React.FC = () => {
   return (
     <section className="space-y-10">
       <SectionHeader
-        badgeText="Marketing & Media Highlights"
-        title="Active Social Media"
-        gradientTitle="Campaigns & Ad Showcases"
-        subtitle="Live marketing ad highlights managed from the Admin CMS — Meta, Instagram, and LinkedIn campaigns."
+        badgeText="Marketing & Reach"
+        title="Active Campaigns That Drive"
+        gradientTitle="Real Customers"
+        subtitle="We don't just build your software—we make sure your target audience actually sees it and buys from you."
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

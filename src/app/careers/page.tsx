@@ -7,7 +7,42 @@ import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { jobRoles, JobRole } from "@/data/jobs";
 import { usePublicCareers } from "@/hooks/usePublicCms";
+<<<<<<< Updated upstream
 import { Briefcase, MapPin, DollarSign, ArrowRight, CheckCircle2 } from "lucide-react";
+=======
+import {
+  Briefcase,
+  MapPin,
+  DollarSign,
+  ArrowRight,
+  CheckCircle2,
+  Users,
+  Laptop,
+  Award,
+  Sparkles,
+} from "lucide-react";
+
+const ACCENT = "#226263";
+const ease = [0.22, 1, 0.36, 1] as const;
+
+const PERKS = [
+  {
+    icon: Laptop,
+    title: "Work from Anywhere",
+    body: "Enjoy flexible working hours across global time zones. We value output and quality over strict office hours.",
+  },
+  {
+    icon: Users,
+    title: "Learn from Top Architects",
+    body: "Work directly alongside experienced software leads on real client projects. Upgrade your skills every single day.",
+  },
+  {
+    icon: Award,
+    title: "Competitive Pay & Benefits",
+    body: "Receive top-tier compensation, company equity options, and invitations to our annual company retreats.",
+  },
+];
+>>>>>>> Stashed changes
 
 export default function CareersPage() {
   const cmsCareers = usePublicCareers();
@@ -34,6 +69,7 @@ export default function CareersPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 py-12">
       <SectionHeader
+<<<<<<< Updated upstream
         badgeText="Join Kodraxelsoft"
         title="Build the Next Generation of"
         gradientTitle="High-Scale Software"
@@ -60,6 +96,58 @@ export default function CareersPage() {
           </p>
         </GlowCard>
       </GSAPReveal>
+=======
+        badgeText="Careers"
+        title="Build Powerful Digital Products with"
+        gradientTitle="Kodraxelsoft"
+        subtitle="Open roles for talented builders who care about clean work, clear communication, and creating software that makes a real impact."
+      />
+
+      {/* Intro band */}
+      <motion.div
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.55, ease }}
+        className="relative rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden"
+      >
+        <div
+          className="absolute inset-0 opacity-[0.08]"
+          style={{
+            background: `linear-gradient(135deg, ${ACCENT}, transparent 55%)`,
+          }}
+        />
+        <div className="relative p-8 sm:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="max-w-xl space-y-3">
+            <div
+              className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em]"
+              style={{ color: ACCENT }}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              Why join us
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
+              Work Directly with Senior Experts—{" "}
+              <span style={{ color: ACCENT }}>Zero Bureaucracy</span>
+            </h2>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              We keep our teams small and focused. You won&apos;t get stuck in endless
+              meetings or bureaucratic red tape. Instead, you&apos;ll own your projects
+              and build high-performance web, mobile, and AI solutions.
+            </p>
+          </div>
+          <Link href="/careers/apply">
+            <Button
+              size="lg"
+              icon={<ArrowRight className="w-4 h-4" />}
+              className="text-white shadow-[0_0_28px_rgba(34,98,99,0.35)]"
+            >
+              General Application
+            </Button>
+          </Link>
+        </div>
+      </motion.div>
+>>>>>>> Stashed changes
 
       <div className="space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
@@ -94,6 +182,17 @@ export default function CareersPage() {
                       <DollarSign className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" /> {role.salaryRange}
                     </span>
                   </div>
+<<<<<<< Updated upstream
+=======
+
+                  <Link
+                    href={applyHref(role)}
+                    className="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white shadow-md transition-all hover:brightness-110 active:scale-[0.98] bg-[#226263] hover:bg-[#1a4f50]"
+                  >
+                    Apply Now
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+>>>>>>> Stashed changes
                 </div>
 
                 <Link
@@ -105,6 +204,7 @@ export default function CareersPage() {
                 </Link>
               </div>
 
+<<<<<<< Updated upstream
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                 {role.description}
               </p>
@@ -131,6 +231,35 @@ export default function CareersPage() {
           ))}
         </GSAPReveal>
       </div>
+=======
+      {/* Bottom CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, ease }}
+        className="rounded-3xl p-8 sm:p-10 text-center space-y-4 border border-[#226263]/30"
+        style={{
+          background: `linear-gradient(145deg, #0c1424 0%, #0a2a28 50%, #0c1424 100%)`,
+        }}
+      >
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+          Ready to Build with Us?
+        </h2>
+        <p className="text-sm text-slate-300 max-w-lg mx-auto">
+          Send us your profile or portfolio. We review every application and reply within a few business days.
+        </p>
+        <Link href="/careers/apply" className="inline-block">
+          <Button
+            size="lg"
+            icon={<ArrowRight className="w-4 h-4" />}
+            className="text-white bg-[#226263] hover:bg-[#1a4f50]"
+          >
+            Start Your Application
+          </Button>
+        </Link>
+      </motion.div>
+>>>>>>> Stashed changes
     </div>
   );
 }

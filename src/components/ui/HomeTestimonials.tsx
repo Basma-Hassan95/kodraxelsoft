@@ -16,10 +16,10 @@ export const HomeTestimonials: React.FC = () => {
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
       <SectionHeader
-        badgeText="Client Proof"
-        title="What Partners Say About"
-        gradientTitle="Kodraxelsoft Engineering"
-        subtitle="Selected client testimonials approved through our studio CMS."
+        badgeText="Testimonials"
+        title="What Business Owners Say About"
+        gradientTitle="Kodraxelsoft"
+        subtitle="Real feedback from teams using our digital tools every day."
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

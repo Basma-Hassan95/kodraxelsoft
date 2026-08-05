@@ -21,37 +21,41 @@ export interface ManifestoPillar {
 
 const manifestoPillars: ManifestoPillar[] = [
   {
-    id: "principal-engineering",
-    title: "Direct Principal Engineering",
-    subtitle: "Zero Handoffs",
-    description: "You partner directly with senior principal architects. No account managers, no junior developers, and zero lost context.",
-    icon: Users,
-    stat: "100% Principal Execution"
-  },
-  {
-    id: "edge-performance",
-    title: "Sub-50ms Edge Performance",
-    subtitle: "Zero Bottlenecks",
-    description: "Performance speed is our primary architecture constraint. Every system is built to render sub-second globally.",
-    icon: Cpu,
-    stat: "Sub-50ms Global TTFB"
-  },
-  {
     id: "clean-code",
-    title: "Strict Zero Tech Debt",
+    title: "Built Clean Right from the Start",
     subtitle: "Clean Code",
-    description: "We enforce strict TypeScript schemas, automated testing, and clean modular microservices from line one of code.",
+    description:
+      "We write clear, high-quality code from day one. This means your software stays bug-free, runs smoothly, and won't need expensive rebuilds later.",
     icon: Code2,
-    stat: "Strict TypeScript & CI/CD"
+    stat: "100% Reliable Build",
   },
   {
     id: "sla-guarantee",
-    title: "Transparent SLA Guarantees",
+    title: "Clear Guarantees & Guaranteed Results",
     subtitle: "Fixed Timelines",
-    description: "Fixed-scope deliverables backed by a 100/100 Lighthouse benchmark guarantee and 30-day post-launch code warranty.",
+    description:
+      "You get a fixed launch date and price with no surprise costs. Plus, we include a 30-day post-launch warranty to guarantee everything works perfectly.",
     icon: ShieldCheck,
-    stat: "100/100 Performance SLA"
-  }
+    stat: "100% Speed & Quality Guarantee",
+  },
+  {
+    id: "principal-engineering",
+    title: "Work Directly with the Experts",
+    subtitle: "Zero Handoffs",
+    description:
+      "You partner straight with our senior software architects. No confusing account managers, no junior developers, and zero lost details.",
+    icon: Users,
+    stat: "Direct Senior Expert Access",
+  },
+  {
+    id: "edge-performance",
+    title: "Instant Speed Across the Globe",
+    subtitle: "Zero Bottlenecks",
+    description:
+      "Your site or app opens in a fraction of a second, anywhere in the world. Fast loading keeps your customers happy and increases overall sales.",
+    icon: Cpu,
+    stat: "Instant Global Loading",
+  },
 ];
 
 export const ManifestoCoverflowSlider: React.FC = () => {

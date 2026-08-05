@@ -41,10 +41,26 @@ export default function AboutPage() {
   }, []);
 
   const milestones = [
-    { year: "2023", title: "Laboratory Founded", desc: "Established as an agile software architecture studio specializing in high-performance WebGL & Next.js." },
-    { year: "2024", title: "Enterprise Scaling", desc: "Architected sub-50ms edge platforms processing 5M+ daily requests for fintech and healthcare leaders." },
-    { year: "2025", title: "AI Multi-Agent Engines", desc: "Deployed autonomous RAG vector pipelines and domain LLMs for Fortune 500 enterprises." },
-    { year: "2026", title: "Global Expansion", desc: "Scaling high-availability multi-region cloud infrastructures across North America and Europe." }
+    {
+      year: "2023",
+      title: "Company Founded",
+      desc: "Started as a focused software team building high-speed digital tools for local clients.",
+    },
+    {
+      year: "2024",
+      title: "Scaling Up Services",
+      desc: "Built large-scale, secure web platforms for fast-growing healthcare and finance businesses.",
+    },
+    {
+      year: "2025",
+      title: "Smart AI Automation",
+      desc: "Introduced automated digital assistants that take over boring office work for enterprise teams.",
+    },
+    {
+      year: "2026",
+      title: "Global Growth",
+      desc: "Expanding our fast, reliable cloud systems to support clients across North America, Europe, and Asia.",
+    },
   ];
 
   return (
@@ -62,15 +78,15 @@ export default function AboutPage() {
           <div className="max-w-4xl space-y-8">
             <SectionHeader
               badgeText="About Kodraxelsoft"
-              title="Ultra-Premium Engineering Laboratory &"
-              gradientTitle="Architectural Innovators"
-              subtitle="Kodraxelsoft was established to eliminate agency overhead. We operate as an elite team of principal software architects delivering production-ready platforms for market leaders."
+              title="A Skilled Team Building Powerful Software for"
+              gradientTitle="Growing Businesses"
+              subtitle="Kodraxelsoft was built to skip confusing middle managers. You work directly with expert software builders who deliver real results for your business."
             />
 
             <div className="pt-4 flex justify-center">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/70 dark:bg-slate-950/80 backdrop-blur-md text-xs font-bold text-cyan-400 border border-cyan-500/30 shadow-xl">
                 <Terminal className="w-4 h-4" />
-                <span>Scroll down to dock 3D Cyber World Infrastructure</span>
+                <span>Scroll down to learn more about our team</span>
               </div>
             </div>
           </div>
@@ -98,25 +114,25 @@ export default function AboutPage() {
             <GlowCard className="lg:col-span-6 p-8 sm:p-10 rounded-3xl border border-slate-300 dark:border-slate-800 bg-white/90 dark:bg-[#111726]/90 backdrop-blur-xl shadow-2xl space-y-6 relative z-10">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 text-xs font-semibold uppercase tracking-wider">
                 <Terminal className="w-3.5 h-3.5" />
-                <span>3D Interactive Architecture</span>
+                <span>How We Build</span>
               </div>
               
               <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight">
-                Architecting the Future of Web & AI Infrastructure
+                Building Fast Websites & Smart AI Systems
               </h2>
 
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                We combine cutting-edge 3D WebGL motion physics, Next.js App Router edge streaming, and custom PyTorch machine learning pipelines into seamless enterprise products.
+                We blend modern design with powerful behind-the-scenes technology. You get smooth, lightning-fast digital tools that your customers love to use.
               </p>
 
               <div className="pt-2 flex flex-wrap gap-4">
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
                   <Zap className="w-4 h-4 text-[#004d4d] dark:text-cyan-400" />
-                  <span>100/100 Lighthouse SLA</span>
+                  <span>100/100 Speed Score (Pages load instantly on phones and computers)</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
                   <Globe className="w-4 h-4 text-[#004d4d] dark:text-cyan-400" />
-                  <span>Global Multi-Region Cloud</span>
+                  <span>Always Online (Your site handles heavy traffic without slowing down)</span>
                 </div>
               </div>
             </GlowCard>
@@ -127,10 +143,10 @@ export default function AboutPage() {
         {/* SECTION 3: Swiper.js 3D Coverflow "Our Manifesto" Section */}
         <section className="space-y-8 pt-12">
           <SectionHeader
-            badgeText="Our Manifesto"
-            title="The Core Pillars of Our"
-            gradientTitle="Engineering Philosophy"
-            subtitle="Why market leaders trust Kodraxelsoft to design, build, and scale their most critical software platforms."
+            badgeText="Our Promise"
+            title="The Core Pillars of How We"
+            gradientTitle="Build Software"
+            subtitle="Why growing businesses trust Kodraxelsoft to design, build, and support their digital platforms."
           />
 
           <GSAPReveal direction="up">
@@ -142,9 +158,9 @@ export default function AboutPage() {
         <section className="space-y-12 pt-8">
           <SectionHeader
             badgeText="Milestones"
-            title="Our Journey of"
-            gradientTitle="Continuous Engineering Innovation"
-            subtitle="Key milestones in our laboratory's growth and technological evolution."
+            title="Our Journey of Helping"
+            gradientTitle="Businesses Succeed"
+            subtitle="A look at how our company has grown alongside the clients we support."
           />
 
           <GSAPReveal stagger={0.08} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -166,7 +182,7 @@ export default function AboutPage() {
             icon={<ArrowRight className="w-5 h-5" />}
             onClick={() => (window.location.href = "/contact")}
           >
-            Book Technical Discovery Call
+            Book A Free Strategy Call
           </Button>
         </section>
 

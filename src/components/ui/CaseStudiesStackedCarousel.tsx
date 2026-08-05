@@ -126,12 +126,8 @@ export const CaseStudiesStackedCarousel: React.FC<
                     <img
                       src={card.image}
                       alt={card.title}
-<<<<<<< Updated upstream
-                      className="absolute inset-0 w-full h-full object-cover"
-=======
                       className="absolute inset-0 w-full h-full object-cover object-top"
                       loading="eager"
->>>>>>> Stashed changes
                     />
                   ) : (
                     <div className="absolute inset-0 bg-gradient-to-br from-[#004d4d] to-slate-900" />
@@ -266,12 +262,8 @@ export const CaseStudiesStackedCarousel: React.FC<
                 <img
                   src={card.image}
                   alt={card.title}
-<<<<<<< Updated upstream
-                  className="w-full h-full object-cover"
-=======
                   className="w-full h-full object-cover object-top"
                   loading="eager"
->>>>>>> Stashed changes
                 />
               )}
             </div>

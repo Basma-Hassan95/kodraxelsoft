@@ -2,14 +2,13 @@
 
 import React from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { Button } from "@/components/ui/Button";
 import { jobRoles, JobRole } from "@/data/jobs";
 import { usePublicCareers } from "@/hooks/usePublicCms";
-<<<<<<< Updated upstream
-import { Briefcase, MapPin, DollarSign, ArrowRight, CheckCircle2 } from "lucide-react";
-=======
 import {
   Briefcase,
   MapPin,
@@ -42,7 +41,6 @@ const PERKS = [
     body: "Receive top-tier compensation, company equity options, and invitations to our annual company retreats.",
   },
 ];
->>>>>>> Stashed changes
 
 export default function CareersPage() {
   const cmsCareers = usePublicCareers();
@@ -69,41 +67,12 @@ export default function CareersPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 py-12">
       <SectionHeader
-<<<<<<< Updated upstream
-        badgeText="Join Kodraxelsoft"
-        title="Build the Next Generation of"
-        gradientTitle="High-Scale Software"
-        subtitle="Work directly alongside senior principal architects. We are scaling our engineering team with passionate senior engineers, AI researchers, and creative technologists."
-      />
-
-      <GSAPReveal stagger={0.08} className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <GlowCard className="p-6">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">100% Remote Flexibility</h3>
-          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-            Work from anywhere with a $3,000 home office budget and flexible hours across US & European time zones.
-          </p>
-        </GlowCard>
-        <GlowCard className="p-6">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Architect Mentorship</h3>
-          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-            Direct 1-on-1 pairing with senior principal engineers on high-impact enterprise client systems.
-          </p>
-        </GlowCard>
-        <GlowCard className="p-6">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Competitive Equity & Perks</h3>
-          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-            Competitive top-tier base salaries, early team equity, full health benefits, and annual engineering retreats.
-          </p>
-        </GlowCard>
-      </GSAPReveal>
-=======
         badgeText="Careers"
         title="Build Powerful Digital Products with"
         gradientTitle="Kodraxelsoft"
         subtitle="Open roles for talented builders who care about clean work, clear communication, and creating software that makes a real impact."
       />
 
-      {/* Intro band */}
       <motion.div
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -131,9 +100,10 @@ export default function CareersPage() {
               <span style={{ color: ACCENT }}>Zero Bureaucracy</span>
             </h2>
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              We keep our teams small and focused. You won&apos;t get stuck in endless
-              meetings or bureaucratic red tape. Instead, you&apos;ll own your projects
-              and build high-performance web, mobile, and AI solutions.
+              We keep our teams small and focused. You won&apos;t get stuck in
+              endless meetings or bureaucratic red tape. Instead, you&apos;ll own
+              your projects and build high-performance web, mobile, and AI
+              solutions.
             </p>
           </div>
           <Link href="/careers/apply">
@@ -147,7 +117,25 @@ export default function CareersPage() {
           </Link>
         </div>
       </motion.div>
->>>>>>> Stashed changes
+
+      <GSAPReveal stagger={0.08} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {PERKS.map((perk) => {
+          const Icon = perk.icon;
+          return (
+            <GlowCard key={perk.title} className="p-6">
+              <div className="w-10 h-10 rounded-xl bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 flex items-center justify-center mb-3">
+                <Icon className="w-5 h-5" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                {perk.title}
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                {perk.body}
+              </p>
+            </GlowCard>
+          );
+        })}
+      </GSAPReveal>
 
       <div className="space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
@@ -170,29 +158,26 @@ export default function CareersPage() {
                   <span className="px-2.5 py-1 rounded bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 text-[10px] font-bold uppercase tracking-wider">
                     {role.type}
                   </span>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-2">{role.department}</h3>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-2">
+                    {role.title}
+                  </h3>
+                  <p className="text-xs font-semibold text-[#004d4d] dark:text-cyan-400 mt-1">
+                    {role.department}
+                  </p>
                   <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mt-2">
                     <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" /> {role.location}
+                      <MapPin className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />{" "}
+                      {role.location}
                     </span>
                     <span className="flex items-center gap-1">
-                      <Briefcase className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" /> {role.type}
+                      <Briefcase className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />{" "}
+                      {role.type}
                     </span>
                     <span className="flex items-center gap-1">
-                      <DollarSign className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" /> {role.salaryRange}
+                      <DollarSign className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />{" "}
+                      {role.salaryRange}
                     </span>
                   </div>
-<<<<<<< Updated upstream
-=======
-
-                  <Link
-                    href={applyHref(role)}
-                    className="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white shadow-md transition-all hover:brightness-110 active:scale-[0.98] bg-[#226263] hover:bg-[#1a4f50]"
-                  >
-                    Apply Now
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
->>>>>>> Stashed changes
                 </div>
 
                 <Link
@@ -204,7 +189,6 @@ export default function CareersPage() {
                 </Link>
               </div>
 
-<<<<<<< Updated upstream
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                 {role.description}
               </p>
@@ -231,8 +215,7 @@ export default function CareersPage() {
           ))}
         </GSAPReveal>
       </div>
-=======
-      {/* Bottom CTA */}
+
       <motion.div
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -247,7 +230,8 @@ export default function CareersPage() {
           Ready to Build with Us?
         </h2>
         <p className="text-sm text-slate-300 max-w-lg mx-auto">
-          Send us your profile or portfolio. We review every application and reply within a few business days.
+          Send us your profile or portfolio. We review every application and
+          reply within a few business days.
         </p>
         <Link href="/careers/apply" className="inline-block">
           <Button
@@ -259,7 +243,6 @@ export default function CareersPage() {
           </Button>
         </Link>
       </motion.div>
->>>>>>> Stashed changes
     </div>
   );
 }

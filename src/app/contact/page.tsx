@@ -10,7 +10,6 @@ import confetti from "canvas-confetti";
 import {
   Mail,
   Phone,
-  MapPin,
   CheckCircle2,
   Send,
   ChevronDown,
@@ -353,29 +352,8 @@ function ContactFormContent() {
             <ShieldCheck className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
             <span>Strict NDA Protection & 24-Hour Technical Response SLA</span>
           </div>
-<<<<<<< Updated upstream
         </form>
       )}
-=======
-        )}
-
-        <Button
-          type="submit"
-          variant="teal-gradient"
-          size="lg"
-          disabled={submitting}
-          icon={<Send className="w-5 h-5" />}
-          className="w-full justify-center"
-        >
-          {submitting ? "Sending…" : "Submit Project Request"}
-        </Button>
-
-        <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500">
-          <ShieldCheck className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
-          Strict Privacy Protection (NDA) & Guaranteed Response Within 24 Hours
-        </div>
-      </form>
->>>>>>> Stashed changes
     </GlowCard>
   );
 }
@@ -403,23 +381,6 @@ export default function ContactPage() {
 
   const faqs = [
     {
-<<<<<<< Updated upstream
-      q: "Who handles our project technical execution?",
-      a: "You work 1-on-1 exclusively with our senior principal architects. We do not use account managers or offshore sub-contractors."
-    },
-    {
-      q: "What is your standard project delivery timeline?",
-      a: "Most Next.js Web App and AI integration projects take between 3 to 6 weeks from initial architecture blueprinting to production edge cutover."
-    },
-    {
-      q: "Do you offer post-launch code warranties & SLAs?",
-      a: "Yes. Every contract includes a 30-day full code warranty, 100/100 Lighthouse performance benchmark guarantee, and an optional continuous SLA maintenance retainer."
-    },
-    {
-      q: "How do we get started after submitting this lead form?",
-      a: "Within 24 hours, our technical discovery team will schedule a 30-minute technical discovery call with our engineering leads to review your requirements."
-    }
-=======
       q: "Who will actually build and handle our software project?",
       a: "You partner directly with our senior software experts. No junior developers, no middle managers, and no lost details along the way.",
     },
@@ -435,7 +396,6 @@ export default function ContactPage() {
       q: "What happens immediately after I submit this inquiry form?",
       a: "Within 24 hours, our senior team reviews your project brief and emails you to schedule a free 15-minute strategy call to discuss your goals and budget.",
     },
->>>>>>> Stashed changes
   ];
 
   return (
@@ -444,14 +404,9 @@ export default function ContactPage() {
       {/* Header */}
       <SectionHeader
         badgeText="Start a Conversation"
-<<<<<<< Updated upstream
-        title="Direct Architectural Lead Form"
-        subtitle="Ready to build? Fill out the project questionnaire below to connect directly with our principal architects within 24 hours."
-=======
         title="Tell Us About Your"
         gradientTitle="Project Idea"
         subtitle="Share a few details about your business goals. Our team will review your request and get back to you with a clear roadmap within 24 hours."
->>>>>>> Stashed changes
       />
 
       {/* Main Grid: Form + Contact Cards */}
@@ -500,9 +455,6 @@ export default function ContactPage() {
           </GlowCard>
 
           <GlowCard className="p-6">
-<<<<<<< Updated upstream
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Direct Contact Channels</h3>
-=======
             <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#004d4d] dark:text-cyan-400 mb-3">
               <Briefcase className="w-3.5 h-3.5" />
               Studio Identity
@@ -513,25 +465,18 @@ export default function ContactPage() {
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
               Have a quick question or prefer reaching out directly? Connect with our team straight away.
             </p>
->>>>>>> Stashed changes
             <div className="space-y-4 text-xs">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 flex items-center justify-center shrink-0">
                   <Mail className="w-4 h-4" />
                 </div>
                 <div>
-<<<<<<< Updated upstream
-                  <div className="text-slate-500 dark:text-slate-400">General & Client Inquiries</div>
-                  <a href={`mailto:${settings.contactEmail}`} className="font-bold text-slate-900 dark:text-slate-100 hover:text-[#004d4d] dark:hover:text-cyan-400">
-                    {settings.contactEmail}
-=======
-                  <div className="text-slate-500">Email Us</div>
+                  <div className="text-slate-500 dark:text-slate-400">Email Us</div>
                   <a
-                    href="mailto:kodraxelsoft@gmail.com"
-                    className="font-bold text-slate-900 dark:text-slate-100"
+                    href={`mailto:${settings.contactEmail}`}
+                    className="font-bold text-slate-900 dark:text-slate-100 hover:text-[#004d4d] dark:hover:text-cyan-400"
                   >
-                    kodraxelsoft@gmail.com
->>>>>>> Stashed changes
+                    {settings.contactEmail}
                   </a>
                 </div>
               </div>
@@ -541,55 +486,18 @@ export default function ContactPage() {
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
-<<<<<<< Updated upstream
-                  <div className="text-slate-500 dark:text-slate-400">Architect Direct Desk</div>
-                  <a href={`tel:${settings.contactPhone.replace(/\s/g, "")}`} className="font-bold text-slate-900 dark:text-slate-100 hover:text-[#004d4d] dark:hover:text-cyan-400">
-=======
-                  <div className="text-slate-500">Call Us</div>
+                  <div className="text-slate-500 dark:text-slate-400">Call Us</div>
                   <a
                     href={`tel:${settings.contactPhone.replace(/\s/g, "")}`}
-                    className="font-bold text-slate-900 dark:text-slate-100"
+                    className="font-bold text-slate-900 dark:text-slate-100 hover:text-[#004d4d] dark:hover:text-cyan-400"
                   >
->>>>>>> Stashed changes
                     {settings.contactPhone}
                   </a>
                 </div>
               </div>
-<<<<<<< Updated upstream
-
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 flex items-center justify-center shrink-0">
-                  <MapPin className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-slate-500 dark:text-slate-400">Headquarters</div>
-                  <div className="font-bold text-slate-900 dark:text-slate-100">{settings.address}</div>
-                </div>
-              </div>
-            </div>
-          </GlowCard>
-
-          {/* Location Map Teaser Card */}
-          <GlowCard className="p-6">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">{settings.companyName} HQ Map</h3>
-            <div className="relative w-full h-44 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://images.unsplash.com/photo-1506146332389-18140dc7b2fb?auto=format&fit=crop&q=80&w=800"
-                alt={`${settings.companyName} Map`}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-cyan-950/40 flex items-center justify-center">
-                <div className="px-3 py-1.5 rounded-full bg-slate-950/90 backdrop-blur-md border border-[#006666]/50 text-[11px] font-bold text-cyan-400 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-cyan-400 animate-bounce" />
-                  <span>{settings.companyName.toUpperCase()}</span>
-                </div>
-              </div>
-=======
               <p className="text-[11px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200 dark:border-slate-800">
                 Availability: Monday to Friday | Fast response guaranteed
               </p>
->>>>>>> Stashed changes
             </div>
           </GlowCard>
         </GSAPReveal>

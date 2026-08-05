@@ -10,8 +10,6 @@ export interface Service {
   basePrice: string;
   estimatedWeeks: string;
   technologies: string[];
-<<<<<<< Updated upstream
-=======
   /** Background image for accordion / cards */
   imageUrl?: string;
   /** Detail page — problem / value intro under service title */
@@ -34,7 +32,6 @@ export interface Service {
   detailMiddleBadge?: string;
   /** Scope / agreement pill — defaults to Fixed Scope Project */
   detailScopeBadge?: string;
->>>>>>> Stashed changes
 }
 
 export const servicesData: Service[] = [

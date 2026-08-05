@@ -6,19 +6,11 @@ export const pricingData: PricingPlan[] = [
     title: "Landing Page",
     subtitle: "Single-page site to capture leads fast",
     description:
-<<<<<<< Updated upstream
-      "A fixed-scope engagement to design, build, and ship a production-ready web application fast.",
-    price: "$8,500",
-    compareAtPrice: "$11,000",
-    discountPercent: 22,
-    discountLabel: "Early Bird",
-=======
       "A modern one-page website designed to convert visitors into customers.",
     price: "PKR 7,999",
     compareAtPrice: "",
     discountPercent: 0,
     discountLabel: "",
->>>>>>> Stashed changes
     features: [
       "Modern UI Design",
       "Mobile Responsive",
@@ -38,40 +30,8 @@ export const pricingData: PricingPlan[] = [
     title: "Business Site",
     subtitle: "Multi-page site for growing businesses",
     description:
-<<<<<<< Updated upstream
-      "Full-stack architecture with custom integrations, animations, and a dedicated engineering pod.",
-    price: "$22,000",
-    compareAtPrice: "$28,000",
-    discountPercent: 21,
-    discountLabel: "Most Popular Deal",
-    features: [
-      "Everything in Starter Launch",
-      "Custom design system & GSAP motion",
-      "AI / LLM feature integration",
-      "Cloud infra & CI/CD pipelines",
-      "4-6 weeks delivery",
-      "30-day post-launch warranty",
-      "Dedicated Slack channel",
-    ],
-    badge: "Most Popular",
-    ctaText: "Start This Plan",
-    ctaLink: "/contact",
-    serviceSlug: "growth-platform",
-    isFeatured: true,
-    isActive: true,
-    displayOrder: 1,
-  },
-  {
-    id: "enterprise",
-    title: "Enterprise Scale",
-    subtitle: "For high-traffic, mission-critical systems",
-    description:
-      "End-to-end architecture, security hardening, and 24/7 SLA-backed support for enterprise workloads.",
-    price: "Custom Quote",
-=======
       "A complete business website with clear pages, maps, and lead capture.",
     price: "PKR 14,999",
->>>>>>> Stashed changes
     compareAtPrice: "",
     discountPercent: 0,
     discountLabel: "",

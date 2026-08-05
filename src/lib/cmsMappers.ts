@@ -10,6 +10,11 @@ import type {
   PricingPlan,
 } from "@/types/admin";
 
+/** Strip currency labels for contact URL params (e.g. "PKR 7,999" → "7,999"). */
+export function stripCurrencySymbol(value: string): string {
+  return value.replace(/^(PKR|USD|\$|Rs\.?)\s*/i, "").trim();
+}
+
 /* ---------- Services ---------- */
 export function serviceFromApi(row: Record<string, unknown>): Service {
   return {

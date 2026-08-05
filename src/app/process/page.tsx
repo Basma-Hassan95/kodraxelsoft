@@ -14,17 +14,10 @@ export default function ProcessPage() {
       
       {/* Header */}
       <SectionHeader
-<<<<<<< Updated upstream
-        badgeText="Agile Framework"
-        title="Our 6-Stage Client Onboarding &"
-        gradientTitle="Development Lifecycle"
-        subtitle="How our principal architects take your product from initial architectural discovery to a sub-50ms production edge launch."
-=======
         badgeText="Delivery Process"
         title="How We Turn Your Idea into a"
         gradientTitle="Live Digital Product"
         subtitle="A simple 6-stage journey to build your custom software. Clear steps, fixed timelines, and total peace of mind every step of the way."
->>>>>>> Stashed changes
       />
 
       {/* 6-Stage Timeline List */}
@@ -94,49 +87,22 @@ export default function ProcessPage() {
         })}
       </div>
 
-<<<<<<< Updated upstream
-      {/* SLA Guarantees Banner */}
-      <section className="pt-12">
-        <GSAPReveal direction="up">
-          <div className="p-8 md:p-12 rounded-3xl border border-[#006666]/40 bg-[#0c1424] dark:bg-[#111726] text-center space-y-6">
-            <h2 className="text-3xl font-extrabold text-white">Our Enterprise SLA Guarantee</h2>
-            <p className="text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Every project comes signed with our 100/100 Lighthouse performance guarantee, 30-day post-launch code warranty, and direct senior engineering support.
-            </p>
-            <Button
-              variant="teal-gradient"
-              size="lg"
-              icon={<ArrowRight className="w-5 h-5" />}
-              onClick={() => (window.location.href = "/contact")}
-            >
-              Start Your Onboarding
-            </Button>
-          </div>
-        </GSAPReveal>
-      </section>
-
-=======
-      <motion.div
-        initial={{ opacity: 0, y: 28 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, ease }}
-        className="p-8 md:p-12 rounded-3xl border border-[#006666]/40 bg-[#0c1424] text-center space-y-6"
-      >
-        <h2 className="text-3xl font-extrabold text-white">Ready for Stage One?</h2>
-        <p className="text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
-          Book a free discovery call today. We will map out your scope, timeline, and exact cost before you spend a single dollar.
-        </p>
-        <Button
-          variant="teal-gradient"
-          size="lg"
-          icon={<ArrowRight className="w-5 h-5" />}
-          onClick={() => (window.location.href = "/contact")}
-        >
-          Start Your Project Now
-        </Button>
-      </motion.div>
->>>>>>> Stashed changes
+      <GSAPReveal direction="up">
+        <div className="p-8 md:p-12 rounded-3xl border border-[#006666]/40 bg-[#0c1424] text-center space-y-6">
+          <h2 className="text-3xl font-extrabold text-white">Ready for Stage One?</h2>
+          <p className="text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            Book a free discovery call today. We will map out your scope, timeline, and exact cost before you spend a single dollar.
+          </p>
+          <Button
+            variant="teal-gradient"
+            size="lg"
+            icon={<ArrowRight className="w-5 h-5" />}
+            onClick={() => (window.location.href = "/contact")}
+          >
+            Start Your Project Now
+          </Button>
+        </div>
+      </GSAPReveal>
     </div>
   );
 }

@@ -41,6 +41,7 @@ export const servicesData: Service[] = [
     iconName: "Bot",
     title: "AI Automation & Smart Workflows",
     subtitle: "Connect Your Apps & Cut Manual Work",
+    imageUrl: "/services/ai-automation/hero.png",
     description:
       "Connect all your business software so data syncs automatically, saving your team hours of manual typing every day.",
     features: [
@@ -75,6 +76,7 @@ export const servicesData: Service[] = [
     iconName: "Cpu",
     title: "Smart AI Assistants",
     subtitle: "Digital Helpers That Work 24/7",
+    imageUrl: "/services/smart-ai-assistants/hero.png",
     description:
       "Train intelligent digital helpers on your private business files, FAQs, and products to answer customer queries 24/7, qualify leads, and automate daily routines.",
     features: [
@@ -111,6 +113,7 @@ export const servicesData: Service[] = [
     iconName: "Package",
     title: "SEO-Optimized Shopify Stores",
     subtitle: "Fast Stores Built to Rank & Sell",
+    imageUrl: "/services/shopify-seo-stores/hero.png",
     description:
       "A complete Shopify store setup designed to load instantly on phones, rank on Google, and convert casual visitors into paying customers.",
     features: [
@@ -147,6 +150,7 @@ export const servicesData: Service[] = [
     iconName: "Globe",
     title: "Easy-to-Edit WordPress Websites",
     subtitle: "Beautiful Sites You Can Manage Yourself",
+    imageUrl: "/services/wordpress-seo-websites/hero.png",
     description:
       "Clean, professional WordPress websites built with intuitive visual controls so you can update text, images, and content without calling a developer.",
     features: [
@@ -183,6 +187,7 @@ export const servicesData: Service[] = [
     iconName: "Code",
     title: "Custom Web Application Development",
     subtitle: "Tailored Business Tools & Portals",
+    imageUrl: "/services/custom-web-apps/hero.png",
     description:
       "Custom web portals, internal dashboards, and client platforms engineered for ultra-fast loading speeds, enterprise security, and zero system crashes.",
     features: [
@@ -255,6 +260,7 @@ export const servicesData: Service[] = [
     iconName: "Layers",
     title: "UI/UX & Product Design",
     subtitle: "Clean Layouts Before Writing Code",
+    imageUrl: "/services/ui-ux-product-design/hero.png",
     description:
       "Interactive screen designs and visual prototypes so you can test and approve your app’s exact look and feel before development begins.",
     features: [

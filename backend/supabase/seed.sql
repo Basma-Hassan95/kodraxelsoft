@@ -43,7 +43,7 @@ VALUES
   ('portfolio', '/portfolio', 'Portfolio | Kodraxelsoft', 'Featured case studies and enterprise builds.', 'portfolio, case studies', '/portfolio'),
   ('about', '/about', 'About Kodraxelsoft | Experts in Simple Software & AI Solutions', 'Learn how Kodraxelsoft helps growing businesses build fast websites and smart AI tools. No middle agency overhead or technical jargon.', 'about, software team, AI solutions', '/about'),
   ('contact', '/contact', 'Contact Kodraxelsoft | Get a Free Custom Software Quote', 'Ready to build your next custom website or AI tool? Contact Kodraxelsoft today. We reply within 24 hours with a clear plan and zero pushy sales talk.', 'contact, hire, quote', '/contact'),
-  ('blog', '/blog', 'Blog | Kodraxelsoft', 'Engineering notes on Next.js, AI, and cloud.', 'blog, engineering', '/blog'),
+  ('blog', '/blog', 'Software Engineering Insights & Tech Guides | Kodraxelsoft Blog', 'Explore practical tech guides, web development case studies, and AI automation insights written directly by senior software engineers at Kodraxelsoft.', 'blog, software engineering, tech guides, AI automation', '/blog'),
   ('careers', '/careers', 'Careers at Kodraxelsoft | Join Our Team of Senior Builders', 'Build simple, high-speed software and smart AI tools with Kodraxelsoft. Remote-first culture, direct mentorship, and great benefits. Apply today.', 'careers, jobs, remote', '/careers'),
   ('process', '/process', 'Our Simple 6-Step Software Development Process | Kodraxelsoft', 'Discover how Kodraxelsoft takes your project from initial idea to live launch in 6 clear, stress-free stages. Guaranteed timelines and zero technical speak.', 'process, software development, timeline', '/process')
 ON CONFLICT (page_key) DO NOTHING;

@@ -6,7 +6,11 @@ import { useParams } from "next/navigation";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { usePublicServices } from "@/hooks/usePublicCms";
-import { serviceBackgroundImage } from "@/lib/serviceImages";
+import {
+  serviceBackgroundImage,
+  serviceSecondaryImage,
+  serviceDetailImage,
+} from "@/lib/serviceImages";
 import {
   Code,
   Cpu,
@@ -115,6 +119,8 @@ export default function ServiceDetailPage() {
   const Icon = ICON_MAP[service.iconName] || Code;
   const resolvedSlug = service.slug || service.id;
   const heroImage = serviceBackgroundImage(service);
+  const secondaryImage = serviceSecondaryImage(service);
+  const detailImage = serviceDetailImage(service);
   const otherServices = services
     .filter((s) => s.id !== service.id)
     .slice(0, 4);
@@ -286,8 +292,8 @@ export default function ServiceDetailPage() {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={heroImage}
-              alt=""
+              src={secondaryImage}
+              alt={service.title}
               className="absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-[#004d4d]/25 mix-blend-multiply" />
@@ -304,8 +310,8 @@ export default function ServiceDetailPage() {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={heroImage}
-              alt=""
+              src={detailImage}
+              alt={`${service.title} — solution visual`}
               className="absolute inset-0 w-full h-full object-cover scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-[#041628]/60 to-transparent" />

@@ -33,10 +33,90 @@ export default function BlogPage() {
       {/* Header */}
       <SectionHeader
         badgeText="Engineering Insights"
-        title="Architectural Deep Dives &"
-        gradientTitle="Technical Blueprints"
-        subtitle="Articles, research notes, and benchmark studies written directly by our principal software architects."
+        title="Practical Software Insights &"
+        gradientTitle="Technology Blueprints"
+        subtitle="Real-world software guides, web speed case studies, and AI automation insights written directly by senior developers at Kodraxelsoft."
       />
+
+      {/* Featured editorial rows — alternating text / image */}
+      <div className="space-y-16 md:space-y-24">
+        <GSAPReveal direction="up">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center">
+            <div className="space-y-5 max-w-xl">
+              <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#004d4d] dark:text-cyan-400">
+                01 · Featured Insight
+              </p>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight">
+                Building Ultra-Fast Websites with Next.js &amp; Modern Web Tools
+              </h2>
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+                Discover how we optimize page loading speeds, eliminate rendering lag, and deliver lightning-fast web applications for growing online businesses.
+              </p>
+              <Button
+                variant="teal-gradient"
+                size="sm"
+                icon={<ArrowRight className="w-3.5 h-3.5" />}
+                onClick={() => {
+                  const post =
+                    blogPosts.find((p) => p.id === "nextjs-turbopack-architecture") ||
+                    blogPosts.find((p) => p.category === "Web Architecture") ||
+                    blogPosts[0];
+                  if (post) setActiveArticle(post);
+                }}
+              >
+                Read Full Article
+              </Button>
+            </div>
+            <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-800 shadow-xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1400"
+                alt="Building ultra-fast websites with Next.js"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </GSAPReveal>
+
+        <GSAPReveal direction="up" delay={0.08}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center">
+            <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-800 shadow-xl order-2 lg:order-1">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1400"
+                alt="Practical AI automation beyond basic chatbots"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            </div>
+            <div className="space-y-5 max-w-xl lg:ml-auto order-1 lg:order-2">
+              <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#004d4d] dark:text-cyan-400">
+                02 · Studio Voice
+              </p>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight">
+                Practical AI Automation Beyond Basic Chatbots
+              </h2>
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+                Learn how custom AI memory tools and automated system workflows streamline everyday business operations and cut manual work.
+              </p>
+              <Button
+                variant="teal-gradient"
+                size="sm"
+                icon={<ArrowRight className="w-3.5 h-3.5" />}
+                onClick={() => {
+                  const post =
+                    blogPosts.find((p) => p.id === "autonomous-ai-agents-enterprise") ||
+                    blogPosts.find((p) => p.category === "AI & Machine Learning") ||
+                    blogPosts[1] ||
+                    blogPosts[0];
+                  if (post) setActiveArticle(post);
+                }}
+              >
+                Read Full Article
+              </Button>
+            </div>
+          </div>
+        </GSAPReveal>
+      </div>
 
       {/* Search & Category Filter Bar */}
       <GSAPReveal direction="up">

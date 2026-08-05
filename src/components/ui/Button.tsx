@@ -21,7 +21,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer select-none active:scale-[0.98]";
+    "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer select-none active:scale-[0.98] max-w-full min-w-0 box-border";
 
   const sizeStyles = {
     sm: "px-3.5 py-1.5 text-xs gap-1.5",
@@ -48,7 +48,7 @@ export const Button: React.FC<ButtonProps> = ({
       {...props}
     >
       {icon && iconPosition === "left" && <span className="shrink-0">{icon}</span>}
-      <span>{children}</span>
+      <span className="min-w-0 truncate">{children}</span>
       {icon && iconPosition === "right" && <span className="shrink-0">{icon}</span>}
     </button>
   );

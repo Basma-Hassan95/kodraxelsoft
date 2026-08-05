@@ -60,7 +60,7 @@ export default function HomePageClient({
           <GSAPReveal direction="down" duration={0.35}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#006666]/40 bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-300 text-xs font-medium uppercase tracking-wider mb-8">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-              <span>Elite Engineering Studio</span>
+              <span>Custom Software for Growing Businesses</span>
             </div>
           </GSAPReveal>
 
@@ -145,66 +145,67 @@ export default function HomePageClient({
         />
         <GSAPReveal
           stagger={0.08}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch"
         >
           {activePlans.map((plan) => {
             const hasDiscount =
               Boolean(plan.compareAtPrice) || plan.discountPercent > 0;
             return (
-              <GlowCard
-                key={plan.id}
-                className="h-full flex flex-col p-6"
-              >
-                <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
-                  {plan.title}
-                </h3>
-                <div className="mt-3 flex items-end gap-2">
-                  <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
-                    {plan.price}
-                  </span>
-                  {plan.compareAtPrice && (
-                    <span className="text-sm text-slate-400 line-through">
-                      {stripCurrencySymbol(plan.compareAtPrice)}
+              <div key={plan.id} className="h-full min-w-0 flex">
+                <GlowCard className="w-full h-full min-w-0 !flex !flex-col p-6">
+                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-white shrink-0">
+                    {plan.title}
+                  </h3>
+                  <div className="mt-3 flex items-end gap-2 shrink-0">
+                    <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
+                      {plan.price}
                     </span>
-                  )}
-                </div>
-                {hasDiscount && (
-                  <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                    <Tag className="w-3 h-3" />
-                    {plan.discountPercent > 0
-                      ? `Save ${plan.discountPercent}%`
-                      : "Offer"}
-                    {plan.discountLabel ? ` · ${plan.discountLabel}` : ""}
+                    {plan.compareAtPrice && (
+                      <span className="text-sm text-slate-400 line-through">
+                        {stripCurrencySymbol(plan.compareAtPrice)}
+                      </span>
+                    )}
                   </div>
-                )}
-                <ul className="mt-4 space-y-2 flex-1">
-                  {plan.features.map((f) => (
-                    <li
-                      key={f}
-                      className="flex gap-2 text-xs text-slate-600 dark:text-slate-300"
+                  {hasDiscount && (
+                    <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 shrink-0">
+                      <Tag className="w-3 h-3" />
+                      {plan.discountPercent > 0
+                        ? `Save ${plan.discountPercent}%`
+                        : "Offer"}
+                      {plan.discountLabel ? ` · ${plan.discountLabel}` : ""}
+                    </div>
+                  )}
+                  <ul className="mt-4 space-y-2 flex-1">
+                    {plan.features.map((f) => (
+                      <li
+                        key={f}
+                        className="flex gap-2 text-xs text-slate-600 dark:text-slate-300"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400 shrink-0 mt-0.5" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-auto pt-5 shrink-0">
+                    <Button
+                      variant="teal-gradient"
+                      size="sm"
+                      className="w-full max-w-full min-w-0 justify-center box-border"
+                      icon={<ArrowRight className="w-3.5 h-3.5" />}
+                      onClick={() => {
+                        const params = new URLSearchParams({
+                          plan: plan.title,
+                          price: stripCurrencySymbol(plan.price),
+                          serviceName: `${plan.title} Pricing Plan`,
+                        });
+                        window.location.href = `/contact?${params.toString()}`;
+                      }}
                     >
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400 shrink-0 mt-0.5" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Button
-                  variant="teal-gradient"
-                  size="sm"
-                  className="w-full justify-center mt-5"
-                  icon={<ArrowRight className="w-3.5 h-3.5" />}
-                  onClick={() => {
-                    const params = new URLSearchParams({
-                      plan: plan.title,
-                      price: stripCurrencySymbol(plan.price),
-                      serviceName: `${plan.title} Pricing Plan`,
-                    });
-                    window.location.href = `/contact?${params.toString()}`;
-                  }}
-                >
-                  {plan.ctaText || "Get Started"}
-                </Button>
-              </GlowCard>
+                      {plan.ctaText || "Get Started"}
+                    </Button>
+                  </div>
+                </GlowCard>
+              </div>
             );
           })}
         </GSAPReveal>

@@ -6,12 +6,11 @@ import {
   fetchPublicBlog,
   fetchPublicCareers,
   fetchPublicTestimonials,
-  fetchPublicPricing,
 } from "@/lib/publicContent";
 import { servicesData } from "@/data/services";
 import { projectsData, type Project } from "@/data/projects";
 import { blogPosts, type BlogPost } from "@/data/blog";
-import type { CareerPosition, TestimonialItem, PricingPlan } from "@/types/admin";
+import type { CareerPosition, TestimonialItem } from "@/types/admin";
 import { testimonialsData } from "@/data/testimonials";
 import { pricingData } from "@/data/pricing";
 
@@ -53,9 +52,6 @@ export function usePublicTestimonials() {
 }
 
 export function usePublicPricing() {
-  const [plans, setPlans] = useState<PricingPlan[]>(pricingData);
-  useEffect(() => {
-    void fetchPublicPricing().then(setPlans);
-  }, []);
-  return plans;
+  // Local PKR packages are source of truth — do not let CMS overwrite with old USD plans
+  return pricingData;
 }

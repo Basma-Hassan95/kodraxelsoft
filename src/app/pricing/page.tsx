@@ -51,88 +51,93 @@ export default function PricingPage() {
           const hasDiscount =
             Boolean(plan.compareAtPrice) || plan.discountPercent > 0;
           return (
-            <GlowCard key={plan.id} className="h-full flex flex-col">
-              <div className="space-y-1">
-                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
-                  {plan.title}
-                </h3>
-                {plan.subtitle && (
-                  <p className="text-xs font-semibold text-[#004d4d] dark:text-cyan-400 uppercase tracking-wide">
-                    {plan.subtitle}
-                  </p>
-                )}
-              </div>
-
-              <div className="mt-5 pb-5 border-b border-slate-200 dark:border-slate-800">
-                <div className="flex items-end gap-2 flex-wrap">
-                  <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
-                    {plan.price}
-                  </span>
-                  {plan.compareAtPrice && (
-                    <span className="text-sm font-semibold text-slate-400 line-through decoration-2">
-                      {stripCurrencySymbol(plan.compareAtPrice)}
-                    </span>
+            <div key={plan.id} className="h-full min-w-0 flex">
+              <GlowCard className="w-full h-full min-w-0 !flex !flex-col">
+                <div className="space-y-1 min-w-0 shrink-0">
+                  <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
+                    {plan.title}
+                  </h3>
+                  {plan.subtitle && (
+                    <p className="text-xs font-semibold text-[#004d4d] dark:text-cyan-400 uppercase tracking-wide line-clamp-2 min-h-[2.5rem]">
+                      {plan.subtitle}
+                    </p>
                   )}
                 </div>
 
-                {hasDiscount && (
-                  <div className="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold">
-                    <Tag className="w-3 h-3" />
-                    <span>
-                      {plan.discountPercent > 0
-                        ? `Save ${plan.discountPercent}%`
-                        : "Discounted"}
-                      {plan.discountLabel ? ` · ${plan.discountLabel}` : ""}
+                <div className="mt-5 pb-5 border-b border-slate-200 dark:border-slate-800 shrink-0">
+                  <div className="flex items-end gap-2 flex-wrap">
+                    <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
+                      {plan.price}
                     </span>
+                    {plan.compareAtPrice && (
+                      <span className="text-sm font-semibold text-slate-400 line-through decoration-2">
+                        {stripCurrencySymbol(plan.compareAtPrice)}
+                      </span>
+                    )}
                   </div>
+
+                  {hasDiscount && (
+                    <div className="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold">
+                      <Tag className="w-3 h-3" />
+                      <span>
+                        {plan.discountPercent > 0
+                          ? `Save ${plan.discountPercent}%`
+                          : "Discounted"}
+                        {plan.discountLabel ? ` · ${plan.discountLabel}` : ""}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {plan.description && (
+                  <p className="mt-5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3 min-h-[3.75rem] shrink-0">
+                    {plan.description}
+                  </p>
                 )}
-              </div>
 
-              {plan.description && (
-                <p className="mt-5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {plan.description}
-                </p>
-              )}
+                <ul className="mt-6 space-y-2.5 flex-1">
+                  {plan.features.map((feat, idx) => (
+                    <li
+                      key={idx}
+                      className="flex items-start gap-2.5 text-xs font-medium text-slate-700 dark:text-slate-300"
+                    >
+                      <CheckCircle2 className="w-4 h-4 text-[#004d4d] dark:text-cyan-400 shrink-0 mt-0.5" />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
 
-              <ul className="mt-6 space-y-2.5 flex-1">
-                {plan.features.map((feat, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-start gap-2.5 text-xs font-medium text-slate-700 dark:text-slate-300"
+                <div className="mt-auto pt-8 shrink-0">
+                  <Button
+                    variant="teal-gradient"
+                    size="sm"
+                    icon={<ArrowRight className="w-3.5 h-3.5" />}
+                    onClick={() => {
+                      const params = new URLSearchParams({
+                        plan: plan.title,
+                        price: stripCurrencySymbol(plan.price),
+                        serviceName: `${plan.title} Pricing Plan`,
+                      });
+                      if (plan.serviceSlug)
+                        params.set("service", plan.serviceSlug);
+                      if (plan.compareAtPrice) {
+                        params.set(
+                          "compareAt",
+                          stripCurrencySymbol(plan.compareAtPrice)
+                        );
+                      }
+                      if (plan.discountPercent > 0) {
+                        params.set("discount", String(plan.discountPercent));
+                      }
+                      window.location.href = `/contact?${params.toString()}`;
+                    }}
+                    className="w-full max-w-full min-w-0 justify-center box-border"
                   >
-                    <CheckCircle2 className="w-4 h-4 text-[#004d4d] dark:text-cyan-400 shrink-0 mt-0.5" />
-                    <span>{feat}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <Button
-                variant="teal-gradient"
-                size="md"
-                icon={<ArrowRight className="w-4 h-4" />}
-                onClick={() => {
-                  const params = new URLSearchParams({
-                    plan: plan.title,
-                    price: stripCurrencySymbol(plan.price),
-                    serviceName: `${plan.title} Pricing Plan`,
-                  });
-                  if (plan.serviceSlug) params.set("service", plan.serviceSlug);
-                  if (plan.compareAtPrice) {
-                    params.set(
-                      "compareAt",
-                      stripCurrencySymbol(plan.compareAtPrice)
-                    );
-                  }
-                  if (plan.discountPercent > 0) {
-                    params.set("discount", String(plan.discountPercent));
-                  }
-                  window.location.href = `/contact?${params.toString()}`;
-                }}
-                className="w-full justify-center mt-8"
-              >
-                {plan.ctaText || "Get Started"}
-              </Button>
-            </GlowCard>
+                    {plan.ctaText || "Get Started"}
+                  </Button>
+                </div>
+              </GlowCard>
+            </div>
           );
         })}
       </GSAPReveal>

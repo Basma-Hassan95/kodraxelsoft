@@ -92,18 +92,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const apiKey = process.env.OPENAI_API_KEY?.trim();
-  if (!apiKey) {
-    return NextResponse.json(
-      {
-        success: false,
-        message:
-          "Chat is temporarily unavailable. Please contact us via the Contact page.",
-      },
-      { status: 503 }
-    );
-  }
-
   let body: unknown;
   try {
     body = await req.json();
@@ -132,13 +120,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, ...r });
   }
 
-  // Fast, secure path for greetings / thanks / okay / jee — no model needed
+  // Fast path for greetings / thanks — no OpenAI key required
   if (isCourteousMessage(message)) {
     return NextResponse.json({
       success: true,
       onTopic: true,
       reply: courteousReply(message),
     });
+  }
+
+  const apiKey = process.env.OPENAI_API_KEY?.trim();
+  if (!apiKey) {
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          "Chat is temporarily unavailable. Please contact us via the Contact page.",
+      },
+      { status: 503 }
+    );
   }
 
   const history = sanitizeHistory((body as { history?: unknown })?.history);

@@ -132,7 +132,7 @@ export default function HomePageClient({
         </div>
       </section>
 
-      {/* Ads — hidden until admin publishes Meta ads */}
+      {/* Ads / social campaigns */}
       <SocialCampaignsShowcase />
 
       {/* 5. PRICING */}

@@ -33,6 +33,9 @@ const CHANNELS: AdChannel[] = [
   "Other",
 ];
 
+const PROD_PUBLIC_META_ADS =
+  "https://kodraxelsoft-api.vercel.app/api/public/meta-ads";
+
 function notify() {
   if (typeof window !== "undefined") {
     window.dispatchEvent(new CustomEvent(META_ADS_EVENT));
@@ -104,7 +107,6 @@ export function getActiveMetaAds(): MetaAd[] {
 }
 
 function toApiBody(ad: MetaAd) {
-  // Only columns that exist on every meta_ads table (pre + post migration 005).
   return {
     title: ad.title.trim(),
     description: ad.description.trim(),
@@ -113,7 +115,43 @@ function toApiBody(ad: MetaAd) {
     link: ad.link.trim() || "/contact",
     status: ad.status,
     display_order: Number.isFinite(ad.display_order) ? ad.display_order : 0,
+    channel: ad.channel || "Meta / Facebook",
+    badge: ad.badge?.trim() || "Sponsored Campaign",
   };
+}
+
+function metaAdsEndpointCandidates(): string[] {
+  const fromEnv = (
+    process.env.CMS_API_INTERNAL_URL ||
+    process.env.NEXT_PUBLIC_CMS_API_URL ||
+    ""
+  )
+    .trim()
+    .replace(/\/$/, "");
+
+  const list: string[] = [];
+  // 1) Same-origin BFF (browser — no CORS)
+  if (typeof window !== "undefined") {
+    list.push("/api/cms/public/meta-ads?limit=50");
+  }
+  // 2) Production public API
+  list.push(`${PROD_PUBLIC_META_ADS}?limit=50`);
+  // 3) Env-configured API
+  if (fromEnv) list.push(`${fromEnv}/public/meta-ads?limit=50`);
+  // 4) Server-side CMS_API_BASE
+  if (typeof window === "undefined" && CMS_API_BASE) {
+    list.push(`${CMS_API_BASE.replace(/\/$/, "")}/public/meta-ads?limit=50`);
+  }
+  return Array.from(new Set(list));
+}
+
+async function parseMetaAdsResponse(res: Response): Promise<MetaAd[]> {
+  const json = await res.json();
+  if (!res.ok || json.success === false || !Array.isArray(json.data)) return [];
+  return json.data
+    .map((row: Record<string, unknown>, i: number) => mapApiRow(row, i))
+    .filter((a: MetaAd) => a.status === "active")
+    .sort((a: MetaAd, b: MetaAd) => a.display_order - b.display_order);
 }
 
 /** Admin: load from backend (auth). */
@@ -129,23 +167,48 @@ export async function loadAdminMetaAds(): Promise<MetaAd[]> {
   return ads;
 }
 
-/** Public website: only active ads from API. Empty DB = empty UI. */
+/**
+ * Public website: active ads from CMS API (BFF → Express → Supabase).
+ * Returns [] when none / offline — UI may show demo cards as fallback.
+ */
 export async function loadPublicMetaAds(): Promise<MetaAd[]> {
   clearStaleLocalMetaAds();
-  try {
-    const res = await fetch(`${CMS_API_BASE}/public/meta-ads?limit=50`);
-    const json = await res.json();
-    if (res.ok && json.success && Array.isArray(json.data)) {
-      const ads = json.data.map((row: Record<string, unknown>, i: number) =>
-        mapApiRow(row, i)
-      );
-      cacheAds(ads);
-      return ads.filter((a: MetaAd) => a.status === "active");
+
+  for (const url of metaAdsEndpointCandidates()) {
+    try {
+      const res = await fetch(url, {
+        cache: "no-store",
+        headers: { Accept: "application/json" },
+        next: { revalidate: 0 },
+      } as RequestInit);
+      const ads = await parseMetaAdsResponse(res);
+      // Prefer the first non-empty source (BFF → prod → env), same as heroCms
+      if (ads.length) {
+        cacheAds(ads);
+        return ads;
+      }
+    } catch {
+      // try next candidate
     }
-  } catch {
-    /* offline */
   }
-  return getActiveMetaAds();
+
+  // Last resort: UUID-only cache from a previous successful fetch
+  const cached = getActiveMetaAds();
+  if (cached.length) return cached;
+  cacheAds([]);
+  return [];
+}
+
+export async function loadPublicMetaAdById(id: string): Promise<MetaAd | null> {
+  if (!id) return null;
+  const list = await loadPublicMetaAds();
+  const fromList = list.find((a) => a.id === id);
+  if (fromList) return fromList;
+
+  const cached = readCache().find(
+    (a) => a.id === id && a.status === "active"
+  );
+  return cached || null;
 }
 
 /**

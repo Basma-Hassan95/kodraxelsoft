@@ -47,3 +47,44 @@ VALUES
   ('careers', '/careers', 'Careers at Kodraxelsoft | Join Our Team of Senior Builders', 'Build simple, high-speed software and smart AI tools with Kodraxelsoft. Remote-first culture, direct mentorship, and great benefits. Apply today.', 'careers, jobs, remote', '/careers'),
   ('process', '/process', 'Our Simple 6-Step Software Development Process | Kodraxelsoft', 'Discover how Kodraxelsoft takes your project from initial idea to live launch in 6 clear, stress-free stages. Guaranteed timelines and zero technical speak.', 'process, software development, timeline', '/process')
 ON CONFLICT (page_key) DO NOTHING;
+
+-- Sample Meta Ads (only when table is empty) so public showcase has live CMS data
+INSERT INTO meta_ads (
+  title, description, image_url, cta_text, link, status, display_order, channel, badge
+)
+SELECT * FROM (VALUES
+  (
+    'Fast Custom Websites That Convert Visitors into Customers',
+    'See how we help growing businesses launch clean, high-speed websites that look great on phones and bring in more leads.',
+    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200',
+    'View Our Services',
+    '/services',
+    'active',
+    0,
+    'LinkedIn',
+    'LinkedIn Sponsored'
+  ),
+  (
+    'Smooth Mobile Apps Your Customers Love Using',
+    'From food ordering to business dashboards — we build mobile-friendly apps with clean design and simple checkout flows.',
+    'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=1200',
+    'See Live Projects',
+    '/portfolio',
+    'active',
+    1,
+    'Instagram',
+    'Instagram Campaign'
+  ),
+  (
+    'Smart AI Helpers That Handle Support 24/7',
+    'Train digital assistants on your business info to answer customers, qualify leads, and cut hours of repetitive work.',
+    'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1200',
+    'Talk to Us',
+    '/contact',
+    'active',
+    2,
+    'Meta / Facebook',
+    'Meta Sponsored Ad'
+  )
+) AS v(title, description, image_url, cta_text, link, status, display_order, channel, badge)
+WHERE NOT EXISTS (SELECT 1 FROM meta_ads LIMIT 1);

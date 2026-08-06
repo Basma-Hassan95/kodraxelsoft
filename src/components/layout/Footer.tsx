@@ -69,8 +69,7 @@ export const Footer: React.FC<FooterProps> = ({
     settings.linkedinUrl?.trim() || DEFAULT_SITE_SETTINGS.linkedinUrl;
   const facebook =
     settings.facebookUrl?.trim() || DEFAULT_SITE_SETTINGS.facebookUrl;
-  const twitter =
-    settings.twitterUrl?.trim() || DEFAULT_SITE_SETTINGS.twitterUrl;
+  const twitter = "https://x.com/KodraxelSoft";
   const waNumber = toWhatsAppNumber(phone);
   const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(
     `Hi ${company}, I would like to inquire about your services.`

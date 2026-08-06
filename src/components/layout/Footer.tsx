@@ -61,8 +61,7 @@ export const Footer: React.FC<FooterProps> = ({
   const company = settings.companyName || DEFAULT_SITE_SETTINGS.companyName;
   const phone =
     settings.contactPhone?.trim() || DEFAULT_SITE_SETTINGS.contactPhone;
-  const emailAddr =
-    settings.contactEmail?.trim() || DEFAULT_SITE_SETTINGS.contactEmail;
+  const emailAddr = "kodraxelsoft@gmail.com";
   const instagram =
     settings.instagramUrl?.trim() || DEFAULT_SITE_SETTINGS.instagramUrl;
   const linkedin =
@@ -73,6 +72,38 @@ export const Footer: React.FC<FooterProps> = ({
   const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(
     `Hi ${company}, I would like to inquire about your services.`
   )}`;
+
+  const socialLinks = (
+    <div className="flex items-center gap-5">
+      <a
+        href={instagram}
+        target="_blank"
+        rel="noreferrer"
+        className="hover:text-cyan-400 transition-colors"
+        aria-label="Instagram"
+      >
+        <InstagramIcon className="w-4 h-4" />
+      </a>
+      <a
+        href={linkedin}
+        target="_blank"
+        rel="noreferrer"
+        className="hover:text-cyan-400 transition-colors"
+        aria-label="LinkedIn"
+      >
+        <LinkedinIcon className="w-4 h-4" />
+      </a>
+      <a
+        href={facebook}
+        target="_blank"
+        rel="noreferrer"
+        className="hover:text-cyan-400 transition-colors"
+        aria-label="Facebook"
+      >
+        <FacebookIcon className="w-4 h-4" />
+      </a>
+    </div>
+  );
 
   return (
     <footer className="relative border-t border-slate-300/80 dark:border-slate-800/80 bg-slate-100 dark:bg-[#070a12] pt-16 pb-12 overflow-hidden">
@@ -88,14 +119,12 @@ export const Footer: React.FC<FooterProps> = ({
               Kodraxelsoft builds fast, clean custom software and smart AI tools that save time and boost sales for growing businesses.
             </p>
             <div className="space-y-1 text-xs text-slate-600 dark:text-slate-400">
-              {emailAddr && (
-                <a
-                  href={`mailto:${emailAddr}`}
-                  className="block hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors"
-                >
-                  {emailAddr}
-                </a>
-              )}
+              <a
+                href={`mailto:${emailAddr}`}
+                className="block hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors font-semibold"
+              >
+                {emailAddr}
+              </a>
               {phone && (
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                   <a
@@ -114,6 +143,9 @@ export const Footer: React.FC<FooterProps> = ({
                   </a>
                 </div>
               )}
+            </div>
+            <div className="pt-1 text-slate-500 dark:text-slate-400">
+              {socialLinks}
             </div>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -212,39 +244,16 @@ export const Footer: React.FC<FooterProps> = ({
           </div>
         </div>
 
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+        <div className="pt-8 pb-20 sm:pb-8 pr-20 sm:pr-24 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
           <div>
             © {new Date().getFullYear()} {company}. All rights reserved.
           </div>
-          <div className="flex items-center gap-6">
-            <a
-              href={instagram}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-cyan-400 transition-colors"
-              aria-label="Instagram"
-            >
-              <InstagramIcon className="w-4 h-4" />
-            </a>
-            <a
-              href={linkedin}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-cyan-400 transition-colors"
-              aria-label="LinkedIn"
-            >
-              <LinkedinIcon className="w-4 h-4" />
-            </a>
-            <a
-              href={facebook}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-cyan-400 transition-colors"
-              aria-label="Facebook"
-            >
-              <FacebookIcon className="w-4 h-4" />
-            </a>
-          </div>
+          <a
+            href={`mailto:${emailAddr}`}
+            className="font-semibold text-slate-700 dark:text-slate-300 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors sm:mr-auto sm:ml-8"
+          >
+            {emailAddr}
+          </a>
         </div>
       </div>
     </footer>

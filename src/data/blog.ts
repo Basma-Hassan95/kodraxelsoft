@@ -63,7 +63,7 @@ export const blogPosts: BlogPost[] = [
     },
     publishedDate: "July 12, 2026",
     readTime: "8 Min Read",
-    image: "/blog/studio-voice.jpg",
+    image: "/blog/studio-voice.jpg?v=2",
     featured: true,
     content: [
       "How Smart AI Assistants Take Over Your Daily Boring Work",

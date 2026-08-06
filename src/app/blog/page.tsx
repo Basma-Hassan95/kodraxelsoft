@@ -83,7 +83,7 @@ export default function BlogPage() {
             <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-800 shadow-xl order-2 lg:order-1">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/blog/studio-voice.jpg"
+                src="/blog/studio-voice.jpg?v=2"
                 alt="Practical AI automation beyond basic chatbots"
                 className="absolute inset-0 w-full h-full object-cover"
               />

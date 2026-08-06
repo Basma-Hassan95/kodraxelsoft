@@ -10,9 +10,13 @@ import type {
   PricingPlan,
 } from "@/types/admin";
 
-/** Strip currency labels for contact URL params (e.g. "PKR 7,999" → "7,999"). */
+/** Strip currency labels/symbols for display (e.g. "PKR 7,999" / "$22,000" → "7,999" / "22,000"). */
 export function stripCurrencySymbol(value: string): string {
-  return value.replace(/^(PKR|USD|\$|Rs\.?)\s*/i, "").trim();
+  return String(value || "")
+    .replace(/^(PKR|USD|EUR|GBP|Rs\.?)\s*/i, "")
+    .replace(/^[\$€£¥₹]\s*/u, "")
+    .replace(/\s*[\$€£¥₹]/gu, "")
+    .trim();
 }
 
 /* ---------- Services ---------- */
@@ -273,14 +277,6 @@ export function testimonialToApi(t: TestimonialItem) {
 }
 
 /* ---------- Pricing Plans ---------- */
-/** Strip $, €, £ and similar currency prefixes from price display strings. */
-export function stripCurrencySymbol(value: string): string {
-  return String(value || "")
-    .replace(/^[\$€£¥₹]\s*/u, "")
-    .replace(/\s*[\$€£¥₹]/gu, "")
-    .trim();
-}
-
 export function pricingFromApi(row: Record<string, unknown>): PricingPlan {
   return {
     id: String(row.id),

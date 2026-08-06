@@ -43,65 +43,13 @@ function ChannelIcon({ channel, className }: { channel: string; className?: stri
   return <MetaBrandIcon className={className} />;
 }
 
-/** Shown when CMS has no active ads — keeps the homepage section visible */
-const DEMO_ADS: MetaAd[] = [
-  {
-    id: "demo-linkedin",
-    title: "Fast Custom Websites That Convert Visitors into Customers",
-    description:
-      "See how we help growing businesses launch clean, high-speed websites that look great on phones and bring in more leads.",
-    image_url:
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200",
-    cta_text: "View Our Services",
-    link: "/services",
-    status: "active",
-    display_order: 0,
-    channel: "LinkedIn",
-    badge: "LinkedIn Sponsored",
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: "demo-instagram",
-    title: "Smooth Mobile Apps Your Customers Love Using",
-    description:
-      "From food ordering to business dashboards — we build mobile-friendly apps with clean design and simple checkout flows.",
-    image_url:
-      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=1200",
-    cta_text: "See Live Projects",
-    link: "/portfolio",
-    status: "active",
-    display_order: 1,
-    channel: "Instagram",
-    badge: "Instagram Campaign",
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: "demo-meta",
-    title: "Smart AI Helpers That Handle Support 24/7",
-    description:
-      "Train digital assistants on your business info to answer customers, qualify leads, and cut hours of repetitive work.",
-    image_url:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1200",
-    cta_text: "Talk to Us",
-    link: "/contact",
-    status: "active",
-    display_order: 2,
-    channel: "Meta / Facebook",
-    badge: "Meta Sponsored Ad",
-    created_at: "",
-    updated_at: "",
-  },
-];
-
 export const SocialCampaignsShowcase: React.FC = () => {
   const [ads, setAds] = useState<MetaAd[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   const refresh = async () => {
     const list = await loadPublicMetaAds();
-    setAds(list.length > 0 ? list : DEMO_ADS);
+    setAds(list);
     setLoaded(true);
   };
 
@@ -118,11 +66,10 @@ export const SocialCampaignsShowcase: React.FC = () => {
     };
   }, []);
 
-  if (!loaded) {
+  // Hide entire section until loaded — and when no active CMS ads
+  if (!loaded || ads.length === 0) {
     return null;
   }
-
-  const isDemo = ads === DEMO_ADS || ads.some((a) => a.id.startsWith("demo-"));
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
@@ -135,7 +82,7 @@ export const SocialCampaignsShowcase: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {ads.map((ad, idx) => {
-          const href = isDemo || ad.id.startsWith("demo-") ? ad.link : `/ads/${ad.id}`;
+          const href = `/ads/${ad.id}`;
           return (
             <GSAPReveal key={ad.id} direction="up" delay={idx * 0.1}>
               <Link href={href} className="block h-full group">

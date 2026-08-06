@@ -11,10 +11,6 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
 }
 
-/** Site-wide button brand color */
-export const BUTTON_COLOR = "#226263";
-export const BUTTON_COLOR_HOVER = "#1a4f50";
-
 export const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   size = "md",
@@ -25,25 +21,25 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#226263]/45 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer select-none active:scale-[0.98]";
+    "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer select-none active:scale-[0.98] max-w-full min-w-0 box-border";
 
   const sizeStyles = {
     sm: "px-3.5 py-1.5 text-xs gap-1.5",
     md: "px-5 py-2.5 text-sm gap-2",
-    lg: "px-7 py-3.5 text-base gap-2.5",
+    lg: "px-7 py-3.5 text-base gap-2.5"
   };
 
   const variantStyles = {
     primary:
-      "bg-[#226263] hover:bg-[#1a4f50] text-white shadow-md border border-[#226263]/50 dark:bg-[#226263] dark:hover:bg-[#1a4f50]",
+      "bg-[#004d4d] hover:bg-[#003333] text-white shadow-md border border-[#006666]/40 dark:bg-[#004d4d] dark:hover:bg-[#006666]",
     "teal-gradient":
-      "bg-[#226263] hover:bg-[#1a4f50] dark:bg-[#226263] dark:hover:bg-[#1a4f50] text-white font-semibold shadow-md border border-[#226263]/50",
+      "bg-[#004d4d] hover:bg-[#003333] dark:bg-[#004d4d] dark:hover:bg-[#006666] text-white font-semibold shadow-md border border-[#006666]/40",
     secondary:
       "bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-slate-700 shadow-sm",
     outline:
-      "border border-[#226263]/50 dark:border-[#226263]/60 bg-transparent text-[#226263] dark:text-[#226263] hover:bg-[#226263]/10 hover:border-[#226263]",
+      "border border-slate-300 dark:border-slate-700/80 bg-transparent text-slate-800 dark:text-slate-200 hover:border-cyan-500 hover:text-cyan-600 dark:hover:text-cyan-400 dark:hover:border-cyan-400/60",
     ghost:
-      "bg-transparent text-slate-700 dark:text-slate-300 hover:bg-[#226263]/10 hover:text-[#226263] dark:hover:text-[#226263]",
+      "bg-transparent text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white"
   };
 
   return (
@@ -52,7 +48,7 @@ export const Button: React.FC<ButtonProps> = ({
       {...props}
     >
       {icon && iconPosition === "left" && <span className="shrink-0">{icon}</span>}
-      <span>{children}</span>
+      <span className="min-w-0 truncate">{children}</span>
       {icon && iconPosition === "right" && <span className="shrink-0">{icon}</span>}
     </button>
   );

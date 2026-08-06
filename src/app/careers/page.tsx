@@ -25,18 +25,18 @@ const ease = [0.22, 1, 0.36, 1] as const;
 const PERKS = [
   {
     icon: Laptop,
-    title: "Remote-first",
-    body: "Work from anywhere with flexible hours across global time zones.",
+    title: "Work from Anywhere",
+    body: "Enjoy flexible working hours across global time zones. We value output and quality over strict office hours.",
   },
   {
     icon: Users,
-    title: "Principal mentorship",
-    body: "Pair directly with senior architects on real client systems.",
+    title: "Learn from Top Architects",
+    body: "Work directly alongside experienced software leads on real client projects. Upgrade your skills every single day.",
   },
   {
     icon: Award,
-    title: "Equity & benefits",
-    body: "Competitive pay, early equity, and annual engineering retreats.",
+    title: "Competitive Pay & Benefits",
+    body: "Receive top-tier compensation, company equity options, and invitations to our annual company retreats.",
   },
 ];
 
@@ -75,9 +75,9 @@ export default function CareersPage() {
 
       <SectionHeader
         badgeText="Careers"
-        title="Build With"
+        title="Build Powerful Digital Products with"
         gradientTitle="Kodraxelsoft"
-        subtitle="Open roles for engineers who care about craft, clarity, and shipping products that last."
+        subtitle="Open roles for talented builders who care about clean work, clear communication, and creating software that makes a real impact."
       />
 
       {/* Intro band */}
@@ -104,12 +104,13 @@ export default function CareersPage() {
               Why join us
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
-              Ship with principal engineers —{" "}
-              <span style={{ color: ACCENT }}>no fluff layers</span>
+              Work Directly with Senior Experts—{" "}
+              <span style={{ color: ACCENT }}>Zero Bureaucracy</span>
             </h2>
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              Small team, high ownership, production-grade work across web, mobile,
-              AI, and cloud.
+              We keep our teams small and focused. You won&apos;t get stuck in endless
+              meetings or bureaucratic red tape. Instead, you&apos;ll own your projects
+              and build high-performance web, mobile, and AI solutions.
             </p>
           </div>
           <Link href="/careers/apply">
@@ -118,7 +119,7 @@ export default function CareersPage() {
               icon={<ArrowRight className="w-4 h-4" />}
               className="text-white shadow-[0_0_28px_rgba(34,98,99,0.35)]"
             >
-              General application
+              General Application
             </Button>
           </Link>
         </div>
@@ -257,7 +258,7 @@ export default function CareersPage() {
                     href={applyHref(role)}
                     className="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white shadow-md transition-all hover:brightness-110 active:scale-[0.98] bg-[#226263] hover:bg-[#1a4f50]"
                   >
-                    Apply now
+                    Apply Now
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -312,10 +313,10 @@ export default function CareersPage() {
         }}
       >
         <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-          Ready to build with us?
+          Ready to Build with Us?
         </h2>
         <p className="text-sm text-slate-300 max-w-lg mx-auto">
-          Send your profile — we reply within a few business days.
+          Send us your profile or portfolio. We review every application and reply within a few business days.
         </p>
         <Link href="/careers/apply" className="inline-block">
           <Button
@@ -323,7 +324,7 @@ export default function CareersPage() {
             icon={<ArrowRight className="w-4 h-4" />}
             className="text-white bg-[#226263] hover:bg-[#1a4f50]"
           >
-            Start your application
+            Start Your Application
           </Button>
         </Link>
       </motion.div>

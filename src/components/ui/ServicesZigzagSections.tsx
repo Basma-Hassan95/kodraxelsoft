@@ -60,7 +60,7 @@ function ZigzagRow({ row, index }: { row: ZigRow; index: number }) {
     >
       <div className={row.imageLeft ? "lg:order-2" : "lg:order-1"}>
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#004d4d] dark:text-cyan-400 mb-3">
-          0{index + 1} · Capability
+          Showcase 0{index + 1}
         </p>
         <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight">
           {row.title}
@@ -85,20 +85,16 @@ export const ServicesZigzagSections: React.FC<{ services: Service[] }> = ({
 
   const rows: ZigRow[] = [
     {
-      title: a.title,
+      title: "Connect Your Business Apps for Zero Manual Data Entry",
       body:
-        a.description ||
-        "We build user-friendly, smooth, and production-stable products engineered for real-world business scenarios.",
+        "We connect your internal tools together so customer information moves smoothly. Stop copying numbers across spreadsheets and let smart systems run your back-office work.",
       image: serviceBackgroundImage(a),
       imageLeft: false,
     },
     {
-      title: b
-        ? `We Build ${b.title.split("&")[0].trim()} That Actually Work`
-        : "We Build Products That Actually Work",
+      title: "We Build Smart Digital Assistants That Actually Work",
       body:
-        b?.description ||
-        "A user-centric approach — we understand your idea and ship systems that perform from day one without friction.",
+        "Custom digital assistants trained directly on your company knowledge base. They handle customer support 24/7, qualify prospective buyers, and manage bookings automatically.",
       image: serviceBackgroundImage(b || a),
       imageLeft: true,
     },

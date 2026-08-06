@@ -5,7 +5,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
-import { usePublicPricing } from "@/hooks/usePublicCms";
+import { pricingData } from "@/data/pricing";
 import { stripCurrencySymbol } from "@/lib/cmsMappers";
 import {
   ArrowRight,
@@ -17,77 +17,57 @@ import {
 } from "lucide-react";
 
 export default function PricingPage() {
-  const plans = usePublicPricing();
+  const plans = pricingData.filter((p) => p.isActive);
 
   const faqs = [
     {
-      q: "Are these fixed-price packages or estimates?",
-      a: "Every plan is a fixed-scope quote based on the features listed. Custom requirements are always scoped separately before we begin.",
+      q: "Are these fixed prices or just estimates?",
+      a: "Every package is a fixed-price quote based on the features listed. We confirm your requirements before starting so you know the total cost upfront.",
     },
     {
-      q: "Can I switch plans mid-project?",
-      a: "Yes — most clients start with Starter or Growth and upgrade as scope expands. We simply re-baseline the contract and timeline.",
+      q: "Can I upgrade my package later?",
+      a: "Many clients start with a Landing Page or Business Site and later move to WordPress or Shopify as their business grows. We update the plan without disrupting live work.",
     },
     {
-      q: "Do discounts apply to ongoing retainers too?",
-      a: "Discounted pricing applies to the initial build. Ongoing maintenance & SLA retainers are quoted separately after launch.",
+      q: "What happens after I select a package?",
+      a: "You are taken to the contact form with your selected package and price filled in. Our team replies within 24 hours to confirm scope and kick off the project.",
     },
   ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 py-12">
       <SectionHeader
-        badgeText="Transparent Pricing"
-        title="Plans Built for Every Stage of"
-        gradientTitle="Product Growth"
-        subtitle="Fixed-scope engagements with transparent pricing — no hidden retainers, no surprise change orders. Pick a plan or request a custom enterprise quote."
+        badgeText="Clear Pricing"
+        title="Clear Plans for Every Stage of"
+        gradientTitle="Growth"
+        subtitle="Pick a plan — the exact price carries into your contact inquiry. Fixed-scope projects with clear pricing—no hidden retainers, no surprise change fees. Choose a plan below or request a custom business quote."
       />
 
       <GSAPReveal
         stagger={0.1}
-        className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch"
       >
-        {plans
-          .filter((p) => p.isActive)
-          .map((plan) => {
-            const hasDiscount =
-              Boolean(plan.compareAtPrice) || plan.discountPercent > 0;
-            return (
-              <GlowCard
-                key={plan.id}
-                className={`h-full flex flex-col ${
-                  plan.isFeatured
-                    ? "border-[#004d4d] dark:border-cyan-500/60 ring-2 ring-[#004d4d]/20 dark:ring-cyan-500/20 scale-[1.02]"
-                    : ""
-                }`}
-              >
-                {plan.badge && (
-                  <div
-                    className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                      plan.isFeatured
-                        ? "bg-[#226263] text-white dark:bg-[#226263] dark:text-white"
-                        : "bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200"
-                    }`}
-                  >
-                    {plan.badge}
-                  </div>
-                )}
-
-                <div className="space-y-1 pr-8">
+        {plans.map((plan) => {
+          const hasDiscount =
+            Boolean(plan.compareAtPrice) || plan.discountPercent > 0;
+          return (
+            <div key={plan.id} className="h-full min-w-0 flex">
+              <GlowCard className="w-full h-full min-w-0 !flex !flex-col">
+                <div className="space-y-1 min-w-0 shrink-0">
                   <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
                     {plan.title}
                   </h3>
                   {plan.subtitle && (
-                    <p className="text-xs font-semibold text-[#004d4d] dark:text-cyan-400 uppercase tracking-wide">
+                    <p className="text-xs font-semibold text-[#004d4d] dark:text-cyan-400 uppercase tracking-wide line-clamp-2 min-h-[2.5rem]">
                       {plan.subtitle}
                     </p>
                   )}
                 </div>
 
-                <div className="mt-5 pb-5 border-b border-slate-200 dark:border-slate-800">
+                <div className="mt-5 pb-5 border-b border-slate-200 dark:border-slate-800 shrink-0">
                   <div className="flex items-end gap-2 flex-wrap">
                     <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
-                      {stripCurrencySymbol(plan.price)}
+                      {plan.price}
                     </span>
                     {plan.compareAtPrice && (
                       <span className="text-sm font-semibold text-slate-400 line-through decoration-2">
@@ -110,7 +90,7 @@ export default function PricingPage() {
                 </div>
 
                 {plan.description && (
-                  <p className="mt-5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <p className="mt-5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3 min-h-[3.75rem] shrink-0">
                     {plan.description}
                   </p>
                 )}
@@ -127,35 +107,39 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <Button
-                  variant={plan.isFeatured ? "teal-gradient" : "outline"}
-                  size="md"
-                  icon={<ArrowRight className="w-4 h-4" />}
-                  onClick={() => {
-                    const params = new URLSearchParams({
-                      plan: plan.title,
-                      price: stripCurrencySymbol(plan.price),
-                      serviceName: `${plan.title} Pricing Plan`,
-                    });
-                    if (plan.serviceSlug) params.set("service", plan.serviceSlug);
-                    if (plan.compareAtPrice) {
-                      params.set(
-                        "compareAt",
-                        stripCurrencySymbol(plan.compareAtPrice)
-                      );
-                    }
-                    if (plan.discountPercent > 0) {
-                      params.set("discount", String(plan.discountPercent));
-                    }
-                    window.location.href = `/contact?${params.toString()}`;
-                  }}
-                  className="w-full justify-center mt-8"
-                >
-                  {plan.ctaText || "Get Started"}
-                </Button>
+                <div className="mt-auto pt-8 shrink-0">
+                  <Button
+                    variant="teal-gradient"
+                    size="sm"
+                    icon={<ArrowRight className="w-3.5 h-3.5" />}
+                    onClick={() => {
+                      const params = new URLSearchParams({
+                        plan: plan.title,
+                        price: stripCurrencySymbol(plan.price),
+                        serviceName: `${plan.title} Pricing Plan`,
+                      });
+                      if (plan.serviceSlug)
+                        params.set("service", plan.serviceSlug);
+                      if (plan.compareAtPrice) {
+                        params.set(
+                          "compareAt",
+                          stripCurrencySymbol(plan.compareAtPrice)
+                        );
+                      }
+                      if (plan.discountPercent > 0) {
+                        params.set("discount", String(plan.discountPercent));
+                      }
+                      window.location.href = `/contact?${params.toString()}`;
+                    }}
+                    className="w-full max-w-full min-w-0 justify-center box-border"
+                  >
+                    {plan.ctaText || "Get Started"}
+                  </Button>
+                </div>
               </GlowCard>
-            );
-          })}
+            </div>
+          );
+        })}
       </GSAPReveal>
 
       <GSAPReveal direction="up">
@@ -166,10 +150,10 @@ export default function PricingPage() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                Need something more custom?
+                Need Something Custom for Your Business?
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Every engagement can be tailored — talk to our architects about a scoped, fixed-price quote.
+                Every project can be tailored to your specific needs. Talk to our experts for a clear, fixed-price quote.
               </p>
             </div>
           </div>
@@ -180,7 +164,7 @@ export default function PricingPage() {
             onClick={() => (window.location.href = "/contact?plan=custom")}
             className="shrink-0"
           >
-            Request Custom Quote
+            Request Custom Quote →
           </Button>
         </div>
       </GSAPReveal>
@@ -216,7 +200,9 @@ export default function PricingPage() {
 
       <div className="flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400">
         <ShieldCheck className="w-4 h-4 text-[#004d4d] dark:text-cyan-400" />
-        <span>All plans include NDA protection and a post-launch support window.</span>
+        <span>
+          All plans include strict privacy contracts (NDA) and a dedicated post-launch warranty window.
+        </span>
       </div>
     </div>
   );

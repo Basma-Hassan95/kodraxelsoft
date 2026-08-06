@@ -55,7 +55,7 @@ export const GlowCard: React.FC<GlowCardProps> = ({ children, className = "", on
         transition: "transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease, box-shadow 0.3s ease",
         transformStyle: "preserve-3d"
       }}
-      className={`relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-800/80 bg-white dark:bg-[#111726] p-6 shadow-xl hover:shadow-2xl dark:hover:shadow-[#004d4d]/30 hover:border-[#004d4d] dark:hover:border-cyan-500/50 group ${
+      className={`relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-800/80 bg-white dark:bg-[#111726] p-6 shadow-xl hover:shadow-2xl dark:hover:shadow-[#004d4d]/30 hover:border-[#004d4d] dark:hover:border-cyan-500/50 group flex flex-col ${
         onClick ? "cursor-pointer" : ""
       } ${className}`}
     >
@@ -71,8 +71,11 @@ export const GlowCard: React.FC<GlowCardProps> = ({ children, className = "", on
       {/* Top accent line */}
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#004d4d]/0 group-hover:bg-[#004d4d] dark:group-hover:bg-cyan-400 transition-colors duration-300" />
 
-      {/* Parallax Content Layer */}
-      <div className="relative z-10" style={{ transform: "translateZ(12px)" }}>
+      {/* Content layer fills card height so CTAs can pin to bottom */}
+      <div
+        className="relative z-10 flex flex-1 flex-col min-h-0 w-full"
+        style={{ transform: "translateZ(12px)" }}
+      >
         {children}
       </div>
     </div>

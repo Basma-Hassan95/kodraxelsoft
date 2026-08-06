@@ -18,7 +18,7 @@ export default function AdminPortfolioPage() {
   const [client, setClient] = useState("");
   const [tagline, setTagline] = useState("");
   const [category, setCategory] =
-    useState<Project["category"]>("AI & Machine Learning");
+    useState<Project["category"]>("Websites & Apps");
   const [description, setDescription] = useState("");
   const [metricLabel, setMetricLabel] = useState("Impact");
   const [metrics, setMetrics] = useState("99.8%");
@@ -220,10 +220,10 @@ export default function AdminPortfolioPage() {
                 }
                 className={inputClass}
               >
-                <option value="AI & Machine Learning">AI & Machine Learning</option>
-                <option value="SaaS & Web Apps">SaaS & Web Apps</option>
-                <option value="Fintech">Fintech</option>
-                <option value="Enterprise Systems">Enterprise Systems</option>
+                <option value="Websites & Apps">Websites & Apps</option>
+                <option value="AI & Smart Automation">AI & Smart Automation</option>
+                <option value="Finance & Security">Finance & Security</option>
+                <option value="Business Systems">Business Systems</option>
               </select>
             </div>
           </div>

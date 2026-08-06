@@ -17,7 +17,8 @@ import {
   Package,
   ArrowRight,
   CheckCircle2,
-  Clock,
+  Sparkles,
+  ShieldCheck,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -29,6 +30,8 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Bot,
   Globe,
   Package,
+  Sparkles,
+  ShieldCheck,
 };
 
 export const CapabilitiesShowcase: React.FC = () => {
@@ -82,11 +85,7 @@ export const CapabilitiesShowcase: React.FC = () => {
                 ))}
               </ul>
 
-              <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>{service.estimatedWeeks}</span>
-                </div>
+              <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3">
                 <Link href={`/services/${slug}`}>
                   <Button
                     variant="outline"

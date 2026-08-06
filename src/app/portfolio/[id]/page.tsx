@@ -7,6 +7,7 @@ import { GSAPReveal } from "@/components/ui/GSAPReveal";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { Button } from "@/components/ui/Button";
 import { usePublicProjects } from "@/hooks/usePublicCms";
+import { projectsData as localProjects } from "@/data/projects";
 import {
   ArrowLeft,
   ArrowRight,
@@ -21,7 +22,20 @@ import {
 export default function CaseStudyDetailPage() {
   const params = useParams();
   const id = String(params?.id || "");
-  const projects = usePublicProjects();
+  const cmsProjects = usePublicProjects();
+  const projects = useMemo(() => {
+    return [
+      ...localProjects,
+      ...cmsProjects.filter(
+        (c) =>
+          !localProjects.some(
+            (local) =>
+              local.id === c.id ||
+              (local.demoUrl && c.demoUrl === local.demoUrl)
+          )
+      ),
+    ];
+  }, [cmsProjects]);
 
   const project = useMemo(
     () => projects.find((p) => p.id === id),
@@ -88,7 +102,9 @@ export default function CaseStudyDetailPage() {
             <img
               src={project.image}
               alt={project.title}
-              className="absolute inset-0 w-full h-full object-cover"
+              className={`absolute inset-0 w-full h-full ${
+                "object-cover object-top"
+              }`}
             />
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-[#004d4d] to-slate-900" />
@@ -187,61 +203,65 @@ export default function CaseStudyDetailPage() {
         </div>
 
         <GSAPReveal direction="right" className="lg:col-span-5 lg:sticky lg:top-24 space-y-5">
-          <GlowCard className="p-6 sm:p-8 space-y-6">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#004d4d] dark:text-cyan-400">
-              Impact Metrics
-            </h3>
-            <div className="grid grid-cols-1 gap-3">
-              {(project.impactMetrics || []).map((metric, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-[#090d16] border border-slate-200 dark:border-slate-800"
-                >
-                  <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
-                    {metric.label}
-                  </span>
-                  <span className="text-base font-extrabold text-[#004d4d] dark:text-cyan-400">
-                    {metric.value}
-                  </span>
+          <GlowCard className="p-6 sm:p-8">
+            <div className="flex flex-col gap-6">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#004d4d] dark:text-cyan-400">
+                Impact Metrics
+              </h3>
+              <div className="grid grid-cols-1 gap-3">
+                {(project.impactMetrics || []).map((metric, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-[#090d16] border border-slate-200 dark:border-slate-800"
+                  >
+                    <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                      {metric.label}
+                    </span>
+                    <span className="text-base font-extrabold text-[#004d4d] dark:text-cyan-400">
+                      {metric.value}
+                    </span>
+                  </div>
+                ))}
+                {!project.impactMetrics?.length && (
+                  <p className="text-xs text-slate-500">Metrics coming soon.</p>
+                )}
+              </div>
+
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-2.5">
+                <div className="flex items-start gap-2 text-xs text-slate-500 leading-snug">
+                  <ShieldCheck className="w-4 h-4 text-[#004d4d] dark:text-cyan-400 shrink-0 mt-0.5" />
+                  <span>Production delivery with post-launch support</span>
                 </div>
-              ))}
-              {!project.impactMetrics?.length && (
-                <p className="text-xs text-slate-500">Metrics coming soon.</p>
-              )}
-            </div>
-
-            <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
-              <div className="flex items-center gap-2 text-xs text-slate-500">
-                <ShieldCheck className="w-4 h-4 text-[#004d4d] dark:text-cyan-400" />
-                Production delivery with post-launch support
+                <div className="flex items-start gap-2 text-xs text-slate-500 leading-snug">
+                  <CheckCircle2 className="w-4 h-4 text-[#004d4d] dark:text-cyan-400 shrink-0 mt-0.5" />
+                  <span>Client: {project.client || "Confidential"}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-500">
-                <CheckCircle2 className="w-4 h-4 text-[#004d4d] dark:text-cyan-400" />
-                Client: {project.client || "Confidential"}
+
+              <div className="flex flex-col gap-3 pt-1">
+                {project.demoUrl && (
+                  <Button
+                    variant="teal-gradient"
+                    size="lg"
+                    icon={<ExternalLink className="w-4 h-4" />}
+                    className="w-full justify-center"
+                    onClick={openLive}
+                  >
+                    Open Live Project
+                  </Button>
+                )}
+                <Link href="/contact?serviceName=Case%20Study%20Inquiry" className="block">
+                  <Button
+                    variant="outline"
+                    size="md"
+                    icon={<ArrowRight className="w-4 h-4" />}
+                    className="w-full justify-center"
+                  >
+                    Start a Similar Project
+                  </Button>
+                </Link>
               </div>
             </div>
-
-            {project.demoUrl && (
-              <Button
-                variant="teal-gradient"
-                size="lg"
-                icon={<ExternalLink className="w-4 h-4" />}
-                className="w-full justify-center"
-                onClick={openLive}
-              >
-                Open Live Project
-              </Button>
-            )}
-            <Link href="/contact?serviceName=Case%20Study%20Inquiry" className="block">
-              <Button
-                variant="outline"
-                size="md"
-                icon={<ArrowRight className="w-4 h-4" />}
-                className="w-full justify-center"
-              >
-                Start a Similar Project
-              </Button>
-            </Link>
           </GlowCard>
         </GSAPReveal>
       </div>

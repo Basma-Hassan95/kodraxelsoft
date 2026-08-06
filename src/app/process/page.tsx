@@ -23,9 +23,9 @@ export default function ProcessPage() {
 
       <SectionHeader
         badgeText="Delivery Process"
-        title="From Discovery to"
-        gradientTitle="Production Launch"
-        subtitle="A clear six-stage path — scroll to watch the journey unlock, teal progress tracking every milestone."
+        title="How We Turn Your Idea into a"
+        gradientTitle="Live Digital Product"
+        subtitle="A simple 6-stage journey to build your custom software. Clear steps, fixed timelines, and total peace of mind every step of the way."
       />
 
       <div ref={trackRef} className="relative max-w-3xl mx-auto">
@@ -102,7 +102,7 @@ export default function ProcessPage() {
       >
         <h2 className="text-3xl font-extrabold text-white">Ready for Stage One?</h2>
         <p className="text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
-          Book a discovery call — we map scope, timeline, and architecture before a single line of production code.
+          Book a free discovery call today. We will map out your scope, timeline, and exact cost before you spend a single dollar.
         </p>
         <Button
           variant="teal-gradient"
@@ -110,7 +110,7 @@ export default function ProcessPage() {
           icon={<ArrowRight className="w-5 h-5" />}
           onClick={() => (window.location.href = "/contact")}
         >
-          Start Your Onboarding
+          Start Your Project Now
         </Button>
       </motion.div>
     </div>

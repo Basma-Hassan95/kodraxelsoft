@@ -46,8 +46,8 @@ export const HomeAboutSection: React.FC = () => {
             About Us
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-[2.75rem] font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
-            Scalable Software Deployment{" "}
-            <span style={{ color: ACCENT }}>Driven By Experience</span>
+            Software Built for{" "}
+            <span style={{ color: ACCENT }}>Real Business Results</span>
           </h2>
           <div
             className="w-16 h-1.5 rounded-full"
@@ -55,25 +55,25 @@ export const HomeAboutSection: React.FC = () => {
           />
 
           <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
-            Kodraxelsoft is a premium engineering laboratory. From brand websites
-            and WordPress builds to AI automation and multi-tenant SaaS, we design,
-            develop, and launch systems that perform in the real world.
+            We build custom digital tools that are extremely easy for you and your
+            team to use. No confusing tech jargon—just software that helps your
+            business run smoother and faster.
           </p>
           <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
-            Fixed-scope delivery, principal architects, and clear timelines — no
-            fluff layers. We partner directly with founders and enterprises to
-            ship production-ready products.
+            Whether you need a simple custom website or an intelligent assistant to
+            manage daily work, we create solutions that grow alongside your
+            business.
           </p>
 
           <div className="pt-2">
-            <Link href="/about">
+            <Link href="/contact">
               <Button
                 variant="teal-gradient"
                 size="lg"
                 icon={<ArrowRight className="w-4 h-4" />}
                 className="shadow-[0_0_28px_rgba(28,153,148,0.4)] !bg-[#1C9994] hover:!bg-[#17807c] !border-[#1C9994]/50"
               >
-                Scale Application System Performance
+                Book A Free Consultation
               </Button>
             </Link>
           </div>

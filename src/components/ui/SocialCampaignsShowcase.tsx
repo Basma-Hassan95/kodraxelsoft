@@ -43,13 +43,65 @@ function ChannelIcon({ channel, className }: { channel: string; className?: stri
   return <MetaBrandIcon className={className} />;
 }
 
+/** Shown when CMS has no active ads — keeps the homepage section visible */
+const DEMO_ADS: MetaAd[] = [
+  {
+    id: "demo-linkedin",
+    title: "Fast Custom Websites That Convert Visitors into Customers",
+    description:
+      "See how we help growing businesses launch clean, high-speed websites that look great on phones and bring in more leads.",
+    image_url:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200",
+    cta_text: "View Our Services",
+    link: "/services",
+    status: "active",
+    display_order: 0,
+    channel: "LinkedIn",
+    badge: "LinkedIn Sponsored",
+    created_at: "",
+    updated_at: "",
+  },
+  {
+    id: "demo-instagram",
+    title: "Smooth Mobile Apps Your Customers Love Using",
+    description:
+      "From food ordering to business dashboards — we build mobile-friendly apps with clean design and simple checkout flows.",
+    image_url:
+      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=1200",
+    cta_text: "See Live Projects",
+    link: "/portfolio",
+    status: "active",
+    display_order: 1,
+    channel: "Instagram",
+    badge: "Instagram Campaign",
+    created_at: "",
+    updated_at: "",
+  },
+  {
+    id: "demo-meta",
+    title: "Smart AI Helpers That Handle Support 24/7",
+    description:
+      "Train digital assistants on your business info to answer customers, qualify leads, and cut hours of repetitive work.",
+    image_url:
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1200",
+    cta_text: "Talk to Us",
+    link: "/contact",
+    status: "active",
+    display_order: 2,
+    channel: "Meta / Facebook",
+    badge: "Meta Sponsored Ad",
+    created_at: "",
+    updated_at: "",
+  },
+];
+
 export const SocialCampaignsShowcase: React.FC = () => {
   const [ads, setAds] = useState<MetaAd[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   const refresh = async () => {
     const list = await loadPublicMetaAds();
-    setAds(list);
+    setAds(list.length > 0 ? list : DEMO_ADS);
     setLoaded(true);
   };
 
@@ -66,99 +118,104 @@ export const SocialCampaignsShowcase: React.FC = () => {
     };
   }, []);
 
-  if (!loaded || ads.length === 0) {
+  if (!loaded) {
     return null;
   }
+
+  const isDemo = ads === DEMO_ADS || ads.some((a) => a.id.startsWith("demo-"));
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
       <SectionHeader
-        badgeText="Marketing & Media Highlights"
-        title="Active Social Media"
-        gradientTitle="Campaigns & Ad Showcases"
-        subtitle="Live marketing ad highlights managed from the Admin CMS — Meta, Instagram, and LinkedIn campaigns."
+        badgeText="Marketing & Reach"
+        title="Active Campaigns That Drive"
+        gradientTitle="Real Customers"
+        subtitle="We don't just build your software—we make sure your target audience actually sees it and buys from you."
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {ads.map((ad, idx) => (
-          <GSAPReveal key={ad.id} direction="up" delay={idx * 0.1}>
-            <Link href={`/ads/${ad.id}`} className="block h-full group">
-              <GlowCard className="h-full flex flex-col justify-between p-6 transition-transform duration-300 group-hover:-translate-y-1">
-                <div>
-                  <div className="flex items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-200 dark:border-slate-800">
-                    <div className="flex items-center gap-2">
+        {ads.map((ad, idx) => {
+          const href = isDemo || ad.id.startsWith("demo-") ? ad.link : `/ads/${ad.id}`;
+          return (
+            <GSAPReveal key={ad.id} direction="up" delay={idx * 0.1}>
+              <Link href={href} className="block h-full group">
+                <GlowCard className="h-full flex flex-col justify-between p-6 transition-transform duration-300 group-hover:-translate-y-1">
+                  <div>
+                    <div className="flex items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-200 dark:border-slate-800">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center border ${channelStyle(ad.channel)}`}
+                        >
+                          <ChannelIcon channel={ad.channel} className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1">
+                            <span>Kodraxelsoft</span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                          </div>
+                          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                            {ad.channel} · {ad.badge || "Sponsored Campaign"}
+                          </div>
+                        </div>
+                      </div>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                        Live Ad
+                      </span>
+                    </div>
+
+                    <div className="relative w-full h-44 rounded-xl overflow-hidden mb-5 border border-slate-300 dark:border-slate-800 bg-[#0f172a] dark:bg-[#0a0f1d] group-hover:scale-[1.02] transition-transform duration-500">
+                      {ad.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={ad.image_url}
+                          alt={ad.title}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      ) : null}
                       <div
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center border ${channelStyle(ad.channel)}`}
+                        className={`absolute inset-0 p-4 flex flex-col justify-between text-white ${
+                          ad.image_url
+                            ? "bg-gradient-to-t from-black/80 via-black/40 to-black/20"
+                            : ""
+                        }`}
                       >
-                        <ChannelIcon channel={ad.channel} className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1">
-                          <span>Kodraxelsoft</span>
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                        <div className="flex justify-between items-start">
+                          <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-slate-900/90 border border-slate-700">
+                            {ad.badge || "Sponsored"}
+                          </span>
+                          <Sparkles className="w-4 h-4 text-cyan-400" />
                         </div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                          {ad.channel} · {ad.badge || "Sponsored Campaign"}
+                        <div>
+                          <div className="text-xs font-extrabold tracking-tight text-white drop-shadow-md line-clamp-2">
+                            {ad.title}
+                          </div>
+                          <div className="text-[10px] text-cyan-300 mt-1 font-medium">
+                            Live Campaign Highlight
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
-                      Live Ad
-                    </span>
+
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4 line-clamp-3">
+                      {ad.description}
+                    </p>
                   </div>
 
-                  <div className="relative w-full h-44 rounded-xl overflow-hidden mb-5 border border-slate-300 dark:border-slate-800 bg-[#0f172a] dark:bg-[#0a0f1d] group-hover:scale-[1.02] transition-transform duration-500">
-                    {ad.image_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={ad.image_url}
-                        alt={ad.title}
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
-                    ) : null}
-                    <div
-                      className={`absolute inset-0 p-4 flex flex-col justify-between text-white ${
-                        ad.image_url
-                          ? "bg-gradient-to-t from-black/80 via-black/40 to-black/20"
-                          : ""
-                      }`}
+                  <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
+                    <Button
+                      variant="teal-gradient"
+                      size="sm"
+                      icon={<ArrowRight className="w-3.5 h-3.5" />}
+                      className="w-full justify-center text-xs pointer-events-none"
                     >
-                      <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-slate-900/90 border border-slate-700">
-                          {ad.badge || "Sponsored"}
-                        </span>
-                        <Sparkles className="w-4 h-4 text-cyan-400" />
-                      </div>
-                      <div>
-                        <div className="text-xs font-extrabold tracking-tight text-white drop-shadow-md line-clamp-2">
-                          {ad.title}
-                        </div>
-                        <div className="text-[10px] text-cyan-400 mt-1 font-mono">
-                          CMS Managed · Live Campaign
-                        </div>
-                      </div>
-                    </div>
+                      {ad.cta_text || "View Ad"}
+                    </Button>
                   </div>
-
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4 line-clamp-3">
-                    {ad.description}
-                  </p>
-                </div>
-
-                <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
-                  <Button
-                    variant="teal-gradient"
-                    size="sm"
-                    icon={<ArrowRight className="w-3.5 h-3.5" />}
-                    className="w-full justify-center text-xs pointer-events-none"
-                  >
-                    {ad.cta_text || "View Ad"}
-                  </Button>
-                </div>
-              </GlowCard>
-            </Link>
-          </GSAPReveal>
-        ))}
+                </GlowCard>
+              </Link>
+            </GSAPReveal>
+          );
+        })}
       </div>
     </section>
   );

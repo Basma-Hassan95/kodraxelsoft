@@ -20,30 +20,50 @@ export default function ServicesPage() {
 
   const techStackList = [
     {
-      category: "Frontend & Motion",
-      techs: ["Next.js 16", "React 19", "TypeScript", "GSAP 3", "Tailwind CSS v4", "Three.js"],
+      category: "Modern Design & Speed",
+      techs: [
+        "Modern Web Frameworks",
+        "Instant Page Loaders",
+        "Fast Mobile Interfaces",
+        "Interactive Animations",
+      ],
     },
     {
-      category: "AI & Automation",
-      techs: ["PyTorch", "Python", "LangChain", "n8n", "OpenAI / Claude API", "FastAPI"],
+      category: "Smart AI & Automation",
+      techs: [
+        "Python AI Models",
+        "Smart Search Engines",
+        "Automated App Links",
+        "Voice & Chat Helpers",
+      ],
     },
     {
-      category: "Cloud & DevOps",
-      techs: ["AWS / GCP", "Kubernetes", "Docker", "Terraform", "Vercel Enterprise", "Grafana"],
+      category: "Safe Cloud & Servers",
+      techs: [
+        "Amazon & Google Cloud",
+        "Automated Backups",
+        "High-Traffic Scaling",
+        "24/7 System Health",
+      ],
     },
     {
-      category: "Databases & Backend",
-      techs: ["PostgreSQL", "Redis", "Supabase", "GraphQL", "Stripe", "Prisma"],
+      category: "Reliable Databases",
+      techs: [
+        "Protected Databases",
+        "Fast Data Retrieval",
+        "Encrypted Storage",
+        "Secure Payment",
+      ],
     },
   ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 py-12">
       <SectionHeader
-        badgeText="Capabilities & Architecture"
-        title="Enterprise Engineering Services"
-        gradientTitle="Tailored for Scale"
-        subtitle="Hover a card to reveal details — each service uses its admin background image, with a tilt-and-lift animation unique to this page."
+        badgeText="CAPABILITIES & ARCHITECTURE"
+        title="Custom Software & Digital Services Built for"
+        gradientTitle="Growth"
+        subtitle="We build modern websites, mobile apps, and smart AI tools for growing companies. Hover over any service to see how we help your business succeed."
       />
 
       <ServicesImageCards services={servicesData} />
@@ -60,24 +80,27 @@ export default function ServicesPage() {
         <div className="flex items-center gap-3 text-slate-200">
           <MessageSquareText className="w-5 h-5 text-cyan-400 shrink-0" />
           <p className="text-sm">
-            Not sure which service fits?{" "}
-            <span className="font-semibold text-white">Talk to a principal architect</span>{" "}
-            — we&apos;ll scope it for free.
+            Not sure which service fits your business? Speak directly with an
+            expert—we will plan your project scope for free.
           </p>
         </div>
         <Link href="/contact">
-          <Button variant="teal-gradient" size="md" icon={<ArrowRight className="w-4 h-4" />}>
-            Get a Free Consultation
+          <Button
+            variant="teal-gradient"
+            size="md"
+            icon={<ArrowRight className="w-4 h-4" />}
+          >
+            Get a Free Consultation →
           </Button>
         </Link>
       </motion.div>
 
       <section className="pt-4">
         <SectionHeader
-          badgeText="Tech Stack Matrix"
-          title="Battle-Tested Technologies for"
-          gradientTitle="Modern Enterprise Apps"
-          subtitle="We select tools with proven long-term support, performance speed, and rich developer ecosystems."
+          badgeText="RELIABLE INFRASTRUCTURE"
+          title="Modern, Battle-Tested Technologies for"
+          gradientTitle="Your Apps"
+          subtitle="We use fast, dependable tools with proven long-term reliability so your business software stays quick, secure, and future-proof."
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -87,7 +110,11 @@ export default function ServicesPage() {
               initial={{ opacity: 0, scale: 0.94, y: 20 }}
               whileInView={{ opacity: 1, scale: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
-              transition={{ delay: idx * 0.08, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                delay: idx * 0.08,
+                duration: 0.45,
+                ease: [0.22, 1, 0.36, 1],
+              }}
               whileHover={{ y: -4 }}
             >
               <GlowCard className="h-full">

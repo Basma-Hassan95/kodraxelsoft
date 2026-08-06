@@ -17,16 +17,16 @@ import {
 const containerVariants: Variants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.04, delayChildren: 0 },
+    transition: { staggerChildren: 0.15 },
   },
 };
 
 const cardVariant: Variants = {
-  hidden: { opacity: 0, y: 14 },
+  hidden: { opacity: 0, y: 50 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.28, ease: "easeOut" },
+    transition: { duration: 0.7, ease: "easeOut" },
   },
 };
 
@@ -40,12 +40,9 @@ export const CaseStudiesStackedCarousel: React.FC<
   const [activeIndex, setActiveIndex] = useState(0);
   const [hovered, setHovered] = useState<number | null>(null);
 
-  // Ref on shared wrapper so mobile + desktop both detect in-view
-  const { ref: sectionRef, inView: cardInView } = useInView({
+  const { ref: cardRef, inView: cardInView } = useInView({
     triggerOnce: true,
-    threshold: 0,
-    rootMargin: "180px 0px",
-    fallbackInView: true,
+    threshold: 0.15,
   });
 
   const cardsCount = projects.length;
@@ -54,7 +51,7 @@ export const CaseStudiesStackedCarousel: React.FC<
     if (cardsCount < 1) return;
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % cardsCount);
-    }, 3500);
+    }, 5000);
     return () => clearInterval(interval);
   }, [cardsCount]);
 
@@ -65,15 +62,15 @@ export const CaseStudiesStackedCarousel: React.FC<
   if (!projects.length) return null;
 
   const active = projects[activeIndex] || projects[0];
-  const show = cardInView;
 
   return (
-    <div ref={sectionRef} className="w-full relative py-4 isolate z-10">
+    <div className="w-full relative py-4 isolate z-10">
       {/* Desktop & Tablet stacked carousel */}
       <motion.div
+        ref={cardRef}
         variants={containerVariants}
         initial="hidden"
-        animate={show ? "visible" : "hidden"}
+        animate={cardInView ? "visible" : "hidden"}
         className="hidden sm:flex relative items-center justify-center h-[560px] sm:h-[520px]"
       >
         {projects.map((card, i) => {
@@ -98,7 +95,7 @@ export const CaseStudiesStackedCarousel: React.FC<
               className="absolute rounded-3xl bg-white dark:bg-[#111726] border border-slate-300 dark:border-slate-800 shadow-2xl overflow-hidden w-full max-w-[900px] cursor-pointer"
               style={{ height: "460px", zIndex }}
               animate={{ scale, y: translateY, opacity }}
-              transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+              transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
             >
               <div className="flex items-center justify-between px-6 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-[#090d16]">
                 <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 text-xs font-semibold uppercase tracking-wider">
@@ -122,14 +119,14 @@ export const CaseStudiesStackedCarousel: React.FC<
                       loop
                       autoPlay
                       playsInline
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover object-top"
                     />
                   ) : card.image ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={card.image}
                       alt={card.title}
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover object-top"
                       loading="eager"
                     />
                   ) : (
@@ -195,7 +192,7 @@ export const CaseStudiesStackedCarousel: React.FC<
                         size="sm"
                         icon={<ArrowRight className="w-3.5 h-3.5" />}
                       >
-                        View Case Study
+                        Read Full Story
                       </Button>
                     </Link>
                   </div>
@@ -211,10 +208,10 @@ export const CaseStudiesStackedCarousel: React.FC<
           <motion.h4
             key={active.id}
             className="inline-block text-sm font-semibold text-[#004d4d] dark:text-cyan-400 bg-white dark:bg-[#0B0F17] px-5 py-2 rounded-full border border-slate-300 dark:border-slate-800 shadow-md mb-6"
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4 }}
           >
             Active: {active.title}
           </motion.h4>
@@ -240,7 +237,7 @@ export const CaseStudiesStackedCarousel: React.FC<
       <motion.div
         variants={containerVariants}
         initial="hidden"
-        animate={show ? "visible" : "hidden"}
+        animate={cardInView ? "visible" : "hidden"}
         className="sm:hidden space-y-6"
       >
         {projects.map((card, i) => (
@@ -258,14 +255,14 @@ export const CaseStudiesStackedCarousel: React.FC<
                   loop
                   autoPlay
                   playsInline
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-top"
                 />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={card.image}
                   alt={card.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-top"
                   loading="eager"
                 />
               )}
@@ -289,7 +286,7 @@ export const CaseStudiesStackedCarousel: React.FC<
                     size="sm"
                     icon={<ArrowRight className="w-3.5 h-3.5" />}
                   >
-                    View Case Study
+                    Read Full Story
                   </Button>
                 </Link>
               </div>

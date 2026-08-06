@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import type { Service } from "@/data/services";
 import { serviceBackgroundImage } from "@/lib/serviceImages";
 import { Button } from "@/components/ui/Button";
-import { ArrowRight, Clock, Tag } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 /**
  * Services page cards — image backgrounds with a clip-path / tilt reveal
@@ -55,10 +55,6 @@ export const ServicesImageCards: React.FC<{ services: Service[] }> = ({
                   <span className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-cyan-300">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/10 border border-white/15 text-[10px] font-bold text-white/90 backdrop-blur-sm">
-                    <Clock className="w-3 h-3" />
-                    {service.estimatedWeeks}
-                  </span>
                 </div>
 
                 <h3 className="text-xl sm:text-2xl font-extrabold text-white leading-tight">
@@ -82,14 +78,7 @@ export const ServicesImageCards: React.FC<{ services: Service[] }> = ({
                   ))}
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-white/15">
-                  <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-slate-300 font-semibold">
-                    <Tag className="w-3.5 h-3.5 text-cyan-300" />
-                    From {service.basePrice}
-                  </div>
-                </div>
-
-                <div className="flex gap-2 pt-2 translate-y-2 opacity-90 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-400">
+                <div className="flex gap-2 pt-3 border-t border-white/15 translate-y-2 opacity-90 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-400">
                   <Link href={`/services/${slug}`} className="flex-1">
                     <Button variant="outline" size="sm" className="w-full justify-center border-white/30 text-white hover:bg-white/10">
                       View Details
@@ -105,7 +94,7 @@ export const ServicesImageCards: React.FC<{ services: Service[] }> = ({
                       icon={<ArrowRight className="w-3.5 h-3.5" />}
                       className="w-full justify-center"
                     >
-                      Contact
+                      Contact →
                     </Button>
                   </Link>
                 </div>

@@ -2,26 +2,21 @@
 
 import { useEffect, useState } from "react";
 import {
-  fetchPublicServices,
   fetchPublicProjects,
   fetchPublicBlog,
   fetchPublicCareers,
   fetchPublicTestimonials,
-  fetchPublicPricing,
 } from "@/lib/publicContent";
-import { servicesData, type Service } from "@/data/services";
+import { servicesData } from "@/data/services";
 import { projectsData, type Project } from "@/data/projects";
 import { blogPosts, type BlogPost } from "@/data/blog";
-import type { CareerPosition, TestimonialItem, PricingPlan } from "@/types/admin";
+import type { CareerPosition, TestimonialItem } from "@/types/admin";
 import { testimonialsData } from "@/data/testimonials";
 import { pricingData } from "@/data/pricing";
 
 export function usePublicServices() {
-  const [services, setServices] = useState<Service[]>(servicesData);
-  useEffect(() => {
-    void fetchPublicServices().then(setServices);
-  }, []);
-  return services;
+  // Local catalog is source of truth for the marketing site services grid
+  return servicesData;
 }
 
 export function usePublicProjects() {
@@ -57,9 +52,6 @@ export function usePublicTestimonials() {
 }
 
 export function usePublicPricing() {
-  const [plans, setPlans] = useState<PricingPlan[]>(pricingData);
-  useEffect(() => {
-    void fetchPublicPricing().then(setPlans);
-  }, []);
-  return plans;
+  // Local PKR packages are source of truth — do not let CMS overwrite with old USD plans
+  return pricingData;
 }

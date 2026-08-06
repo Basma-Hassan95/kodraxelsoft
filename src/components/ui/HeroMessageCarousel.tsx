@@ -3,8 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { usePublicProjects, usePublicServices } from "@/hooks/usePublicCms";
-import { servicesData, type Service } from "@/data/services";
+import { usePublicProjects } from "@/hooks/usePublicCms";
 import type { Project } from "@/data/projects";
 import {
   heroMediaIsVideo,
@@ -30,54 +29,40 @@ type MediaItem = {
   href: string;
 };
 
-const HERO_SERVICE_IDS = [
-  "web-architecture",
-  "ai-integration",
-  "mobile-enterprise",
-  "ai-automation",
-] as const;
-
 const TEXT_INTERVAL_MS = 4500;
 const MEDIA_INTERVAL_MS = 3200;
 
-function splitTitle(title: string): { title: string; highlight: string } {
-  if (title.includes(" & ")) {
-    const [left, right] = title.split(" & ");
-    return { title: `${left} &`, highlight: right.trim() };
-  }
-  const words = title.trim().split(/\s+/);
-  if (words.length <= 3) {
-    return {
-      title: words.slice(0, -1).join(" ") || title,
-      highlight: words.at(-1) || "",
-    };
-  }
-  const mid = Math.ceil(words.length / 2);
-  return {
-    title: words.slice(0, mid).join(" "),
-    highlight: words.slice(mid).join(" "),
-  };
-}
-
-function serviceToSlide(service: Service): HeroSlide {
-  const { title, highlight } = splitTitle(service.title);
-  const benefits = service.features.slice(0, 3).join(" · ");
-  return {
-    id: service.id,
-    title,
-    highlight,
-    description: `${service.subtitle}. Benefits: ${benefits}.`,
-  };
-}
-
-function buildServiceSlides(services: Service[]): HeroSlide[] {
-  const byId = new Map(services.map((s) => [s.id, s]));
-  const picked = HERO_SERVICE_IDS.map((id) => byId.get(id)).filter(
-    (s): s is Service => Boolean(s)
-  );
-  const pool = picked.length >= 3 ? picked : services.slice(0, 4);
-  return pool.slice(0, 4).map(serviceToSlide);
-}
+/** Homepage hero slides — title + highlight + one description paragraph (no bullet UI). */
+const DEFAULT_HERO_SLIDES: HeroSlide[] = [
+  {
+    id: "web-architecture",
+    title: "Fast Custom Websites &",
+    highlight: "Web Apps",
+    description:
+      "Lightning-fast websites built to rank high on Google and convert visitors into buyers. Instant Loading: Pages open in a fraction of a second anywhere in the world · Never Crash: Built with high-tech systems that handle sudden spikes in traffic easily · Sleek & Interactive: Smooth animations that make your brand look modern and professional.",
+  },
+  {
+    id: "ai-integration",
+    title: "Smart AI Helpers &",
+    highlight: "Task Automation",
+    description:
+      "Digital assistants trained on your business data to handle daily work on autopilot. Custom Business Brain: AI that reads your company files to answer customer questions accurately · Automated Workflows: Digital agents that handle repetitive office tasks without human help · Smart Search: Find any customer detail or document in your database instantly.",
+  },
+  {
+    id: "mobile-enterprise",
+    title: "Mobile Apps for",
+    highlight: "iPhone & Android",
+    description:
+      "High-performance mobile applications that your customers will love using every day. Super Smooth Feel: Works fast and feels like a top-tier app on every smartphone screen · Works Offline: Customers can still browse and use the app without an active internet connection · Easy & Safe Payments: Includes built-in fingerprint/Face ID login and instant Apple/Google Pay options.",
+  },
+  {
+    id: "ai-automation",
+    title: "Smart Automated Workflows &",
+    highlight: "Digital Helpers",
+    description:
+      "Simple digital systems that run your daily business operations automatically so your team can focus on growing sales. Custom Digital Assistants: Digital helpers that take over your daily customer support, sales follow-ups, and office tasks automatically · Connected Business Apps: Links all your software tools together so customer information moves smoothly without manual typing or copying · 24/7 Smart Chatbots & Voice Helpers: Answers customer calls and website messages instantly day or night, and transfers complex questions directly to your team.",
+  },
+];
 
 function cmsToSlide(s: CmsHeroSlide): HeroSlide {
   return {
@@ -161,7 +146,7 @@ function HeroMediaMockup({ item }: { item: MediaItem }) {
                   <video
                     key={item.videoUrl}
                     src={item.videoUrl}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
                     autoPlay
                     muted
                     loop
@@ -173,7 +158,7 @@ function HeroMediaMockup({ item }: { item: MediaItem }) {
                   <img
                     src={item.image}
                     alt={item.title}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
                   />
                 )}
               </motion.div>
@@ -205,14 +190,12 @@ export function HeroMessageCarousel({
 }: {
   initialSlides?: CmsHeroSlide[];
 }) {
-  const services = usePublicServices();
   const projects = usePublicProjects();
   const [cmsSlides, setCmsSlides] = useState<HeroSlide[]>(() =>
     initialSlides.length ? initialSlides.map(cmsToSlide) : []
   );
   const [slideIndex, setSlideIndex] = useState(0);
   const [mediaIndex, setMediaIndex] = useState(0);
-  const [cmsReady, setCmsReady] = useState(initialSlides.length > 0);
 
   useEffect(() => {
     let cancelled = false;
@@ -221,9 +204,7 @@ export function HeroMessageCarousel({
       if (cancelled) return;
       if (rows.length) {
         setCmsSlides(rows.map(cmsToSlide));
-        setSlideIndex(0);
       }
-      setCmsReady(true);
     };
     void load();
     const onFocus = () => void load();
@@ -236,23 +217,12 @@ export function HeroMessageCarousel({
     };
   }, []);
 
-  const fallbackSlides = useMemo(() => {
-    const source = services.length ? services : servicesData;
-    return buildServiceSlides(source);
-  }, [services]);
-
-  const slides =
-    cmsSlides.length > 0
-      ? cmsSlides
-      : cmsReady
-        ? fallbackSlides
-        : initialSlides.length
-          ? initialSlides.map(cmsToSlide)
-          : fallbackSlides;
+  // Fixed SEO hero copy — carousel structure unchanged (title + highlight + paragraph).
+  const slides = DEFAULT_HERO_SLIDES;
 
   const cmsMedia = useMemo(
     () =>
-      slides
+      cmsSlides
         .filter((s) => Boolean(s.mediaUrl))
         .map(
           (s): MediaItem => ({
@@ -266,7 +236,7 @@ export function HeroMessageCarousel({
             href: s.mediaLink || "/portfolio",
           })
         ),
-    [slides]
+    [cmsSlides]
   );
 
   const projectMedia = useMemo(() => projectReel(projects), [projects]);
@@ -288,7 +258,7 @@ export function HeroMessageCarousel({
     return () => window.clearInterval(id);
   }, [cmsMedia.length, projectMedia.length]);
 
-  const active = slides[slideIndex] ?? fallbackSlides[0];
+  const active = slides[slideIndex] ?? DEFAULT_HERO_SLIDES[0];
   const useCmsMedia = cmsMedia.length > 0;
   const activeCmsMedia = cmsMedia[mediaIndex % Math.max(cmsMedia.length, 1)];
   const activeProject = projectMedia[mediaIndex % Math.max(projectMedia.length, 1)];

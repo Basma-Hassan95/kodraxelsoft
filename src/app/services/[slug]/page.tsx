@@ -6,7 +6,11 @@ import { useParams } from "next/navigation";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { usePublicServices } from "@/hooks/usePublicCms";
-import { serviceBackgroundImage } from "@/lib/serviceImages";
+import {
+  serviceBackgroundImage,
+  serviceSecondaryImage,
+  serviceDetailImage,
+} from "@/lib/serviceImages";
 import {
   Code,
   Cpu,
@@ -19,7 +23,6 @@ import {
   ArrowLeft,
   CheckCircle2,
   ShieldCheck,
-  Clock,
   Tag,
   Sparkles,
   Layers3,
@@ -37,11 +40,38 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Bot,
   Globe,
   Package,
+  Sparkles,
+  ShieldCheck,
 };
 
 const SIDEBAR_ICONS = [Target, Monitor, ShieldCheck, Megaphone];
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+function DetailBullet({ text }: { text: string }) {
+  const colon = text.indexOf(": ");
+  const hasLabel = colon > 0 && colon < 60;
+  const label = hasLabel ? text.slice(0, colon) : null;
+  const body = hasLabel ? text.slice(colon + 2) : text;
+
+  return (
+    <li className="flex items-start gap-2.5 text-sm text-slate-700 dark:text-slate-300">
+      <CheckCircle2 className="w-4 h-4 text-[#004d4d] dark:text-cyan-400 shrink-0 mt-0.5" />
+      <span>
+        {label ? (
+          <>
+            <span className="font-bold text-slate-900 dark:text-white">
+              {label}:
+            </span>{" "}
+            {body}
+          </>
+        ) : (
+          body
+        )}
+      </span>
+    </li>
+  );
+}
 
 export default function ServiceDetailPage() {
   const params = useParams();
@@ -89,6 +119,8 @@ export default function ServiceDetailPage() {
   const Icon = ICON_MAP[service.iconName] || Code;
   const resolvedSlug = service.slug || service.id;
   const heroImage = serviceBackgroundImage(service);
+  const secondaryImage = serviceSecondaryImage(service);
+  const detailImage = serviceDetailImage(service);
   const otherServices = services
     .filter((s) => s.id !== service.id)
     .slice(0, 4);
@@ -132,13 +164,15 @@ export default function ServiceDetailPage() {
                   <Icon className="w-3.5 h-3.5" />
                   {service.subtitle}
                 </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
-                  {service.estimatedWeeks}
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <Tag className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
-                  From {service.basePrice}
+                {service.detailMiddleBadge ? (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 border border-[#006666]/20">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    {service.detailMiddleBadge}
+                  </span>
+                ) : null}
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 border border-[#006666]/20">
+                  <Tag className="w-3.5 h-3.5" />
+                  {service.detailScopeBadge || "Fixed Scope Project"}
                 </span>
               </div>
             </motion.div>
@@ -218,7 +252,7 @@ export default function ServiceDetailPage() {
                 icon={<ArrowRight className="w-4 h-4" />}
                 className="w-full justify-center"
               >
-                Contact About This Service
+                Contact About This Service →
               </Button>
             </Link>
           </motion.aside>
@@ -237,20 +271,14 @@ export default function ServiceDetailPage() {
             className="space-y-4"
           >
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-              {service.title}
+              {service.detailProblemTitle || service.title}
             </h2>
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              {service.description}
+              {service.detailProblemIntro || service.description}
             </p>
             <ul className="space-y-2.5 pt-2">
               {service.features.map((feat) => (
-                <li
-                  key={feat}
-                  className="flex items-start gap-2.5 text-sm text-slate-700 dark:text-slate-300"
-                >
-                  <CheckCircle2 className="w-4 h-4 text-[#004d4d] dark:text-cyan-400 shrink-0 mt-0.5" />
-                  {feat}
-                </li>
+                <DetailBullet key={feat} text={feat} />
               ))}
             </ul>
           </motion.div>
@@ -264,8 +292,8 @@ export default function ServiceDetailPage() {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={heroImage}
-              alt=""
+              src={secondaryImage}
+              alt={service.title}
               className="absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-[#004d4d]/25 mix-blend-multiply" />
@@ -282,8 +310,8 @@ export default function ServiceDetailPage() {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={heroImage}
-              alt=""
+              src={detailImage}
+              alt={`${service.title} — solution visual`}
               className="absolute inset-0 w-full h-full object-cover scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-[#041628]/60 to-transparent" />
@@ -297,10 +325,12 @@ export default function ServiceDetailPage() {
             className="space-y-4 lg:order-2 order-1"
           >
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-              We Build Solutions That Actually Work
+              {service.detailSolutionTitle ||
+                "We Build Solutions That Actually Work"}
             </h2>
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              A user-centric delivery model — clear scope, principal architects, and production quality from day one.
+              {service.detailSolutionIntro ||
+                "A simple, human-first delivery approach—clear scope, senior expert execution, and zero technical hassle from day one."}
             </p>
             <ul className="space-y-2.5 pt-2">
               {service.deliverables.map((del) => (
@@ -309,7 +339,21 @@ export default function ServiceDetailPage() {
                   className="flex items-start gap-2.5 text-sm text-slate-700 dark:text-slate-300"
                 >
                   <ShieldCheck className="w-4 h-4 text-[#004d4d] dark:text-cyan-400 shrink-0 mt-0.5" />
-                  {del}
+                  <span>
+                    {(() => {
+                      const colon = del.indexOf(": ");
+                      const hasLabel = colon > 0 && colon < 70;
+                      if (!hasLabel) return del;
+                      return (
+                        <>
+                          <span className="font-bold text-slate-900 dark:text-white">
+                            {del.slice(0, colon)}:
+                          </span>{" "}
+                          {del.slice(colon + 2)}
+                        </>
+                      );
+                    })()}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -336,17 +380,19 @@ export default function ServiceDetailPage() {
         >
           <div>
             <h3 className="text-lg font-bold text-white">
-              Ready to start your {service.title.split("&")[0].trim()} project?
+              {service.ctaTitle ||
+                `Ready to start your ${service.title.split("&")[0].trim()} project?`}
             </h3>
             <p className="text-sm text-slate-300 mt-1">
-              Free scoping call with our architects within 24 hours.
+              {service.ctaBody ||
+                "Book a free discovery call with our senior architects to map out your plan within 24 hours."}
             </p>
           </div>
           <Link
             href={`/contact?service=${encodeURIComponent(resolvedSlug)}&serviceName=${encodeURIComponent(service.title)}`}
           >
             <Button variant="teal-gradient" size="md" icon={<ArrowRight className="w-4 h-4" />}>
-              Contact Us
+              Contact Us →
             </Button>
           </Link>
         </motion.div>

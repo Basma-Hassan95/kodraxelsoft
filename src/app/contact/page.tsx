@@ -245,7 +245,7 @@ function ContactFormContent() {
 
         <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500">
           <ShieldCheck className="w-3.5 h-3.5 text-[#004d4d] dark:text-cyan-400" />
-          Strict NDA Protection & 24-Hour Response
+          Strict Privacy Protection (NDA) & Guaranteed Response Within 24 Hours
         </div>
       </form>
     </GlowCard>
@@ -275,20 +275,20 @@ export default function ContactPage() {
 
   const faqs = [
     {
-      q: "Who handles our project technical execution?",
-      a: "You work 1-on-1 exclusively with our senior principal architects. We do not use account managers or offshore sub-contractors.",
+      q: "Who will actually build and handle our software project?",
+      a: "You partner directly with our senior software experts. No junior developers, no middle managers, and no lost details along the way.",
     },
     {
-      q: "What is your standard project delivery timeline?",
-      a: "Most Next.js Web App and AI integration projects take between 3 to 6 weeks from initial architecture blueprinting to production edge cutover.",
+      q: "How long does a standard software project take to launch?",
+      a: "Most standard projects launch within 4 to 8 weeks, depending on complexity. We set a fixed timeline before we start so you can plan your launch with confidence.",
     },
     {
-      q: "Do you offer post-launch code warranties & SLAs?",
-      a: "Yes. Every contract includes a 30-day full code warranty and an optional continuous SLA maintenance retainer.",
+      q: "Do you offer post-launch support and performance guarantees?",
+      a: "Yes! Every project includes a 30-day warranty after launch. We monitor system health, fix any minor issues, and keep your software running smoothly 24/7.",
     },
     {
-      q: "How do we get started after submitting this form?",
-      a: "Within 24 hours, our team will schedule a discovery call to review your requirements and project brief.",
+      q: "What happens immediately after I submit this inquiry form?",
+      a: "Within 24 hours, our senior team reviews your project brief and emails you to schedule a free 15-minute strategy call to discuss your goals and budget.",
     },
   ];
 
@@ -296,8 +296,9 @@ export default function ContactPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 py-12">
       <SectionHeader
         badgeText="Start a Conversation"
-        title="Project Inquiry Form"
-        subtitle="Tell us your contact details and answer a short project brief so we can quote accurately."
+        title="Tell Us About Your"
+        gradientTitle="Project Idea"
+        subtitle="Share a few details about your business goals. Our team will review your request and get back to you with a clear roadmap within 24 hours."
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
@@ -345,16 +346,23 @@ export default function ContactPage() {
           </GlowCard>
 
           <GlowCard className="p-6">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
-              Direct Contact
+            <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#004d4d] dark:text-cyan-400 mb-3">
+              <Briefcase className="w-3.5 h-3.5" />
+              Studio Identity
+            </div>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+              Direct Contact Details
             </h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Have a quick question or prefer reaching out directly? Connect with our team straight away.
+            </p>
             <div className="space-y-4 text-xs">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#004d4d]/10 text-[#004d4d] dark:text-cyan-400 flex items-center justify-center shrink-0">
                   <Mail className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-500">Email</div>
+                  <div className="text-slate-500">Email Us</div>
                   <a
                     href="mailto:kodraxelsoft@gmail.com"
                     className="font-bold text-slate-900 dark:text-slate-100"
@@ -368,7 +376,7 @@ export default function ContactPage() {
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-500">Phone</div>
+                  <div className="text-slate-500">Call Us</div>
                   <a
                     href={`tel:${settings.contactPhone.replace(/\s/g, "")}`}
                     className="font-bold text-slate-900 dark:text-slate-100"
@@ -377,6 +385,9 @@ export default function ContactPage() {
                   </a>
                 </div>
               </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200 dark:border-slate-800">
+                Availability: Monday to Friday | Fast response guaranteed
+              </p>
             </div>
           </GlowCard>
         </GSAPReveal>

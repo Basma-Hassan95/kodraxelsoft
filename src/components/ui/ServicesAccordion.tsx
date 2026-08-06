@@ -87,24 +87,6 @@ export const ServicesAccordion: React.FC = () => {
                   <p className="mt-3 text-sm text-slate-200/90 leading-relaxed max-w-md line-clamp-3">
                     {service.description}
                   </p>
-                  <div className="mt-5 flex flex-wrap gap-6 text-white">
-                    <div>
-                      <div className="text-lg font-extrabold text-cyan-300">
-                        {service.basePrice}
-                      </div>
-                      <div className="text-[10px] uppercase tracking-wider text-slate-300">
-                        Starting at
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-lg font-extrabold text-cyan-300">
-                        {service.estimatedWeeks}
-                      </div>
-                      <div className="text-[10px] uppercase tracking-wider text-slate-300">
-                        Typical timeline
-                      </div>
-                    </div>
-                  </div>
                   <div className="mt-5">
                     <Link
                       href={`/services/${slug}`}

@@ -23,9 +23,9 @@ const phone = "03372027510";
 const social_links = {
   github: "https://github.com",
   linkedin: "https://www.linkedin.com/company/kodraxelsoft",
-  twitter: "https://twitter.com",
-  instagram: "https://www.instagram.com/kodraxelsoft",
-  facebook: "https://www.facebook.com/kodraxelsoft",
+  twitter: "https://x.com/KodraxelSoft",
+  instagram: "https://www.instagram.com/kodraxelsoft.official/",
+  facebook: "https://www.facebook.com/Kodraxelsoft",
 };
 
 async function main() {

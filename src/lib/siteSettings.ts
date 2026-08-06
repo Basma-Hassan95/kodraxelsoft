@@ -9,9 +9,9 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   address: "Market Street, Suite 1400, San Francisco, CA",
   githubUrl: "https://github.com",
   linkedinUrl: "https://www.linkedin.com/company/kodraxelsoft",
-  twitterUrl: "https://twitter.com",
-  instagramUrl: "https://www.instagram.com/kodraxelsoft",
-  facebookUrl: "https://www.facebook.com/kodraxelsoft",
+  twitterUrl: "https://x.com/KodraxelSoft",
+  instagramUrl: "https://www.instagram.com/kodraxelsoft.official/",
+  facebookUrl: "https://www.facebook.com/Kodraxelsoft",
   metaTitle: "Kodraxelsoft | Custom Software & AI Tools for Growing Businesses",
   metaDescription:
     "We build simple digital tools, smart AI helpers, and custom websites that save you time and grow your sales. No confusing tech speak.",

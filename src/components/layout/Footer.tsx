@@ -9,6 +9,7 @@ import {
   FacebookIcon,
   InstagramIcon,
   LinkedinIcon,
+  TwitterIcon,
 } from "@/components/ui/SocialIcons";
 import type { SiteSettings } from "@/types/admin";
 import {
@@ -68,6 +69,8 @@ export const Footer: React.FC<FooterProps> = ({
     settings.linkedinUrl?.trim() || DEFAULT_SITE_SETTINGS.linkedinUrl;
   const facebook =
     settings.facebookUrl?.trim() || DEFAULT_SITE_SETTINGS.facebookUrl;
+  const twitter =
+    settings.twitterUrl?.trim() || DEFAULT_SITE_SETTINGS.twitterUrl;
   const waNumber = toWhatsAppNumber(phone);
   const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(
     `Hi ${company}, I would like to inquire about your services.`
@@ -101,6 +104,15 @@ export const Footer: React.FC<FooterProps> = ({
         aria-label="Facebook"
       >
         <FacebookIcon className="w-4 h-4" />
+      </a>
+      <a
+        href={twitter}
+        target="_blank"
+        rel="noreferrer"
+        className="hover:text-cyan-400 transition-colors"
+        aria-label="Twitter / X"
+      >
+        <TwitterIcon className="w-4 h-4" />
       </a>
     </div>
   );

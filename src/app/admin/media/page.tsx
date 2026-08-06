@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { useAdminUi } from "@/components/admin/AdminUiContext";
 import { useAdminData } from "@/context/AdminDataContext";
 import {
   Folder,
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 
 export default function AdminMediaPage() {
+  const { confirm } = useAdminUi();
   const {
     mediaAssets,
     addMediaAsset,
@@ -91,7 +93,13 @@ export default function AdminMediaPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this media asset from Supabase?")) return;
+    const ok = await confirm({
+      title: "Delete media?",
+      message: "Delete this media asset from Supabase?",
+      confirmLabel: "Delete",
+      tone: "danger",
+    });
+    if (!ok) return;
     setError("");
     try {
       await deleteMediaAsset(id);

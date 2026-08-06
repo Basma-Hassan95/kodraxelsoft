@@ -27,6 +27,7 @@ import {
   mediaRegisterSchema,
   jobApplicationSchema,
   jobApplicationStatusSchema,
+  newsletterSubscribeSchema,
 } from '../validators/schemas.js';
 import {
   authController,
@@ -47,6 +48,7 @@ import {
   careersController,
   jobApplicationsController,
   mediaController,
+  newsletterController,
 } from '../controllers/index.js';
 
 const router = Router();
@@ -87,6 +89,11 @@ router.get('/public/careers', careersController.list);
 router.post('/public/contact', validate(contactSchema), contactController.createPublic);
 router.post('/public/orders', validate(orderCreateSchema), ordersController.createPublic);
 router.post('/public/reviews', validate(publicReviewSchema), reviewsController.submitPublic);
+router.post(
+  '/public/newsletter',
+  validate(newsletterSubscribeSchema),
+  newsletterController.subscribePublic
+);
 router.post(
   '/public/applications',
   validate(jobApplicationSchema),
@@ -267,5 +274,10 @@ router.post(
 );
 router.get('/admin/media/:id', authenticateAdmin, mediaController.get);
 router.delete('/admin/media/:id', authenticateAdmin, mediaController.remove);
+
+// Newsletter subscribers
+router.get('/admin/newsletter', authenticateAdmin, newsletterController.list);
+router.get('/admin/newsletter/:id', authenticateAdmin, newsletterController.get);
+router.delete('/admin/newsletter/:id', authenticateAdmin, newsletterController.remove);
 
 export default router;

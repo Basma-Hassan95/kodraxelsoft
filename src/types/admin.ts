@@ -75,10 +75,20 @@ export interface SiteSettings {
   githubUrl: string;
   linkedinUrl: string;
   twitterUrl: string;
+  instagramUrl: string;
+  facebookUrl: string;
   metaTitle: string;
   metaDescription: string;
   keywords: string;
   ogImageUrl: string;
+}
+
+export interface NewsletterSubscriber {
+  id: string;
+  email: string;
+  source: string;
+  isActive: boolean;
+  createdAt: string;
 }
 
 export interface PricingPlan {

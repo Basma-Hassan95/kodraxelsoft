@@ -29,6 +29,7 @@ import {
   blogService,
   careersService,
   jobApplicationsService,
+  newsletterService,
 } from '../services/cms.service.js';
 
 export const authController = {
@@ -345,5 +346,40 @@ export const mediaController = {
   folders: asyncHandler(async (_req, res) => {
     const data = await mediaService.listFolders();
     return ApiResponse.success(res, { data });
+  }),
+};
+
+export const newsletterController = {
+  list: asyncHandler(async (req, res) => {
+    const result = await newsletterService.list(req.query, { admin: true });
+    return ApiResponse.success(res, {
+      data: result.data,
+      meta: result.meta,
+    });
+  }),
+  get: asyncHandler(async (req, res) => {
+    const data = await newsletterService.getById(req.params.id);
+    return ApiResponse.success(res, { data });
+  }),
+  remove: asyncHandler(async (req, res) => {
+    await newsletterService.remove(req.params.id);
+    return ApiResponse.success(res, {
+      message: "Subscriber deleted",
+      data: null,
+    });
+  }),
+  subscribePublic: asyncHandler(async (req, res) => {
+    const data = await newsletterService.subscribe(req.body);
+    const already = Boolean(data.already_subscribed);
+    return ApiResponse.success(res, {
+      message: already
+        ? "You are already subscribed to the Engineering Brief."
+        : "Subscribed! Thanks for joining the Engineering Brief.",
+      data: {
+        id: data.id,
+        email: data.email,
+        already_subscribed: already,
+      },
+    });
   }),
 };

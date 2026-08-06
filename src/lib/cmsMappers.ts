@@ -350,6 +350,8 @@ export function settingsFromApi(row: Record<string, unknown> | null): SiteSettin
     githubUrl: String(social.github || ""),
     linkedinUrl: String(social.linkedin || ""),
     twitterUrl: String(social.twitter || ""),
+    instagramUrl: String(social.instagram || ""),
+    facebookUrl: String(social.facebook || ""),
     metaTitle: String(seo.metaTitle || ""),
     metaDescription: String(seo.metaDescription || ""),
     keywords: String(seo.keywords || ""),
@@ -368,6 +370,8 @@ export function settingsToApi(s: SiteSettings) {
       github: s.githubUrl,
       linkedin: s.linkedinUrl,
       twitter: s.twitterUrl,
+      instagram: s.instagramUrl,
+      facebook: s.facebookUrl,
     },
     seo_defaults: {
       metaTitle: s.metaTitle,

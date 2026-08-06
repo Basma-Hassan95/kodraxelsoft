@@ -2,11 +2,13 @@
 
 import React, { useState } from "react";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { useAdminUi } from "@/components/admin/AdminUiContext";
 import { useAdminData } from "@/context/AdminDataContext";
 import { TestimonialItem } from "@/context/AdminDataContext";
 import { Star, Plus, Trash2, Edit3, User, Quote } from "lucide-react";
 
 export default function AdminTestimonialsPage() {
+  const { confirm } = useAdminUi();
   const {
     testimonials,
     addTestimonial,
@@ -16,6 +18,17 @@ export default function AdminTestimonialsPage() {
   } = useAdminData();
   const [editingItem, setEditingItem] = useState<TestimonialItem | null>(null);
   const [moderating, setModerating] = useState<string | null>(null);
+
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: "Delete testimonial?",
+      message: "Delete this testimonial permanently?",
+      confirmLabel: "Delete",
+      tone: "danger",
+    });
+    if (!ok) return;
+    await deleteTestimonial(id);
+  };
 
   const [clientName, setClientName] = useState("");
   const [role, setRole] = useState("");
@@ -124,6 +137,14 @@ export default function AdminTestimonialsPage() {
                       type="button"
                       disabled={moderating === item.id}
                       onClick={async () => {
+                        const ok = await confirm({
+                          title: "Reject testimonial?",
+                          message:
+                            "Reject and delete this testimonial? This cannot be undone.",
+                          confirmLabel: "Reject & Delete",
+                          tone: "danger",
+                        });
+                        if (!ok) return;
                         setModerating(item.id);
                         try {
                           await moderateTestimonial(item.id, false);
@@ -260,7 +281,7 @@ export default function AdminTestimonialsPage() {
                   <Edit3 className="w-3.5 h-3.5" />
                 </button>
                 <button
-                  onClick={() => deleteTestimonial(item.id)}
+                  onClick={() => void handleDelete(item.id)}
                   className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-600 text-rose-500 hover:text-white border border-rose-500/30 transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" />

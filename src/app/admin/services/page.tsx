@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { useAdminUi } from "@/components/admin/AdminUiContext";
 import { useAdminData } from "@/context/AdminDataContext";
 import { Service } from "@/data/services";
 import {
@@ -25,9 +26,21 @@ const inputClass =
   "w-full px-3 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40";
 
 export default function AdminServicesPage() {
+  const { confirm } = useAdminUi();
   const { services, addService, updateService, deleteService, uploadMediaFile } =
     useAdminData();
   const [editingService, setEditingService] = useState<Service | null>(null);
+
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: "Delete service?",
+      message: "Delete this service? It will disappear from the website.",
+      confirmLabel: "Delete",
+      tone: "danger",
+    });
+    if (!ok) return;
+    await deleteService(id);
+  };
 
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
@@ -420,7 +433,7 @@ export default function AdminServicesPage() {
                 <span>Edit</span>
               </button>
               <button
-                onClick={() => void deleteService(service.id)}
+                onClick={() => void handleDelete(service.id)}
                 className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-600 text-rose-500 hover:text-white border border-rose-500/30 transition-colors"
                 aria-label="Delete Service"
               >

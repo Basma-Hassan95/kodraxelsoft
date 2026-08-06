@@ -2,13 +2,26 @@
 
 import React, { useState } from "react";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { useAdminUi } from "@/components/admin/AdminUiContext";
 import { useAdminData } from "@/context/AdminDataContext";
 import { BlogPost } from "@/data/blog";
 import { PenTool, Plus, Trash2, Edit3, Calendar, User } from "lucide-react";
 
 export default function AdminBlogPage() {
+  const { confirm } = useAdminUi();
   const { blogPosts, addBlogPost, updateBlogPost, deleteBlogPost } = useAdminData();
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: "Delete blog post?",
+      message: "Delete this blog post permanently?",
+      confirmLabel: "Delete",
+      tone: "danger",
+    });
+    if (!ok) return;
+    await deleteBlogPost(id);
+  };
 
   const [title, setTitle] = useState("");
   const [excerpt, setExcerpt] = useState("");
@@ -190,7 +203,7 @@ export default function AdminBlogPage() {
                 <span>Edit</span>
               </button>
               <button
-                onClick={() => deleteBlogPost(post.id)}
+                onClick={() => void handleDelete(post.id)}
                 className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-600 text-rose-500 hover:text-white border border-rose-500/30 transition-colors"
                 aria-label="Delete Post"
               >

@@ -305,3 +305,9 @@ export const jobApplicationStatusSchema = Joi.object({
     .valid('new', 'reviewing', 'interview', 'hired', 'rejected')
     .required(),
 });
+
+export const newsletterSubscribeSchema = Joi.object({
+  email: Joi.string().email().required(),
+  source: Joi.string().max(80).default('footer'),
+  metadata: Joi.object().default({}),
+});

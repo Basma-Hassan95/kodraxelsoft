@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { useAdminUi } from "@/components/admin/AdminUiContext";
 import { cmsList, cmsFetch, apiDelete, isUuid } from "@/lib/cmsApi";
 import type { JobApplication } from "@/types/admin";
 import {
@@ -23,6 +24,7 @@ import {
 const STATUSES = APPLICATION_STATUSES;
 
 export default function AdminApplicationsPage() {
+  const { confirm, alert } = useAdminUi();
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -65,17 +67,29 @@ export default function AdminApplicationsPage() {
         prev.map((a) => (a.id === id ? { ...a, status } : a))
       );
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Status update failed");
+      await alert({
+        message: err instanceof Error ? err.message : "Status update failed",
+        tone: "danger",
+      });
     }
   };
 
   const remove = async (id: string) => {
-    if (!confirm("Delete this application permanently?")) return;
+    const ok = await confirm({
+      title: "Delete application?",
+      message: "Delete this application permanently? This cannot be undone.",
+      confirmLabel: "Delete",
+      tone: "danger",
+    });
+    if (!ok) return;
     try {
       if (isUuid(id)) await apiDelete(`/admin/applications/${id}`);
       setApplications((prev) => prev.filter((a) => a.id !== id));
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Delete failed");
+      await alert({
+        message: err instanceof Error ? err.message : "Delete failed",
+        tone: "danger",
+      });
     }
   };
 

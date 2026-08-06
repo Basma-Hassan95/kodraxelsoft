@@ -9,11 +9,11 @@ INSERT INTO website_settings (
 SELECT
   'Kodraxelsoft Inc.',
   'hello@kodraxelsoft.com',
-  '+1 (415) 890-4221',
+  '03372027510',
   'Market Street, Suite 1400, San Francisco, CA',
   '/logo.jpg',
   '/ks-emblem.jpg',
-  '{"github":"https://github.com","linkedin":"https://linkedin.com","twitter":"https://twitter.com"}'::jsonb,
+  '{"github":"https://github.com","linkedin":"https://www.linkedin.com/company/kodraxelsoft","twitter":"https://twitter.com","instagram":"https://www.instagram.com/kodraxelsoft","facebook":"https://www.facebook.com/kodraxelsoft"}'::jsonb,
   '{"metaTitle":"Kodraxelsoft | Custom Software & AI Tools for Growing Businesses","metaDescription":"We build simple digital tools, smart AI helpers, and custom websites that save you time and grow your sales. No confusing tech speak.","keywords":"custom software, AI tools, business websites, automation"}'::jsonb,
   'Kodraxelsoft builds fast, clean custom software and AI tools that save time and increase sales for growing businesses.',
   '© 2026 Kodraxelsoft Inc. All rights reserved.',

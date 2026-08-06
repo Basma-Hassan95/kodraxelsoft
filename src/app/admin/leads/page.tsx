@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { useAdminUi } from "@/components/admin/AdminUiContext";
 import { useAdminData } from "@/context/AdminDataContext";
 import { LeadInquiry } from "@/context/AdminDataContext";
 import {
@@ -45,10 +46,22 @@ function briefPreview(lead: LeadInquiry): string | null {
 }
 
 export default function AdminLeadsPage() {
+  const { confirm } = useAdminUi();
   const { leads, updateLeadStatus, deleteLead, refreshLeads, apiConnected, loading } =
     useAdminData();
   const [filterStatus, setFilterStatus] = useState<string>("All");
   const [refreshing, setRefreshing] = useState(false);
+
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: "Delete lead?",
+      message: "Delete this lead permanently? This cannot be undone.",
+      confirmLabel: "Delete",
+      tone: "danger",
+    });
+    if (!ok) return;
+    await deleteLead(id);
+  };
 
   const filteredLeads = filterStatus === "All"
     ? leads
@@ -244,7 +257,7 @@ export default function AdminLeadsPage() {
                 </Link>
 
                 <button
-                  onClick={() => deleteLead(lead.id)}
+                  onClick={() => void handleDelete(lead.id)}
                   className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-600 text-rose-500 hover:text-white border border-rose-500/30 transition-colors"
                   aria-label="Delete Lead"
                 >

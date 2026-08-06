@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { useAdminUi } from "@/components/admin/AdminUiContext";
 import { useAdminData } from "@/context/AdminDataContext";
 import { CareerPosition } from "@/context/AdminDataContext";
 import { cmsList } from "@/lib/cmsApi";
@@ -52,9 +53,21 @@ function parseRequirements(text: string): string[] {
 }
 
 export default function AdminCareersPage() {
+  const { confirm } = useAdminUi();
   const { careers, addCareer, updateCareer, deleteCareer, apiConnected } =
     useAdminData();
   const [editingCareer, setEditingCareer] = useState<CareerPosition | null>(null);
+
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: "Delete role?",
+      message: "Delete this career role? It will disappear from the careers page.",
+      confirmLabel: "Delete",
+      tone: "danger",
+    });
+    if (!ok) return;
+    await deleteCareer(id);
+  };
 
   const [title, setTitle] = useState("");
   const [department, setDepartment] = useState("");
@@ -444,7 +457,7 @@ export default function AdminCareersPage() {
               </button>
               <button
                 type="button"
-                onClick={() => void deleteCareer(role.id)}
+                onClick={() => void handleDelete(role.id)}
                 className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-600 text-rose-500 hover:text-white border border-rose-500/30 transition-colors"
                 aria-label="Delete Role"
               >

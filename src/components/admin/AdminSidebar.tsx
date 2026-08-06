@@ -22,6 +22,7 @@ import {
   Tag,
   X,
   LayoutTemplate,
+  Mail,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { apiLogout, clearAdminToken } from "@/lib/cmsApi";
@@ -46,6 +47,7 @@ export const adminMenuItems: AdminMenuItem[] = [
   { name: "Projects", href: "/admin/portfolio", icon: Briefcase },
   { name: "Blog Posts", href: "/admin/blog", icon: PenTool },
   { name: "Leads CRM", href: "/admin/leads", icon: Inbox },
+  { name: "Newsletter", href: "/admin/newsletter", icon: Mail },
   { name: "Careers & Hiring", href: "/admin/careers", icon: Users },
   { name: "Applications", href: "/admin/applications", icon: Briefcase, badge: "Hire" },
   { name: "Testimonials", href: "/admin/testimonials", icon: Star },

@@ -30,7 +30,7 @@ import {
   VolumeX,
   Briefcase,
 } from "lucide-react";
-import { DEFAULT_SITE_SETTINGS } from "@/lib/siteSettings";
+import { DEFAULT_SITE_SETTINGS, toWhatsAppNumber } from "@/lib/siteSettings";
 
 const inputClass =
   "w-full px-4 py-2.5 rounded-xl text-sm border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40";
@@ -376,13 +376,23 @@ export default function ContactPage() {
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-500">Call Us</div>
+                  <div className="text-slate-500">Call / WhatsApp</div>
                   <a
-                    href={`tel:${settings.contactPhone.replace(/\s/g, "")}`}
+                    href={`tel:${(settings.contactPhone || DEFAULT_SITE_SETTINGS.contactPhone).replace(/\s/g, "")}`}
                     className="font-bold text-slate-900 dark:text-slate-100"
                   >
-                    {settings.contactPhone}
+                    {settings.contactPhone || DEFAULT_SITE_SETTINGS.contactPhone}
                   </a>
+                  <div className="mt-1">
+                    <a
+                      href={`https://wa.me/${toWhatsAppNumber(settings.contactPhone || DEFAULT_SITE_SETTINGS.contactPhone)}?text=${encodeURIComponent("Hi Kodraxelsoft, I would like to inquire about your services.")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
+                    >
+                      Message on WhatsApp
+                    </a>
+                  </div>
                 </div>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200 dark:border-slate-800">

@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { useAdminUi } from "@/components/admin/AdminUiContext";
 import {
   MetaAd,
   AdChannel,
@@ -36,6 +37,7 @@ const emptyForm = {
 };
 
 export default function AdminMetaAdsPage() {
+  const { confirm } = useAdminUi();
   const [ads, setAds] = useState<MetaAd[]>([]);
   const [editing, setEditing] = useState<MetaAd | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -135,7 +137,13 @@ export default function AdminMetaAdsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this Meta Ad? It will disappear from the website.")) return;
+    const ok = await confirm({
+      title: "Delete Meta Ad?",
+      message: "Delete this Meta Ad? It will disappear from the website.",
+      confirmLabel: "Delete",
+      tone: "danger",
+    });
+    if (!ok) return;
     setSaving(true);
     setError("");
     try {

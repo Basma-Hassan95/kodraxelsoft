@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { useAdminUi } from "@/components/admin/AdminUiContext";
 import { cmsList, apiCreate, apiUpdate, apiDelete, isUuid } from "@/lib/cmsApi";
 import { pricingFromApi, pricingToApi, stripCurrencySymbol } from "@/lib/cmsMappers";
 import type { PricingPlan } from "@/types/admin";
@@ -42,6 +43,7 @@ function parseFeatures(text: string): string[] {
 }
 
 export default function AdminPricingPage() {
+  const { confirm } = useAdminUi();
   const [plans, setPlans] = useState<PricingPlan[]>([]);
   const [editing, setEditing] = useState<PricingPlan | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -155,7 +157,13 @@ export default function AdminPricingPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this pricing plan? It will disappear from the website.")) return;
+    const ok = await confirm({
+      title: "Delete pricing plan?",
+      message: "Delete this pricing plan? It will disappear from the website.",
+      confirmLabel: "Delete",
+      tone: "danger",
+    });
+    if (!ok) return;
     setSaving(true);
     setError("");
     try {

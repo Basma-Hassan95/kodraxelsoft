@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { useAdminUi } from "@/components/admin/AdminUiContext";
 import { useAdminData } from "@/context/AdminDataContext";
 import { Project } from "@/data/projects";
 import { Briefcase, Plus, Trash2, Edit3, ExternalLink } from "lucide-react";
@@ -10,9 +11,21 @@ const inputClass =
   "w-full px-3 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40";
 
 export default function AdminPortfolioPage() {
+  const { confirm } = useAdminUi();
   const { projects, addProject, updateProject, deleteProject, apiConnected } =
     useAdminData();
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: "Delete project?",
+      message: "Delete this portfolio project? It will disappear from the website.",
+      confirmLabel: "Delete",
+      tone: "danger",
+    });
+    if (!ok) return;
+    await deleteProject(id);
+  };
 
   const [title, setTitle] = useState("");
   const [client, setClient] = useState("");
@@ -441,7 +454,7 @@ export default function AdminPortfolioPage() {
               </button>
               <button
                 type="button"
-                onClick={() => void deleteProject(proj.id)}
+                onClick={() => void handleDelete(proj.id)}
                 className="p-2 rounded-xl bg-rose-500/10 text-rose-500 border border-rose-500/30"
               >
                 <Trash2 className="w-4 h-4" />

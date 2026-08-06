@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AdminDataProvider } from "@/context/AdminDataContext";
 import { AdminNavProvider } from "@/components/admin/AdminNavContext";
+import { AdminUiProvider } from "@/components/admin/AdminUiContext";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
-import { Admin3DCanvas } from "@/components/admin/Admin3DCanvas";
 import { apiMe, apiLogout, clearAdminToken } from "@/lib/cmsApi";
 
 export default function AdminLayout({
@@ -78,18 +78,19 @@ export default function AdminLayout({
 
   return (
     <AdminDataProvider>
-      <AdminNavProvider>
-        <div className="min-h-screen bg-slate-100 dark:bg-[#070a12] text-slate-900 dark:text-slate-100 flex overflow-x-hidden relative font-sans">
-          <Admin3DCanvas />
-          <AdminSidebar />
-          <div className="flex-1 flex flex-col min-w-0 min-h-screen relative z-10">
-            <AdminHeader />
-            <main className="p-4 sm:p-6 lg:p-8 flex-1 w-full max-w-7xl mx-auto space-y-6 sm:space-y-8 overflow-x-auto">
-              {children}
-            </main>
+      <AdminUiProvider>
+        <AdminNavProvider>
+          <div className="min-h-screen bg-slate-100 dark:bg-[#070a12] text-slate-900 dark:text-slate-100 flex overflow-x-hidden relative font-sans">
+            <AdminSidebar />
+            <div className="flex-1 flex flex-col min-w-0 min-h-screen relative z-10">
+              <AdminHeader />
+              <main className="p-4 sm:p-6 lg:p-8 flex-1 w-full max-w-7xl mx-auto space-y-6 sm:space-y-8 overflow-x-auto">
+                {children}
+              </main>
+            </div>
           </div>
-        </div>
-      </AdminNavProvider>
+        </AdminNavProvider>
+      </AdminUiProvider>
     </AdminDataProvider>
   );
 }

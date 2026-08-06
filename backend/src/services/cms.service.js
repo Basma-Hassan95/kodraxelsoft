@@ -524,3 +524,216 @@ export const jobApplicationsService = Object.assign(
     },
   }
 );
+
+export const newsletterService = {
+  async subscribe(payload) {
+    const email = String(payload.email || "")
+      .trim()
+      .toLowerCase();
+    if (!email) throw new ApiError(400, "Email is required");
+
+    // Prefer dedicated table when migration 012 is applied
+    const { data: existingDedicated, error: dedicatedFindError } = await supabase
+      .from("newsletter_subscribers")
+      .select("*")
+      .ilike("email", email)
+      .maybeSingle();
+
+    if (!dedicatedFindError) {
+      if (existingDedicated) {
+        if (existingDedicated.is_active) {
+          return { ...existingDedicated, already_subscribed: true };
+        }
+        const { data, error } = await supabase
+          .from("newsletter_subscribers")
+          .update({
+            is_active: true,
+            source: payload.source || existingDedicated.source || "footer",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", existingDedicated.id)
+          .select("*")
+          .single();
+        if (error) throw new ApiError(400, error.message);
+        return data;
+      }
+
+      const { data, error } = await supabase
+        .from("newsletter_subscribers")
+        .insert({
+          email,
+          source: payload.source || "footer",
+          is_active: true,
+          metadata: payload.metadata || {},
+        })
+        .select("*")
+        .single();
+      if (error) throw new ApiError(400, error.message);
+      await logActivity({
+        action: "create",
+        entityType: "newsletter_subscriber",
+        entityId: data.id,
+        summary: `Newsletter subscribe: ${data.email}`,
+      });
+      return data;
+    }
+
+    // Fallback: contact_messages (works before migration 012)
+    const { data: existingMsg } = await supabase
+      .from("contact_messages")
+      .select("*")
+      .eq("email", email)
+      .eq("subject", "newsletter_subscribe")
+      .maybeSingle();
+
+    if (existingMsg) {
+      return {
+        id: existingMsg.id,
+        email: existingMsg.email,
+        source: "footer",
+        is_active: true,
+        created_at: existingMsg.created_at,
+        already_subscribed: true,
+      };
+    }
+
+    const { data, error } = await supabase
+      .from("contact_messages")
+      .insert({
+        name: "Newsletter",
+        email,
+        subject: "newsletter_subscribe",
+        message: "Subscribed via Engineering Brief (footer)",
+        company: null,
+        phone: null,
+        is_read: false,
+        metadata: {
+          type: "newsletter",
+          source: payload.source || "footer",
+          ...(payload.metadata || {}),
+        },
+      })
+      .select("*")
+      .single();
+    if (error) throw new ApiError(400, error.message);
+    await logActivity({
+      action: "create",
+      entityType: "newsletter_subscriber",
+      entityId: data.id,
+      summary: `Newsletter subscribe: ${data.email}`,
+    });
+    return {
+      id: data.id,
+      email: data.email,
+      source: "footer",
+      is_active: true,
+      created_at: data.created_at,
+    };
+  },
+
+  async list(query = {}, opts = {}) {
+    const dedicated = await supabase
+      .from("newsletter_subscribers")
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false })
+      .limit(Number(query.limit) || 200);
+
+    if (!dedicated.error) {
+      return new CrudService("newsletter_subscribers", {
+        entityName: "newsletter_subscriber",
+        searchColumns: ["email", "source"],
+        defaultOrder: { column: "created_at", ascending: false },
+      }).list(query, opts);
+    }
+
+    const { data, error, count } = await supabase
+      .from("contact_messages")
+      .select("*", { count: "exact" })
+      .eq("subject", "newsletter_subscribe")
+      .order("created_at", { ascending: false })
+      .limit(Number(query.limit) || 200);
+    if (error) throw new ApiError(500, error.message);
+
+    const mapped = (data || []).map((row) => ({
+      id: row.id,
+      email: row.email,
+      source: row.metadata?.source || "footer",
+      is_active: true,
+      created_at: row.created_at,
+      updated_at: row.updated_at || row.created_at,
+      metadata: row.metadata || {},
+    }));
+
+    return {
+      data: mapped,
+      meta: {
+        page: 1,
+        limit: mapped.length,
+        total: count || mapped.length,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false,
+      },
+    };
+  },
+
+  async getById(id) {
+    const dedicated = await supabase
+      .from("newsletter_subscribers")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    if (!dedicated.error && dedicated.data) return dedicated.data;
+
+    const { data, error } = await supabase
+      .from("contact_messages")
+      .select("*")
+      .eq("id", id)
+      .eq("subject", "newsletter_subscribe")
+      .maybeSingle();
+    if (error) throw new ApiError(500, error.message);
+    if (!data) throw new ApiError(404, "Subscriber not found");
+    return {
+      id: data.id,
+      email: data.email,
+      source: data.metadata?.source || "footer",
+      is_active: true,
+      created_at: data.created_at,
+    };
+  },
+
+  async remove(id) {
+    const dedicated = await supabase
+      .from("newsletter_subscribers")
+      .delete()
+      .eq("id", id)
+      .select("*")
+      .maybeSingle();
+    if (!dedicated.error && dedicated.data) {
+      await logActivity({
+        action: "delete",
+        entityType: "newsletter_subscriber",
+        entityId: id,
+        summary: `Deleted newsletter: ${dedicated.data.email}`,
+      });
+      return dedicated.data;
+    }
+
+    const { data, error } = await supabase
+      .from("contact_messages")
+      .delete()
+      .eq("id", id)
+      .eq("subject", "newsletter_subscribe")
+      .select("*")
+      .maybeSingle();
+    if (error) throw new ApiError(400, error.message);
+    if (!data) throw new ApiError(404, "Subscriber not found");
+    await logActivity({
+      action: "delete",
+      entityType: "newsletter_subscriber",
+      entityId: id,
+      summary: `Deleted newsletter: ${data.email}`,
+    });
+    return data;
+  },
+};

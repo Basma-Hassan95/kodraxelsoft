@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { useAdminUi } from "@/components/admin/AdminUiContext";
 import {
   HeroSlide,
   deleteHeroSlide,
@@ -33,6 +34,7 @@ const emptyForm = {
 };
 
 export default function AdminHeroPage() {
+  const { confirm } = useAdminUi();
   const [slides, setSlides] = useState<HeroSlide[]>([]);
   const [editing, setEditing] = useState<HeroSlide | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -115,7 +117,13 @@ export default function AdminHeroPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this hero slide from the homepage carousel?")) return;
+    const ok = await confirm({
+      title: "Delete hero slide?",
+      message: "Delete this hero slide from the homepage carousel?",
+      confirmLabel: "Delete",
+      tone: "danger",
+    });
+    if (!ok) return;
     setSaving(true);
     try {
       await deleteHeroSlide(id);

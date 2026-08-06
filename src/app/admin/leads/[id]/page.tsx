@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { useAdminUi } from "@/components/admin/AdminUiContext";
 import { cmsFetch, apiDelete, isUuid } from "@/lib/cmsApi";
 import { leadFromOrder, leadStatusToApi } from "@/lib/cmsMappers";
 import type { LeadInquiry } from "@/types/admin";
@@ -142,6 +143,7 @@ function BriefRow({
 }
 
 export default function AdminLeadDetailPage() {
+  const { confirm, alert } = useAdminUi();
   const params = useParams();
   const id = String(params?.id || "");
   const [lead, setLead] = useState<LeadInquiry | null>(null);
@@ -177,17 +179,29 @@ export default function AdminLeadDetailPage() {
       });
       setLead((prev) => (prev ? { ...prev, status } : prev));
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Status update failed");
+      await alert({
+        message: err instanceof Error ? err.message : "Status update failed",
+        tone: "danger",
+      });
     }
   };
 
   const remove = async () => {
-    if (!confirm("Delete this lead permanently?")) return;
+    const ok = await confirm({
+      title: "Delete lead?",
+      message: "Delete this lead permanently? This cannot be undone.",
+      confirmLabel: "Delete",
+      tone: "danger",
+    });
+    if (!ok) return;
     try {
       if (isUuid(id)) await apiDelete(`/admin/orders/${id}`);
       window.location.href = "/admin/leads";
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Delete failed");
+      await alert({
+        message: err instanceof Error ? err.message : "Delete failed",
+        tone: "danger",
+      });
     }
   };
 
